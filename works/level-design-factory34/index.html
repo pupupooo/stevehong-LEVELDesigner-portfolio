@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人作品：34号制造厂 - Level Design Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F4F4F0;
+            --text-primary: #111111;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --accent: #FF4500;
+            --border: #111111;
+            --border-light: #CCCCCC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .section-label {
+            color: var(--accent);
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        .nav-item {
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--accent);
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            width: 100%;
+        }
+
+        .divider-light {
+            height: 1px;
+            background-color: var(--border-light);
+            width: 100%;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            display: inline-block;
+        }
+
+        .link-accent {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .link-accent:hover {
+            opacity: 0.7;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .image-card {
+            border: 2px solid var(--border);
+            overflow: hidden;
+            background-color: var(--text-primary);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-caption {
+            padding: 12px;
+            background-color: var(--bg-primary);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .footer-bg {
+            background-color: var(--text-primary);
+        }
+
+        ul.custom-list {
+            list-style: disc;
+            padding-left: 1.5em;
+        }
+
+        ul.custom-list li {
+            margin-bottom: 0.5em;
+        }
+
+        ul.nested-list {
+            list-style: circle;
+            padding-left: 1.5em;
+            margin-top: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="w-full">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <div class="flex justify-between items-center h-20">
+                <a href="../../index.html" class="flex items-center gap-4">
+                    <span class="text-sm tracking-wider">[PRJ: HONG_XJ]</span>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-10">
+                    <a href="#character" class="nav-item">[SEC.01: 角色设定]</a>
+                    <a href="#theme" class="nav-item">[SEC.02: 关卡主题]</a>
+                    <a href="#mechanics" class="nav-item">[SEC.03: 玩法机制]</a>
+                    <a href="#structure" class="nav-item">[SEC.04: 关卡结构]</a>
+                    <a href="#narrative" class="nav-item">[SEC.05: 环境叙事]</a>
+                    <a href="#visuals" class="nav-item">[SEC.06: 图示]</a>
+                </nav>
+
+                <button class="md:hidden text-xl" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+        <div class="divider"></div>
+
+        <div id="mobileMenu" class="hidden md:hidden px-8 py-4 bg-[#F4F4F0]">
+            <nav class="flex flex-col gap-4">
+                <a href="#character" class="nav-item">[SEC.01: 角色设定]</a>
+                <a href="#theme" class="nav-item">[SEC.02: 关卡主题]</a>
+                <a href="#mechanics" class="nav-item">[SEC.03: 玩法机制]</a>
+                <a href="#structure" class="nav-item">[SEC.04: 关卡结构]</a>
+                <a href="#narrative" class="nav-item">[SEC.05: 环境叙事]</a>
+                <a href="#visuals" class="nav-item">[SEC.06: 图示]</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="w-full py-12 lg:py-16">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-[#666666] mb-8">
+                <a href="../../index.html" class="link-accent">← 返回主页</a>
+                <span>/</span>
+                <span>34号制造厂</span>
+            </div>
+
+            <!-- Showcase Image -->
+            <div class="mb-12">
+                <div class="image-card">
+                    <img src="images/个人作品页入口展示图.png" alt="34号制造厂关卡展示图">
+                    <div class="image-caption">34号制造厂 - UE5白盒关卡展示</div>
+                </div>
+            </div>
+
+            <!-- Header Section -->
+            <div class="section-label mb-4">[DOC.01: LEVEL_DESIGN]</div>
+            <h1 class="text-4xl lg:text-5xl font-bold mb-8 tracking-tight">个人作品：34号制造厂</h1>
+
+            <!-- Project Info -->
+            <div class="flex flex-col gap-4 mb-12 pb-8 border-b border-[#111111]">
+                <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-8">
+                    <span class="text-[#666666] text-sm w-32">项目名称</span>
+                    <span class="text-lg font-medium">异化法则：34号制造厂</span>
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-start gap-2 lg:gap-8">
+                    <span class="text-[#666666] text-sm w-32">设计基调</span>
+                    <span class="text-base max-w-3xl">以"视线与移动管理"为核心的极简3C。结合粗野主义建筑与超现实奇观（巨型扭蛋机），营造新怪谭风格且带有黑色幽默的类怪谈体验。</span>
+                </div>
+                <div class="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-8">
+                    <span class="text-[#666666] text-sm w-32">引擎平台</span>
+                    <span class="text-base">UE5</span>
+                </div>
+            </div>
+
+            <!-- Section 1: Character Design -->
+            <section id="character" class="mb-16">
+                <div class="section-label mb-4">[SEC.01: CHARACTER_DESIGN]</div>
+                <h2 class="text-2xl font-bold mb-6">一、角色设定与能力设计</h2>
+
+                <p class="text-[#333333] mb-6 leading-relaxed">
+                    主角设定为没有任何战斗能力的普通人，解谜与生存完全依赖于对环境规则的理解、利用。
+                </p>
+
+                <ul class="custom-list space-y-4 text-[#333333]">
+                    <li><strong>角色名称：</strong>调查员</li>
+                    <li><strong>身份背景：</strong>超自然现象应对局干员，被派往废弃的邦布工厂调查异常能量波动。</li>
+                    <li>
+                        <strong>玩家能力（3C）：</strong>
+                        <ul class="nested-list mt-2 space-y-2">
+                            <li><strong>基础移动 (WASD & Mouse)：</strong>步行、视角转动。</li>
+                            <li><strong>姿态切换 (Ctrl/C & Space)：</strong>下蹲、跳跃/攀爬</li>
+                            <li><strong>基础交互 (E)：</strong>拾取关键道具（高维计算单元）、按下场景开关/电闸。</li>
+                        </ul>
+                    </li>
+                    <li><strong>核心生存逻辑：</strong>玩家必须通过特定的行为操作（如保持绝对静止、维持目光锁定）来欺骗工厂的安保系统，让自己"伪装"成一个没有生命特征的合规玩具。</li>
+                </ul>
+            </section>
+
+            <!-- Section 2: Level Theme -->
+            <section id="theme" class="mb-16">
+                <div class="section-label mb-4">[SEC.02: LEVEL_THEME]</div>
+                <h2 class="text-2xl font-bold mb-6">二、关卡主题与设定背景</h2>
+
+                <ul class="custom-list space-y-4 text-[#333333]">
+                    <li><strong>场景定位：</strong>深埋地下的粗野主义混凝土设施。原本是高度自动化的无人工厂，现已被扭曲的认知实体占据。</li>
+                    <li>
+                        <strong>剧情概述：</strong>
+                        <p class="mt-2 leading-relaxed">工厂的主控AI逻辑发生神性异化，确立了"人类是残次品，无生命的邦布玩具才是完美"的绝对准则。工厂的安保协议随之扭曲，开始无差别抹杀所有"具有生命特征（乱动、视线躲闪、跳跃）"的实体。主角苏醒在残次品销毁车间，在各种奇怪的标语中，探索其中的隐秘。</p>
+                    </li>
+                    <li>
+                        <strong>主题关键词：</strong>
+                        <p class="mt-2">粗野主义 / 规则怪谈 / 黑色幽默 / 巨型物奇观 / 视线博弈</p>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 3: Gameplay Mechanics -->
+            <section id="mechanics" class="mb-16">
+                <div class="section-label mb-4">[SEC.03: GAMEPLAY_MECHANICS]</div>
+                <h2 class="text-2xl font-bold mb-6">三、玩法机制详解</h2>
+
+                <p class="text-[#333333] mb-8">怪物设计聚焦于"心理博弈与微操压迫"。</p>
+
+                <!-- Entity C -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">1. 实体 C：【橱窗展示品】（视线博弈机制）</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>视觉特征：</strong>没有头的无头邦布。</li>
+                        <li><strong>机制描述：</strong>极度渴望被注视的扭曲实体。当玩家的视线对准它，且无墙体遮挡时，它被强制锚定进入绝对静止状态；一旦玩家背对它，或视线被掩体挡住，在一定范围内它将以极高的速度逼近玩家，一触即死。</li>
+                        <li><strong>压力类型：</strong><span style="color: var(--accent);">空间与时间压迫</span>。强制玩家倒退行走，在视野受限的情况下摸黑寻路，或利用肉身作为诱饵进行拉扯。</li>
+                    </ul>
+                </div>
+
+                <!-- Entity B -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">2. 实体 B：【绝对质检仪】（动静博弈机制）</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>视觉特征：</strong>巨大的邦布头，投射出致命的红光。</li>
+                        <li><strong>机制描述：</strong>巨大的固定或缓慢巡逻的扫描设备。它会周期性发出预警，随后投射出红色扇形扫描光锥。</li>
+                        <li><strong>判定条件：</strong>当玩家处于红光范围内时，若系统检测到玩家有任何位移输入（速度检测），立刻判定为"活物次品"，触发处决。玩家必须完全保持静止。</li>
+                        <li><strong>压力类型：</strong><span style="color: var(--accent);">节奏打断与心理博弈</span>。强制剥夺玩家的移动权，打破常规的跑图心流。</li>
+                    </ul>
+                </div>
+
+                <!-- Entity A -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">3. 实体 A：【基础清理程序】（距离追击机制）</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>视觉特征：</strong>红色双眼的邦布。</li>
+                        <li><strong>机制描述：</strong>游荡的安保邦布。当玩家进入其警戒半径，即触发高速追击。</li>
+                        <li><strong>压力类型：</strong><span style="color: var(--accent);">持续的占位威胁</span>。提供基线压力，驱赶玩家，使其无法在安全区长时间停留。</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 4: Level Structure -->
+            <section id="structure" class="mb-16">
+                <div class="section-label mb-4">[SEC.04: LEVEL_STRUCTURE]</div>
+                <h2 class="text-2xl font-bold mb-6">四、关卡结构与流程设计</h2>
+
+                <p class="text-[#333333] mb-8">关卡采用 <strong>"线性引入 -> Hub枢纽分发 -> 垂直/平面综合考验 -> 高潮反转"</strong> 的流线设计。</p>
+
+                <!-- Zone 1 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">1. 初始教学区：废弃运输通道（WASD/蹲/跳教学）</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>场景设计：</strong>玩家在缓慢倒退的传送带上醒来。通过环境涂鸦与企业标语的碰撞，完成无UI的基础教学。</li>
+                        <li><strong>高点揭示（Vantage Point）：</strong>传送带尽头被一台铲车和大量货物堵死。玩家违背规则（跳跃攀爬）站上铲车顶部，豁然开朗，俯视巨大的工厂广场，看到巨大的实体B（邦布头）正在用红光扫射广场，建立终极压迫感与"红灯停"的潜意识。</li>
+                    </ul>
+                </div>
+
+                <!-- Zone 2 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">2. 核心区：前台与质检中枢 (Hub) -> 获取 Token01</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>前台大厅：</strong>玩家穿过广场进入大厅。操作前台触发AI迎宾广播（"<em>谁想成为今天被抽到的扭蛋呀~</em>"）。</li>
+                        <li><strong>视觉奇观与闭环教学：</strong>大厅中央矗立着数十米高的巨型扭蛋机。<strong>Token01 被直接放置在扭蛋机旁边</strong>。玩家离开工厂前台，随后通过之字形走廊推送给玩家实体C，通过回头通道的设计，让玩家理解实体C的机制。穿过回廊走向工厂中心，玩家会来到巨型扭蛋机底部。拾取Token01后投入机器，机器亮起一盏绿灯。通过这一极其流畅的闭环，让玩家瞬间明白核心游戏目标（集齐3个计算单元，点亮三盏灯）。</li>
+                    </ul>
+                </div>
+
+                <!-- Zone 3 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">3. 左侧区域：装配车间 -> 获取 Token02</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>入口博弈（实体C试炼）：</strong>唯一的入口通道被实体C堵死。玩家必须先背对它，用身体将其引诱出通道，然后再猛然回头死死盯住它，侧身溜进车间。</li>
+                        <li><strong>综合潜行考验：</strong>车间内，玩家需要前往中心区域开启电源开关。但开关同时暴露在实体B（扫视红光）<strong>和多个</strong>实体A（游荡追击）的覆盖范围内。玩家必须观察扫视周期，在红绿灯的间隙进行极限拉扯，最终打开电源开关，进入车间侧门，拿到 Token02。</li>
+                    </ul>
+                </div>
+
+                <!-- Zone 4 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">4. 右侧区域：立体仓库 -> 获取 Token03</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li>
+                            <strong>垂直维度的终极考验：</strong>仓库具有3层楼的垂直高度。
+                            <ul class="nested-list mt-2 space-y-2">
+                                <li><strong>底层：</strong>被传送带切割的区域，遍布实体A，形成迷宫压力。</li>
+                                <li><strong>中层通往高层：</strong>玩家需要搭乘未启动的传送带和可移动平台。半空中布置有实体B（扫视）和实体C（挡路）。玩家在乘坐平台跨越深渊时，若遇红光扫射，必须在狭小的移动平台上<strong>绝对静止</strong>，稍有不慎即会坠入底层的怪物堆。</li>
+                            </ul>
+                        </li>
+                        <li><strong>捷径折返（Shortcut）：</strong>玩家在顶层拿到 Token03 后，无需原路受苦，可直接操控移动平台作为捷径，快速滑降返回中枢大厅。</li>
+                    </ul>
+                </div>
+
+                <!-- Zone 5 -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold mb-4">5. 终极反转：扭蛋机的"下班"盲盒 (Demo End)</h3>
+                    <ul class="custom-list space-y-3 text-[#333333]">
+                        <li><strong>高潮爆发：</strong>玩家带着所有的计算单元回到扭蛋机前。投入最后一枚代币。</li>
+                        <li><strong>结局演出：</strong>扭蛋机发出极其欢快、中大奖般的夸张音乐与霓虹彩带。随后灯光爆闪，机器吐出一颗巨大的邦布</li>
+                        <li><strong>黑色幽默收尾：</strong>扭蛋炸开，一只体型极其庞大的邦布直接冲破屏幕，<strong>毫无废话地一拳将玩家锤死</strong>。</li>
+                        <li>画面瞬间黑屏，伴随一行字："<em>恭喜抽出隐藏款。您的下班申请已被物理驳回。</em>" Demo惊艳谢幕。</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 5: Environmental Narrative -->
+            <section id="narrative" class="mb-16">
+                <div class="section-label mb-4">[SEC.05: ENVIRONMENTAL_NARRATIVE]</div>
+                <h2 class="text-2xl font-bold mb-6">五、环境叙事与打破第四面墙</h2>
+
+                <p class="text-[#333333] mb-6">摒弃系统级UI教学，所有提示均通过"企业荒诞标语"与"幸存者绝望涂鸦"的<strong>强烈反差</strong>来呈现。</p>
+
+                <ul class="custom-list space-y-6 text-[#333333]">
+                    <li>
+                        <strong>关于操作教学（运输通道）：</strong>
+                        <ul class="nested-list mt-2 space-y-2">
+                            <li>企业广播："<em>完美邦布的标准高度为1.2米，超出的有机体头部将被自动裁切。</em>"</li>
+                            <li>幸存者涂鸦："<em>它没给你装膝盖！按 Ctrl 蹲下保住你的脑袋！</em>"</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>关于扭蛋机与目标引导（Hub前台）：</strong>
+                        <ul class="nested-list mt-2 space-y-2">
+                            <li>扭蛋机屏幕闪烁："<em>只需投入 1 个计算单元，就能来伟大扭蛋机赌上一次。说不定下次就能抽出【永久下班特权】了哟~（当前进度：1/3）</em>"</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>关于怪物机制提示（装配间入口）：</strong>
+                        <ul class="nested-list mt-2 space-y-2">
+                            <li>企业海报："<em>保持视觉接触是职场基本礼仪！背对主管者即刻开除！</em>"</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>搞怪细节互动：</strong>
+                        <ul class="nested-list mt-2 space-y-2">
+                            <li>玩家在前台可以翻阅《访客入园登记簿》："<em>访客002：在红光扫描时试图打喷嚏。处理结果：已被气化，连扭蛋壳都省了。</em>"</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 6: Visual Documentation -->
+            <section id="visuals" class="mb-16">
+                <div class="section-label mb-4">[APPENDIX: VISUAL_DOCUMENTATION]</div>
+                <h2 class="text-2xl font-bold mb-6">附录：关卡环境落地图示</h2>
+
+                <div class="image-grid">
+                    <div class="image-card">
+                        <img src="images/企业微信截图_17517979957912.png" alt="区域A：工厂入口">
+                        <div class="image-caption">区域A：工厂入口</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/ae6b069f43f8f466a8a71fa2219a2a04.png" alt="Zone2 前厅大门">
+                        <div class="image-caption">Zone2 前厅大门</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/企业微信截图_1751798112650.png" alt="Zone2：前厅展览区域01">
+                        <div class="image-caption">Zone2：前厅展览区域01</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/企业微信截图_17517981611576.png" alt="Zone2：前厅展览区域02">
+                        <div class="image-caption">Zone2：前厅展览区域02</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/企业微信截图_17517981935261.png" alt="Zone2：前厅展览区域03">
+                        <div class="image-caption">Zone2：前厅展览区域03</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/cbea49675b1ba556251e9dbaeeb826bd.png" alt="Zone3: HUB中心">
+                        <div class="image-caption">Zone3: HUB中心</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/23732b601dcc8ed49ca1b3b053f61cc5.png" alt="Zone4：装配车间入口">
+                        <div class="image-caption">Zone4：装配车间入口</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/ea14edd029bacfa7920abec8d9fb59ec.png" alt="Zone4：装配车间">
+                        <div class="image-caption">Zone4：装配车间</div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/ee1c100a5d3e4bb925935f1e60112e5e.png" alt="Zone5：仓库">
+                        <div class="image-caption">Zone5：仓库</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QR Code Section -->
+            <section class="mb-16 py-12 border-t-2 border-dashed border-[#CCCCCC]">
+                <div class="section-label mb-4">[APPENDIX: DOWNLOAD_PACKAGE]</div>
+                <h2 class="text-2xl font-bold mb-6">体验下载</h2>
+
+                <div class="flex flex-col lg:flex-row items-start gap-8">
+                    <!-- QR Code -->
+                    <div class="flex-shrink-0">
+                        <div class="image-card" style="max-width: 200px;">
+                            <img src="images/个人作品二维码.png" alt="体验包下载二维码" style="width: 200px; height: 200px;">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="flex-1 max-w-xl">
+                        <h3 class="text-lg font-semibold mb-4">扫码下载体验包</h3>
+                        <p class="text-[#333333] mb-4 leading-relaxed">
+                            本关卡设计文档配套有可游玩的原型体验包，包含：
+                        </p>
+                        <ul class="custom-list text-[#333333] mb-6">
+                            <li>UE5 白盒关卡的可执行文件</li>
+                            <li>完整的3C操作与怪物机制体验</li>
+                            <li>核心流程：教学区 → Hub中心 → 装配车间 → 立体仓库</li>
+                            <li>支持 Windows 平台运行</li>
+                        </ul>
+                        <p class="text-[#666666] text-sm">
+                            <strong>提示：</strong>使用微信或浏览器扫描二维码即可获取下载链接。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center pt-8 border-t border-[#111111]">
+                <a href="../../index.html" class="link-accent text-sm">← 返回主页</a>
+                <a href="../arc-raiders-analysis/index.html" class="link-accent text-sm">下一篇：Arc Raiders系统切片分析 →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-bg w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <div class="section-label mb-8">[SEC.04: COMMUNICATION_PROTOCOL]</div>
+            <div class="flex flex-col lg:flex-row gap-16 mb-12">
+                <div>
+                    <div class="text-sm text-[#666666] mb-2">EMAIL</div>
+                    <div class="text-base text-[#F4F4F0]">hongsteve119@gmail.com</div>
+                </div>
+                <div>
+                    <div class="text-sm text-[#666666] mb-2">WECHAT</div>
+                    <div class="text-base text-[#F4F4F0]">17269630119</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="status-dot"></span>
+                <span class="text-sm text-[#666666]">SYS_STATUS: ONLINE // AWAITING_TRANSMISSION</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Close mobile menu if open
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2321 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "I1qjE",
+      "x": 0,
+      "y": 0,
+      "name": "Level Design Portfolio - Industrial Manual",
+      "width": 1440,
+      "fill": "#F4F4F0",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "xcOql",
+          "name": "Header",
+          "width": "fill_container",
+          "height": 80,
+          "padding": [
+            0,
+            64
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "COhCq",
+              "name": "logo",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eROxG",
+                  "name": "logoCode",
+                  "fill": "#111111",
+                  "content": "[PRJ: HONG_XJ]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "apgVI",
+              "name": "nav",
+              "gap": 40,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "o0q1o",
+                  "name": "nav1",
+                  "fill": "#111111",
+                  "content": "[SEC.01: PROFILE]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "eKHUa",
+                  "name": "nav2",
+                  "fill": "#111111",
+                  "content": "[SEC.02: LOGS]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "kCnB6",
+                  "name": "nav3",
+                  "fill": "#111111",
+                  "content": "[SEC.03: SPECS]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "type": "text",
+                  "id": "PTkdo",
+                  "name": "nav4",
+                  "fill": "#111111",
+                  "content": "[SEC.04: PROTOCOL]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "nSVwt",
+          "name": "headerLine",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "#111111"
+        },
+        {
+          "type": "frame",
+          "id": "zwRsv",
+          "name": "Hero",
+          "width": "fill_container",
+          "gap": 64,
+          "padding": [
+            120,
+            64
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "hUbEZ",
+              "name": "crossTL",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NMocD",
+                  "name": "crossTL_H",
+                  "width": 20,
+                  "height": 1,
+                  "fill": "#FF4500"
+                },
+                {
+                  "type": "frame",
+                  "id": "qQMnh",
+                  "name": "crossTL_V",
+                  "width": 1,
+                  "height": 20,
+                  "fill": "#FF4500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "496k5",
+              "name": "heroContent",
+              "width": 600,
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "o0Tn3",
+                  "name": "specLabel",
+                  "fill": "#FF4500",
+                  "content": "[SPEC.00: COVER_SHEET]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "text",
+                  "id": "mC8Bv",
+                  "name": "heroTitle",
+                  "fill": "#111111",
+                  "content": "LEVEL DESIGNER",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 48,
+                  "fontWeight": "bold",
+                  "letterSpacing": -2
+                },
+                {
+                  "type": "text",
+                  "id": "6NZqQ",
+                  "name": "heroSubtitle",
+                  "fill": "#111111",
+                  "content": "HONG XIANGJIAN // 洪祥健",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 20,
+                  "fontWeight": "normal",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "text",
+                  "id": "UkVGw",
+                  "name": "heroDesc",
+                  "fill": "#333333",
+                  "textGrowth": "fixed-width",
+                  "width": 480,
+                  "content": "具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的白盒。关注如何通过区域功能分区、视野控制与信息分层，让玩家在环境压力下做出「动情决策」。",
+                  "lineHeight": 1.8,
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "5BUve",
+                  "name": "statusLine",
+                  "gap": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "CX4ZG",
+                      "name": "statusDot",
+                      "width": 8,
+                      "height": 8,
+                      "fill": "#FF4500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pWaXo",
+                      "name": "statusText",
+                      "fill": "#111111",
+                      "content": "SYS_STATUS: SEEKING_OPPORTUNITY",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "CLdHf",
+              "fill": "#CCCCCC",
+              "width": 1,
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "zYk1h",
+              "name": "Portfolio Showcase",
+              "width": 400,
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U8cVJ",
+                  "name": "showcaseImage",
+                  "width": 400,
+                  "height": 280,
+                  "fill": "#111111",
+                  "stroke": {
+                    "thickness": 2,
+                    "fill": "#111111"
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "8VTM2",
+                      "name": "imagePlaceholder",
+                      "fill": "#F4F4F0",
+                      "content": "[DOCUMENT_PREVIEW]",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ezC44",
+                  "name": "showcaseLabel",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "9Kvkb",
+                      "name": "showcaseArrow",
+                      "fill": "#FF4500",
+                      "content": "→",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jtgrC",
+                      "name": "showcaseText",
+                      "fill": "#111111",
+                      "content": "个人作品 / PORTFOLIO",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Yrscj",
+                  "name": "showcaseHint",
+                  "fill": "#666666",
+                  "content": "[点击查看完整文档]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Jldmy",
+          "name": "heroDivider",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "#111111"
+        },
+        {
+          "type": "frame",
+          "id": "IUXZm",
+          "name": "Experience Logs",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 48,
+          "padding": [
+            80,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "QXvws",
+              "name": "logsHeader",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "MwSQ6",
+                  "name": "logsLabel",
+                  "fill": "#FF4500",
+                  "content": "[SEC.02: EXPERIENCE_LOGS]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "text",
+                  "id": "1yFOg",
+                  "name": "logsCount",
+                  "fill": "#666666",
+                  "content": "TTL_RECORDS: 03",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jzHVO",
+              "name": "log1",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IQLhr",
+                  "name": "log1Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZkT9U",
+                      "name": "log1Title",
+                      "fill": "#111111",
+                      "content": "01. 友塔游戏 — 城市开放世界项目",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 28,
+                      "fontWeight": "bold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kwqmf",
+                      "name": "log1Date",
+                      "fill": "#666666",
+                      "content": "2025 // PRESENT",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "wb4ZD",
+                  "name": "log1Role",
+                  "fill": "#FF4500",
+                  "content": "ROLE: 关卡策划",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "aX3hS",
+                  "name": "log1Content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    24,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6acvN",
+                      "name": "log1Item1",
+                      "fill": "#111111",
+                      "content": "POI关卡：叙事化流程设计（日式黑帮大宅）",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "5yH49",
+                      "name": "log1Desc1",
+                      "fill": "#333333",
+                      "content": "• 符号提取：负责POI（黑帮大宅）的深度体验设计，结合心理学与叙事原理，提取文化符号构建情境与场景叙事\n• 空间结构：设计极短/分支结构用于解锁Boss战的引入区域，构建「试图目击→分支探索→闭环解锁」的非线性流程",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "xwEui",
+                      "name": "log1Item2",
+                      "fill": "#111111",
+                      "content": "冒险/协同拍摄玩法：特殊交互与解谜",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iRlX2",
+                      "name": "log1Desc2",
+                      "fill": "#333333",
+                      "content": "• 视觉逻辑解谜：设计基于镜头遮挡与构图的伪造玩法，在3D空间中完成特定信息的构建\n• 类魂式环境交互：设计「环境弹幕」类谜题，鼓励玩家利用场景物理物件触发生态连锁反应",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kAqEf",
+                      "name": "log1Vehicle",
+                      "fill": "#111111",
+                      "content": "大世界载具玩法",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OwLzV",
+                      "name": "log1VehicleDesc",
+                      "fill": "#333333",
+                      "content": "• 玩法框架搭建：基于MDA理论下的系统性玩法框架的设计和白盒落地",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VguQa",
+                      "name": "aiWorkflowTitle",
+                      "fill": "#111111",
+                      "content": "AI 工作流设计",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 18,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "9JgQM",
+                      "name": "aiWorkflowDesc",
+                      "fill": "#333333",
+                      "content": "• 与Claude Code协同进行AI工作流设计，实现标准文档自动化，推动气泡图、分镜的AI流程化",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "UcDxa",
+              "name": "log1Divider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#111111"
+            },
+            {
+              "type": "frame",
+              "id": "YdYj4",
+              "name": "log2",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NGq6u",
+                  "name": "log2Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YbHrn",
+                      "name": "log2Title",
+                      "fill": "#111111",
+                      "content": "02. 腾讯光子 — UES开放世界（OG1/LSNJ）",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 28,
+                      "fontWeight": "bold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "3eVpT",
+                      "name": "log2Date",
+                      "fill": "#666666",
+                      "content": "2022 — 2025",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "4tyql",
+                  "name": "log2Role",
+                  "fill": "#FF4500",
+                  "content": "ROLE: 关卡策划",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "mffeP",
+                  "name": "log2Content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    24,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g3Isn",
+                      "name": "log2Item1",
+                      "fill": "#333333",
+                      "content": "[切片规划] 基于「现代通天塔」概念，规划垂直关卡切片，构建随海拔变化的玩法主题（如低层追逐、高层解密），把控关卡心流节奏。",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EaMD6",
+                      "name": "log2Item2",
+                      "fill": "#333333",
+                      "content": "[白盒生产] 建立Metrics标准与模块化白盒规范，统一关卡生产管线。",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LKCop",
+              "name": "log2Divider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#111111"
+            },
+            {
+              "type": "frame",
+              "id": "w1hcT",
+              "name": "log3",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gi1Il",
+                  "name": "log3Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kuJyE",
+                      "name": "log3Title",
+                      "fill": "#111111",
+                      "content": "03. 腾讯光子 — 金铲铲之战",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 28,
+                      "fontWeight": "bold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jJqWJ",
+                      "name": "log3Date",
+                      "fill": "#666666",
+                      "content": "2021 — 2022",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "onDRI",
+                  "name": "log3Role",
+                  "fill": "#FF4500",
+                  "content": "ROLE: 商业化策划",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "TWvOp",
+                  "name": "log3Content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    24,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "09DB0",
+                      "name": "log3Item1",
+                      "fill": "#333333",
+                      "content": "SKU生产：负责多个「神话级小小英雄」的演出设计；协助完成高价值资产的分级规范。",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ePXRt",
+                      "name": "log3Item2",
+                      "fill": "#333333",
+                      "content": "图鉴追求：设计基于SKU关联的「套装收集效果」，构建局外收集目标，缓解Best-in-slot问题。",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "V7cp1",
+                      "name": "log3Item3",
+                      "fill": "#111111",
+                      "content": "■ 高价值小小英雄提案",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "U9GV0",
+                      "name": "log3Item3Desc",
+                      "fill": "#333333",
+                      "content": "超高价值小小英雄设计案",
+                      "lineHeight": 1.6,
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DNWHK",
+              "name": "logsDivider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#111111"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "9IQwX",
+          "name": "Tech Specs",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 48,
+          "padding": [
+            80,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "NhAAt",
+              "name": "specsHeader",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "i7o7k",
+                  "name": "specsLabel",
+                  "fill": "#FF4500",
+                  "content": "[SEC.03: TECH_SPECS]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                },
+                {
+                  "type": "text",
+                  "id": "7avun",
+                  "name": "specsVer",
+                  "fill": "#666666",
+                  "content": "REV: 2025.03",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Qloe9",
+              "name": "specsGrid",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FskQR",
+                  "name": "specsCol1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "JwlnN",
+                      "name": "specHeader1",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hcd6G",
+                          "fill": "#666666",
+                          "content": "CATEGORY",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Uy1x0",
+                          "fill": "#666666",
+                          "content": "ITEMS",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TdPVF",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#111111"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VUVpd",
+                      "name": "specRow1",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qszas",
+                          "fill": "#111111",
+                          "content": "Gameplay Integration",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "e0CvB",
+                          "fill": "#333333",
+                          "content": "体验设计与规划 / 白盒验证",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wng5j",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#CCCCCC"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BUOWp",
+                      "name": "specRow2",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "6Nc0F",
+                          "fill": "#111111",
+                          "content": "Analysis & Logic",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "9VLWw",
+                          "fill": "#333333",
+                          "content": "关卡脚本 / 动线设计",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QbRCr",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#CCCCCC"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WFViT",
+                      "name": "specRow3",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "G1nXj",
+                          "fill": "#111111",
+                          "content": "Tools & Engine",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q0eyU",
+                          "fill": "#333333",
+                          "content": "Unity / Unreal Engine / Maya / Blender",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "DentC",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "#CCCCCC"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NLwCm",
+                      "name": "specRow4",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "padding": [
+                        16,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Apbui",
+                          "fill": "#111111",
+                          "content": "Core Skills",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dZmpq",
+                          "fill": "#333333",
+                          "content": "空间构成 / 视觉引导 / 战斗节奏 / 场景叙事",
+                          "fontFamily": "Noto Sans SC",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kvF3G",
+              "name": "specsDivider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#111111"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "iy624",
+          "name": "Education",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            80,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "DbCOG",
+              "name": "eduHeader",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "v9Mc9",
+                  "name": "eduLabel",
+                  "fill": "#FF4500",
+                  "content": "[SEC.03-A: EDUCATION]",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LbvVs",
+              "name": "eduContent",
+              "width": "fill_container",
+              "gap": 64,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qEBfS",
+                  "name": "edu1",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LxSq6",
+                      "fill": "#111111",
+                      "content": "复旦大学",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 16,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "E2buC",
+                      "fill": "#666666",
+                      "content": "应用心理学 硕士 | 2019 — 2021",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q6SKs",
+                  "name": "edu2",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "szqnY",
+                      "fill": "#111111",
+                      "content": "中国地质大学",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 16,
+                      "fontWeight": "semibold"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OeeHg",
+                      "fill": "#666666",
+                      "content": "地质工程 学士 | 2013 — 2017",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "1P34h",
+              "name": "eduDivider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "#111111"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kKsdK",
+          "name": "Footer",
+          "width": "fill_container",
+          "fill": "#111111",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            80,
+            64
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "AYQlx",
+              "name": "footerLabel",
+              "fill": "#FF4500",
+              "content": "[SEC.04: COMMUNICATION_PROTOCOL]",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            },
+            {
+              "type": "frame",
+              "id": "pipFS",
+              "name": "footerGrid",
+              "width": "fill_container",
+              "gap": 64,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YL5Dj",
+                  "name": "contact1",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wLxht",
+                      "fill": "#666666",
+                      "content": "EMAIL",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "DwiP6",
+                      "fill": "#F4F4F0",
+                      "content": "hongsteve119@gmail.com",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wDq6b",
+                  "name": "contact2",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "65GS4",
+                      "fill": "#666666",
+                      "content": "WECHAT",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "tMKZA",
+                      "fill": "#F4F4F0",
+                      "content": "17269630119",
+                      "fontFamily": "Noto Sans SC",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RcNds",
+              "name": "footerStatus",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "GLCMC",
+                  "width": 8,
+                  "height": 8,
+                  "fill": "#FF4500"
+                },
+                {
+                  "type": "text",
+                  "id": "et7yg",
+                  "fill": "#666666",
+                  "content": "SYS_STATUS: ONLINE // AWAITING_TRANSMISSION",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PyFKg",
+      "x": 2785,
+      "y": 1143,
+      "name": "LevelDesignerCV",
+      "clip": true,
+      "width": 595,
+      "height": 842,
+      "fill": {
+        "type": "color",
+        "color": "#ffffffff",
+        "enabled": false
+      },
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      },
+      "layout": "none",
+      "children": [
+        {
+          "type": "path",
+          "id": "eIAon",
+          "x": 3,
+          "y": 8,
+          "name": "Vector",
+          "geometry": "M0 0l595 0 0 842-595 0 0-842z",
+          "fill": "#ffffffff",
+          "width": 595,
+          "height": 842,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "sQzny",
+          "x": 0,
+          "y": 0,
+          "name": "Vector",
+          "geometry": "M0 0l595 0 0 6-595 0 0-6z",
+          "fill": "#1a1a1aff",
+          "width": 595,
+          "height": 6,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "D9Uqs",
+          "x": 40,
+          "y": 0,
+          "name": "Vector",
+          "geometry": "M0 0l80 0 0 6-80 0 0-6z",
+          "fill": "#ff4400ff",
+          "width": 80,
+          "height": 6,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "3mWws",
+          "x": 120,
+          "y": 0,
+          "name": "Vector",
+          "geometry": "M0 0l40 0 0 6-40 0 0-6z",
+          "fill": "#ffcc00ff",
+          "width": 40,
+          "height": 6,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "eSPFQ",
+          "x": 0,
+          "y": 0,
+          "name": "Vector",
+          "geometry": "M0 0l200 0 0 842-200 0 0-842z",
+          "fill": "#f7f7f7ff",
+          "width": 200,
+          "height": 842,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "5I7X7",
+          "x": 200,
+          "y": 0,
+          "name": "Vector",
+          "geometry": "M0 0l0 842",
+          "width": 0,
+          "height": 937,
+          "stroke": {
+            "align": "center",
+            "thickness": 1,
+            "fill": "#e0e0e0ff"
+          }
+        },
+        {
+          "type": "path",
+          "id": "BKIjw",
+          "x": 40,
+          "y": 60,
+          "name": "Vector",
+          "geometry": "M0 0l100 0 0 100-100 0 0-100z",
+          "fill": "#e5e5e5ff",
+          "width": 100,
+          "height": 100,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "path",
+          "id": "Mg4uE",
+          "x": 45,
+          "y": 65,
+          "name": "Vector",
+          "geometry": "M0 0l90 0 0 90-90 0 0-90z",
+          "fill": "#ffffffff",
+          "width": 90,
+          "height": 90,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "text",
+          "id": "zCKX9",
+          "x": 70,
+          "y": 105,
+          "name": "照片区域",
+          "fill": "#999999ff",
+          "content": "照片区域",
+          "textAlign": "center",
+          "fontFamily": "Arial",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "skE3t",
+          "x": 40,
+          "y": 166,
+          "name": "洪祥健",
+          "fill": "#1a1a1aff",
+          "content": "洪祥健",
+          "fontFamily": "Arial",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "lyJBN",
+          "x": 40,
+          "y": 198,
+          "name": "关卡/玩法策划 求职目标：系统策划",
+          "fill": "#666666ff",
+          "content": "关卡/玩法策划 求职目标：关卡策划",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "path",
+          "id": "ZlAn0",
+          "x": 40,
+          "y": 230,
+          "name": "Vector",
+          "geometry": "M0 0l120 0",
+          "width": 120,
+          "height": 0,
+          "stroke": {
+            "align": "center",
+            "thickness": 1,
+            "fill": "#ccccccff"
+          }
+        },
+        {
+          "type": "text",
+          "id": "Ep5i2",
+          "x": 40,
+          "y": 244,
+          "name": "📞 /微信17269630119",
+          "fill": "#333333ff",
+          "content": "📞 /微信17269630119",
+          "fontFamily": "Arial",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "qng2H",
+          "x": 40,
+          "y": 264,
+          "name": "✉️ hongsteve119@gmail.com",
+          "fill": "#333333ff",
+          "content": "✉️ hongsteve119@gmail.com",
+          "fontFamily": "Arial",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "Zo0ZE",
+          "x": 40,
+          "y": 328,
+          "name": "/// TECH SPECS",
+          "fill": "#1a1a1aff",
+          "content": "/// TECH SPECS",
+          "fontFamily": "Arial",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "xMVbw",
+          "x": 40,
+          "y": 359,
+          "name": "GamePlay Integration",
+          "fill": "#333333ff",
+          "content": "GamePlay Integration",
+          "fontFamily": "Arial",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "group",
+          "id": "HLdKy",
+          "x": 40,
+          "y": 375,
+          "name": "Group",
+          "children": [
+            {
+              "type": "text",
+              "id": "9v2K7",
+              "x": 0,
+              "y": 0,
+              "name": "体验设计与规划",
+              "fill": "#666666ff",
+              "content": "体验设计与规划",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Z3RZ2",
+              "x": 0,
+              "y": 14,
+              "name": "3C白盒验证",
+              "fill": "#666666ff",
+              "content": "3C白盒验证",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "b7zAg",
+          "x": 40,
+          "y": 409,
+          "name": "Analysis&Logic",
+          "fill": "#333333ff",
+          "content": "Analysis&Logic",
+          "fontFamily": "Arial",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "group",
+          "id": "bcbbf",
+          "x": 40,
+          "y": 425,
+          "name": "Group",
+          "children": [
+            {
+              "type": "text",
+              "id": "Sm2yZ",
+              "x": 0,
+              "y": 0,
+              "name": "Metrics制定",
+              "fill": "#666666ff",
+              "content": "Metrics制定",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "2BBHW",
+              "x": 0,
+              "y": 14,
+              "name": "动线与掩体设计",
+              "fill": "#666666ff",
+              "content": "动线与掩体设计",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "FyEeI",
+              "x": 0,
+              "y": 28,
+              "name": "结合叙事主题的关卡设计",
+              "fill": "#666666ff",
+              "content": "结合叙事主题的关卡设计",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "6fRtF",
+          "x": 40,
+          "y": 469,
+          "name": "Tools&Engine",
+          "fill": "#333333ff",
+          "content": "Tools&Engine",
+          "fontFamily": "Arial",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "DhUW9",
+          "x": 40,
+          "y": 485,
+          "name": "Figma / Claude Code/ Blender",
+          "fill": "#666666ff",
+          "content": "Figma / Claude Code/ Blender",
+          "fontFamily": "Arial",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "rc1uC",
+          "x": 40,
+          "y": 502,
+          "name": "UE5&Unity",
+          "fill": "#666666ff",
+          "content": "UE5&Unity",
+          "fontFamily": "Arial",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "path",
+          "id": "00csr",
+          "x": 40,
+          "y": 530,
+          "name": "Vector",
+          "geometry": "M0 0l120 0",
+          "width": 120,
+          "height": 0,
+          "stroke": {
+            "align": "center",
+            "thickness": 1,
+            "fill": "#ccccccff"
+          }
+        },
+        {
+          "type": "text",
+          "id": "VtVID",
+          "x": 40,
+          "y": 538,
+          "name": "/// EDUCATION",
+          "fill": "#1a1a1aff",
+          "content": "/// EDUCATION",
+          "fontFamily": "Arial",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "tA87f",
+          "x": 40,
+          "y": 569,
+          "name": "复旦大学",
+          "fill": "#333333ff",
+          "content": "复旦大学",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 11,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "jaajn",
+          "x": 40,
+          "y": 585,
+          "name": "应用心理学 硕士",
+          "fill": "#666666ff",
+          "content": "应用心理学 硕士",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "GeWJV",
+          "x": 40,
+          "y": 600,
+          "name": "2019 - 2021",
+          "fill": "#999999ff",
+          "content": "2019 - 2021",
+          "fontFamily": "Arial",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "jHpRE",
+          "x": 40,
+          "y": 629,
+          "name": "中国地质大学",
+          "fill": "#333333ff",
+          "content": "中国地质大学",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 11,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "9gT4g",
+          "x": 40,
+          "y": 645,
+          "name": "地质工程 学士",
+          "fill": "#666666ff",
+          "content": "地质工程 学士",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "VP91j",
+          "x": 40,
+          "y": 660,
+          "name": "2013 - 2017",
+          "fill": "#999999ff",
+          "content": "2013 - 2017",
+          "fontFamily": "Arial",
+          "fontSize": 10,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "path",
+          "id": "b7mVm",
+          "x": 230,
+          "y": 61,
+          "name": "Vector",
+          "geometry": "M0 0l4 0 0 60-4 0 0-60z",
+          "fill": "#0f92f7ff",
+          "width": 4,
+          "height": 71,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "text",
+          "id": "fzEhJ",
+          "x": 245,
+          "y": 48,
+          "name": "MISSION PROFILE / 个人陈述",
+          "fill": "#1a1a1aff",
+          "content": "MISSION PROFILE / 个人陈述",
+          "fontFamily": "Arial",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "group",
+          "id": "VOJqy",
+          "x": 244,
+          "y": 69,
+          "name": "Group",
+          "children": [
+            {
+              "type": "text",
+              "id": "E0A6z",
+              "x": 0,
+              "y": 0,
+              "name": "具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的关卡流程完成白盒落地；关注如何通过区域功能分区、视野控制与信息分层，让玩家在环境压力中做出“动线决策”，并保持持续探索的欲望",
+              "fill": "#444444ff",
+              "textGrowth": "fixed-width",
+              "width": 315,
+              "content": "具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的关卡流程完成白盒落地；关注如何通过区域功能分区、视野控制与信息分层，让玩家在环境压力中做出“动线决策”，并保持持续探索的欲望",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "wKnUJ",
+          "x": 232,
+          "y": 136,
+          "name": "EXPERIENCE LOGS",
+          "fill": "#1a1a1aff",
+          "content": "EXPERIENCE LOGS",
+          "fontFamily": "Arial",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "path",
+          "id": "mAOGX",
+          "x": 230,
+          "y": 160,
+          "name": "Vector",
+          "geometry": "M0 0l330 0",
+          "width": 330,
+          "height": 0,
+          "stroke": {
+            "align": "center",
+            "thickness": 2,
+            "fill": "#1a1a1aff"
+          }
+        },
+        {
+          "type": "path",
+          "id": "3FYA9",
+          "x": 231,
+          "y": 816,
+          "name": "Vector",
+          "geometry": "M0 0l330 0",
+          "width": 330,
+          "height": 0,
+          "stroke": {
+            "align": "center",
+            "thickness": 2,
+            "fill": "#1a1a1aff"
+          }
+        },
+        {
+          "type": "path",
+          "id": "ADIxp",
+          "x": 231,
+          "y": 816,
+          "name": "Vector",
+          "geometry": "M0 0l60 0 0 6-60 0 0-6z",
+          "fill": "#1a1a1aff",
+          "width": 60,
+          "height": 6,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1
+          }
+        },
+        {
+          "type": "rectangle",
+          "id": "Eu9j0",
+          "x": 40,
+          "y": 60,
+          "name": "image 2",
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "",
+            "mode": "fill"
+          },
+          "width": 100,
+          "height": 100,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "#000000ff"
+          }
+        },
+        {
+          "type": "text",
+          "id": "joJxj",
+          "x": 52,
+          "y": 803,
+          "name": "个人求职作品",
+          "fill": "#999999ff",
+          "content": "个人求职作品",
+          "textAlign": "center",
+          "fontFamily": "Noto Sans SC",
+          "fontSize": 9,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "path",
+          "id": "bnfx2",
+          "x": 40,
+          "y": 720,
+          "name": "Vector",
+          "geometry": "M0 0l80 0 0 80-80 0 0-80z",
+          "width": 80,
+          "height": 80,
+          "stroke": {
+            "align": "center",
+            "thickness": 1,
+            "fill": "#333333ff"
+          }
+        },
+        {
+          "type": "group",
+          "id": "z0ImU",
+          "x": 232,
+          "y": 520,
+          "name": "Group 15",
+          "children": [
+            {
+              "type": "text",
+              "id": "kvveZ",
+              "x": 0,
+              "y": 0,
+              "name": "腾讯光子 —— UE5 开放世界（OG1/LSNJ）",
+              "fill": "#000000ff",
+              "content": "腾讯光子 —— UE5 开放世界（OG1/LSNJ）",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "sqLmK",
+              "x": 282,
+              "y": 3,
+              "name": "2022-2025",
+              "fill": "#333333ff",
+              "content": "2022-2025",
+              "textAlign": "right",
+              "fontFamily": "Arial",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "LfcnZ",
+              "x": 2,
+              "y": 22,
+              "name": "关卡策划",
+              "fill": "#666666ff",
+              "content": "关卡策划",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "path",
+              "id": "vUw0T",
+              "x": 2,
+              "y": 37,
+              "name": "Vector",
+              "geometry": "M0 0l330 0 0 1-330 0 0-1z",
+              "fill": "#e0e0e0ff",
+              "width": 330,
+              "height": 1,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              }
+            },
+            {
+              "type": "group",
+              "id": "RLL1X",
+              "x": 3,
+              "y": 43,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kIU8W",
+                  "x": 0,
+                  "y": 0,
+                  "name": "· [切片规划] 基于“现代通天塔”概念，规划垂直关卡切片。构建随海拔变化的玩法主题（如低层追逐、高层解谜）,把控关卡心流节奏。",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width-height",
+                  "width": 340,
+                  "height": 34,
+                  "content": "· [切片规划] 基于“现代通天塔”概念，规划垂直关卡切片。构建随海拔变化的玩法主题（如低层追逐、高层解谜）,把控关卡心流节奏。",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "group",
+              "id": "LbwV9",
+              "x": 2,
+              "y": 83,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bQO9t",
+                  "x": 0,
+                  "y": 0,
+                  "name": "· [白盒生产] 建立Metrics标准与模块化白盒规范，统一关卡生产管线.",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width-height",
+                  "width": 349,
+                  "height": 34,
+                  "content": "· [白盒生产] 建立Metrics标准与模块化白盒规范，统一关卡生产管线.",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "O7II0",
+          "x": 229,
+          "y": 624,
+          "name": "Group 14",
+          "children": [
+            {
+              "type": "path",
+              "id": "s5pkU",
+              "x": 4,
+              "y": 43,
+              "name": "Vector",
+              "geometry": "M0 0l330 0 0 1-330 0 0-1z",
+              "fill": "#e0e0e0ff",
+              "width": 330,
+              "height": 1,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              }
+            },
+            {
+              "type": "text",
+              "id": "nU7C1",
+              "x": 4,
+              "y": 52,
+              "name": "■ SKU生产与规划",
+              "fill": "#333333ff",
+              "content": "■ SKU生产与规划 ",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "group",
+              "id": "pVajL",
+              "x": 4,
+              "y": 72,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "65UW8",
+                  "x": 0,
+                  "y": 0,
+                  "name": "SKU生产：负责了多个“神话级小小英雄”的演出设计；过程中协助完成了高价值资产的分级规范。",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width",
+                  "width": 335,
+                  "content": "SKU生产与分级规范：负责了多个“神话级小小英雄”的演出设计；过程中协助完成了高价值资产的分级规范。分级规范： 协助参与了皮肤分级标准与价值锚点，目标降低无标准情况下资产生产的内卷。",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "group",
+              "id": "9Q4k7",
+              "x": 3,
+              "y": 93,
+              "name": "Group"
+            },
+            {
+              "type": "text",
+              "id": "qPgGF",
+              "x": 3,
+              "y": 124,
+              "name": "■ 收集追求与高价值产品设计",
+              "fill": "#333333ff",
+              "content": "■ 收集追求与高价值产品设计",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "group",
+              "id": "Uxljo",
+              "x": 3,
+              "y": 144,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oR7wz",
+                  "x": 0,
+                  "y": 0,
+                  "name": "• 羁绊追求： 设计基于SKU关联的“套装收集效果”（如集齐神王皮肤解锁限定传送门，构建局外收集目标，缓解Best in slot问题  ",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width-height",
+                  "width": 335,
+                  "height": 31,
+                  "content": "• 羁绊追求： 设计基于SKU关联的“套装收集效果”（如集齐神王皮肤解锁限定传送门，构建局外收集目标，缓解Best in slot问题  ",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "cK2SF",
+              "x": 2,
+              "y": 12,
+              "name": "腾讯光子 —— 金铲铲之战",
+              "fill": "#000000ff",
+              "content": "腾讯光子 —— 金铲铲之战",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 13,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "GCAYU",
+              "x": 273,
+              "y": 14,
+              "name": "2021 - 2022",
+              "fill": "#000000ff",
+              "content": "2021 - 2022",
+              "textAlign": "right",
+              "fontFamily": "Arial",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "n2YKD",
+              "x": 3,
+              "y": 28,
+              "name": "商业化策划",
+              "fill": "#666666ff",
+              "content": "商业化策划 ",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "99eoS",
+          "x": 231,
+          "y": 162,
+          "name": "Group 13",
+          "children": [
+            {
+              "type": "text",
+              "id": "crtcs",
+              "x": 0,
+              "y": 0,
+              "name": "友塔游戏 —— 城市开放世界项目",
+              "fill": "#000000ff",
+              "content": "友塔游戏 —— 城市开放世界项目",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "EZ1b9",
+              "x": 243,
+              "y": 3,
+              "name": "2025 - PRESENT",
+              "fill": "#ff4400ff",
+              "content": "2025 - PRESENT",
+              "textAlign": "right",
+              "fontFamily": "Arial",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "214kR",
+              "x": 0,
+              "y": 21,
+              "name": "关卡策划",
+              "fill": "#666666ff",
+              "content": "关卡策划 ",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "path",
+              "id": "2gSOr",
+              "x": 0,
+              "y": 38,
+              "name": "Vector",
+              "geometry": "M0 0l330 0 0 1-330 0 0-1z",
+              "fill": "#e0e0e0ff",
+              "width": 330,
+              "height": 1,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1
+              }
+            },
+            {
+              "type": "text",
+              "id": "mxaM5",
+              "x": 0,
+              "y": 88,
+              "name": "■ POI关卡：叙事化流程设计 (日式黑帮大宅)",
+              "fill": "#333333ff",
+              "content": "■ POI关卡：叙事化流程设计 (日式黑帮大宅)",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "group",
+              "id": "PShmK",
+              "x": 0,
+              "y": 105,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "5x050",
+                  "x": 0,
+                  "y": 0,
+                  "name": "符号提取： 负责POI（黑帮大宅）的深度体验设计。结合心理学与叙事需求，提取文化符号构建环境叙事，通过非对称的“阴翳”光影设计引导玩家心流。 空间结构：设计枢纽-分支结构用于解锁Boss战的引入区域。构建“谜面目击 -> 分支探索 -> 闭环解谜”的非线性流程，在单层写实建筑限制下丰富探索维度。",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width-height",
+                  "width": 335,
+                  "height": 93,
+                  "content": "符号提取： 负责POI（黑帮大宅）的深度体验设计。结合心理学与叙事需求，提取文化符号构建环境叙事，通过非对称的“阴翳”光影设计引导玩家心流。\n空间结构：设计枢纽-分支结构用于解锁Boss战的引入区域。构建“谜面目击 -> 分支探索 -> 闭环解谜”的非线性流程，在单层写实建筑限制下丰富探索维度。",
+                  "lineHeight": 1.3636363636363635,
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "PaoGt",
+              "x": 0,
+              "y": 198,
+              "name": "■  偷拍/协助拍摄玩法：特殊交互与解谜",
+              "fill": "#333333ff",
+              "content": "■  偷拍/协助拍摄玩法：特殊交互与解谜 ",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "x3yW9",
+              "x": 0,
+              "y": 311,
+              "name": "■  大世界载具玩法",
+              "fill": "#333333ff",
+              "content": "■  大世界载具玩法",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "group",
+              "id": "8POQW",
+              "x": 0,
+              "y": 224,
+              "name": "Group",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j2mXg",
+                  "x": 0,
+                  "y": -10,
+                  "name": "视觉透视解谜 ：设计基于镜头遮挡与构图的伪造玩法。玩家需通过引开AI并寻找特定几何角度剔除场景中的“干扰角色”，在3D空间中完成特定信息的构建。 涌现式环境交互：设计“环境诱导”类谜题，鼓励玩家利用场景物理物件（如消防车/破坏物）触发生态连锁反应，迫使AI进入特定行为状态（惊吓/混乱）以完成关卡目标。",
+                  "fill": "#555555ff",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "视觉透视解谜 ：设计基于镜头遮挡与构图的伪造玩法。玩家需通过引开AI并寻找特定几何角度剔除场景中的“干扰角色”，在3D空间中完成特定信息的构建。\n涌现式环境交互：设计“环境诱导”类谜题，鼓励玩家利用场景物理物件（如消防车/破坏物）触发生态连锁反应，迫使AI进入特定行为状态（惊吓/混乱）以完成关卡目标。",
+                  "fontFamily": "Noto Sans SC",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "CjiMa",
+              "x": 0,
+              "y": 331,
+              "name": "• 玩法框架搭建：基于MDA理论下的系统性玩法框架的设计和白盒落地",
+              "fill": "#555555ff",
+              "textGrowth": "fixed-width",
+              "width": 335,
+              "content": "• 玩法框架搭建：基于MDA理论下系统性玩法框架的设计和白盒落地",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "17ahd",
+              "x": 0,
+              "y": 39,
+              "name": "aiWorkflowCV",
+              "fill": "#333333",
+              "content": "■ AI 工作流设计",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "zQ79e",
+              "x": 0,
+              "y": 55,
+              "name": "aiWorkflowCVDesc",
+              "fill": "#555555",
+              "textGrowth": "fixed-width",
+              "width": 335,
+              "content": "与Claude Code协同进行AI工作流设计，参与项目关卡Agent的框架设计，实现标准文档自动化，推动气泡图、分镜的AI流程化",
+              "fontFamily": "Noto Sans SC",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "vVyuM",
+          "x": 41,
+          "y": 721,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "个人作品二维码.png",
+            "mode": "fill"
+          },
+          "width": 78,
+          "height": 78
+        }
+      ]
+    },
+    {
+      "type": "rectangle",
+      "id": "9lq52",
+      "x": 2825,
+      "y": 1203,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "c6c9fbb156f962008636c5f44a146307.png",
+        "mode": "fill"
+      },
+      "width": 100,
+      "height": 100
+    },
+    {
+      "type": "path",
+      "id": "l6HnD",
+      "x": 2825,
+      "y": 1203,
+      "name": "Vector",
+      "geometry": "M0 0l15 0-15 15 0-15z",
+      "fill": "#0f92f7ff",
+      "width": 15,
+      "height": 15,
+      "stroke": {
+        "align": "inside",
+        "thickness": 1
+      }
+    }
+  ]
+}

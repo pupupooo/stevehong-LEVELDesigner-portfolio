@@ -1,0 +1,712 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>个人作品：34号制造厂</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="32a429ec-b252-809e-8235-e7925f27178d" class="page sans"><header><h1 class="page-title" dir="auto"><strong>个人作品：34号制造厂</strong></h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><p id="32e429ec-b252-8028-b9f7-cd22ba2384fb" class=""><strong>项目名称：</strong> 异化法则：34号制造厂 </p></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80bb-a816-d2ce7232fde3" class=""><strong>设计基调：</strong> 以“视线与移动管理”为核心的极简3C。结合粗野主义建筑与超现实奇观（巨型扭蛋机），营造新怪谭风格且带有黑色幽默的类怪谈体验。</p></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80ca-b6e2-d02ff780a8ee" class=""><strong>引擎平台：</strong> UE5</p></div><div style="display:contents" dir="auto"><hr id="32e429ec-b252-808d-99a3-f7fe1ff47827"/></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-8028-9cf4-f39062418360" class="">一、 角色设定与能力设计</h2></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-809b-9d44-d5b3078c56ee" class="">主角设定为没有任何战斗能力的普通人，解谜与生存完全依赖于对环境规则的理解、利用。</p></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8046-b965-f950638307e2" class="bulleted-list"><li style="list-style-type:disc"><strong>角色名称：</strong> 调查员</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-807a-91b2-c80d4ce48b6b" class="bulleted-list"><li style="list-style-type:disc"><strong>身份背景：</strong> 超自然现象应对局干员，被派往废弃的邦布工厂调查异常能量波动。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8081-9a99-f42531d8b3da" class="bulleted-list"><li style="list-style-type:disc"><strong>玩家能力（3C）：</strong><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8032-bdb7-d6afe857652c" class="bulleted-list"><li style="list-style-type:circle"><strong>基础移动 (WASD &amp; Mouse)：</strong> 步行、视角转动。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8072-b840-fdc6500fa324" class="bulleted-list"><li style="list-style-type:circle"><strong>姿态切换 (Ctrl/C &amp; Space)：</strong> 下蹲、跳跃/攀爬</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8025-8650-e9f98c6626c5" class="bulleted-list"><li style="list-style-type:circle"><strong>基础交互 (E)：</strong> 拾取关键道具（高维计算单元）、按下场景开关/电闸。</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8067-9c95-c39533327dde" class="bulleted-list"><li style="list-style-type:disc"><strong>核心生存逻辑：</strong> 玩家必须通过特定的行为操作（如保持绝对静止、维持目光锁定）来欺骗工厂的安保系统，让自己“伪装”成一个没有生命特征的合规玩具。</li></ul></div><div style="display:contents" dir="auto"><hr id="32e429ec-b252-80a4-ad25-cb9c882eba9d"/></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-805f-aaf4-e91e92d6daa1" class="">二、 关卡主题与设定背景</h2></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-806e-af9a-f5922bd4099d" class="bulleted-list"><li style="list-style-type:disc"><strong>场景定位：</strong> 深埋地下的粗野主义混凝土设施。原本是高度自动化的无人工厂，现已被扭曲的认知实体占据。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8074-9b6b-f042c9fcb7c4" class="bulleted-list"><li style="list-style-type:disc"><strong>剧情概述：</strong><div style="display:contents" dir="auto"><p id="32e429ec-b252-8089-9254-cbaf6e3079c5" class="">工厂的主控AI逻辑发生神性异化，确立了“人类是残次品，无生命的邦布玩具才是完美”的绝对准则。工厂的安保协议随之扭曲，开始无差别抹杀所有“具有生命特征（乱动、视线躲闪、跳跃）”的实体。主角苏醒在残次品销毁车间，在各种奇怪的标语中，探索其中的隐秘。</p></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80ae-882d-db94d453a01c" class="bulleted-list"><li style="list-style-type:disc"><strong>主题关键词：</strong><div style="display:contents" dir="auto"><p id="32e429ec-b252-80d9-8bda-d45e379c88aa" class="">粗野主义 / 规则怪谈 / 黑色幽默 / 巨型物奇观 / 视线博弈</p></div></li></ul></div><div style="display:contents" dir="auto"><hr id="32e429ec-b252-80c7-ac32-e8d4d3a3cae9"/></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-808a-ab5a-c204178b92b7" class="">三、 玩法机制详解</h2></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80a0-b681-faf538c46fa9" class="">怪物设计聚焦于“心理博弈与微操压迫”。</p></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-80ef-8289-d75af15af2e4" class="">1. 实体 C：【橱窗展示品】（视线博弈机制）</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8008-9d30-cb489f1ee3ee" class="bulleted-list"><li style="list-style-type:disc"><strong>视觉特征：</strong> 没有头的无头邦布。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8053-90fa-d1ece6075898" class="bulleted-list"><li style="list-style-type:disc"><strong>机制描述：</strong> 极度渴望被注视的扭曲实体。当玩家的视线对准它，且无墙体遮挡时，它被强制锚定进入绝对静止状态；一旦玩家背对它，或视线被掩体挡住，在一定范围内它将以极高的速度逼近玩家，一触即死。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8027-9609-fce4c214b289" class="bulleted-list"><li style="list-style-type:disc"><strong>压力类型：</strong> <strong>空间与时间压迫</strong>。强制玩家倒退行走，在视野受限的情况下摸黑寻路，或利用肉身作为诱饵进行拉扯。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-8024-bbb1-cb7526724dcd" class="">2. 实体 B：【绝对质检仪】（动静博弈机制）</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8028-bae6-d2b7107e0267" class="bulleted-list"><li style="list-style-type:disc"><strong>视觉特征：</strong> 巨大的邦布头，投射出致命的红光。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-805a-aeda-fa887eb45a00" class="bulleted-list"><li style="list-style-type:disc"><strong>机制描述：</strong> 巨大的固定或缓慢巡逻的扫描设备。它会周期性发出预警，随后投射出红色扇形扫描光锥。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80f4-96a2-d8ad9bdc4b8d" class="bulleted-list"><li style="list-style-type:disc"><strong>判定条件：</strong> 当玩家处于红光范围内时，若系统检测到玩家有任何位移输入（速度检测），立刻判定为“活物次品”，触发处决。玩家必须完全保持静止。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80e3-bea2-f4dc80de1bca" class="bulleted-list"><li style="list-style-type:disc"><strong>压力类型：</strong> <strong>节奏打断与心理博弈</strong>。强制剥夺玩家的移动权，打破常规的跑图心流。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-8078-916b-e2dd2fe2e8d7" class="">3. 实体 A：【基础清理程序】（距离追击机制）</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8028-ae4a-d9be74361a83" class="bulleted-list"><li style="list-style-type:disc"><strong>视觉特征：</strong> 红色双眼的邦布。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-802d-b8d2-f19c65702db1" class="bulleted-list"><li style="list-style-type:disc"><strong>机制描述：</strong> 游荡的安保邦布。当玩家进入其警戒半径，即触发高速追击。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80a0-85a6-da48859ce88f" class="bulleted-list"><li style="list-style-type:disc"><strong>压力类型：</strong> <strong>持续的占位威胁</strong>。提供基线压力，驱赶玩家，使其无法在安全区长时间停留。</li></ul></div><div style="display:contents" dir="auto"><hr id="32e429ec-b252-80de-9d4f-e04b004cce99"/></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-80b1-bfbe-ece759fce7c5" class="">四、 关卡结构与流程设计</h2></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80dd-9a34-ed33394e6165" class="">关卡采用 <strong>“线性引入 -&gt; Hub枢纽分发 -&gt; 垂直/平面综合考验 -&gt; 高潮反转”</strong> 的流线设计。</p></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-80d9-a809-c6cd567ae2c8" class="">1. 初始教学区：废弃运输通道（WASD/蹲/跳教学）</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-804e-a748-f06fc1841136" class="bulleted-list"><li style="list-style-type:disc"><strong>场景设计：</strong> 玩家在缓慢倒退的传送带上醒来。通过环境涂鸦与企业标语的碰撞，完成无UI的基础教学。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8027-b686-e07e85a1ebf5" class="bulleted-list"><li style="list-style-type:disc"><strong>高点揭示（Vantage Point）：</strong> 传送带尽头被一台铲车和大量货物堵死。玩家违背规则（跳跃攀爬）站上铲车顶部，豁然开朗，俯视巨大的工厂广场，看到巨大的实体B（邦布头）正在用红光扫射广场，建立终极压迫感与“红灯停”的潜意识。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-8045-b0de-f7a341dba20f" class="">2. 核心区：前台与质检中枢 (Hub) -&gt; 获取 Token01</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80c8-ac00-c06ff5fc7c93" class="bulleted-list"><li style="list-style-type:disc"><strong>前台大厅：</strong> 玩家穿过广场进入大厅。操作前台触发AI迎宾广播（“<em>谁想成为今天被抽到的扭蛋呀~</em>”）。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8016-87a2-e017f49313c5" class="bulleted-list"><li style="list-style-type:disc"><strong>视觉奇观与闭环教学：</strong> 大厅中央矗立着数十米高的巨型扭蛋机。<strong>Token01 被直接放置在扭蛋机旁边</strong>。玩家离开工厂前台，随后通过之字形走廊推送给玩家实体C，通过回头通道的设计，让玩家理解实体C的机制。穿过回廊走向工厂中心，玩家会来到巨型扭蛋机底部。拾取Token01后投入机器，机器亮起一盏绿灯。通过这一极其流畅的闭环，让玩家瞬间明白核心游戏目标（集齐3个计算单元，点亮三盏灯）。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-80ce-b343-ffe20f7fd37c" class="">3. 左侧区域：装配车间 -&gt; 获取 Token02</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8066-a16a-e6a6359f2ae4" class="bulleted-list"><li style="list-style-type:disc"><strong>入口博弈（实体C试炼）：</strong> 唯一的入口通道被实体C堵死。玩家必须先背对它，用身体将其引诱出通道，然后再猛然回头死死盯住它，侧身溜进车间。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80e9-8a12-cb2d59a0aaf4" class="bulleted-list"><li style="list-style-type:disc"><strong>综合潜行考验：</strong> 车间内，玩家需要前往中心区域开启电源开关。但开关同时暴露在实体B（扫视红光）<strong>和多个</strong>实体A（游荡追击）的覆盖范围内。玩家必须观察扫视周期，在红绿灯的间隙进行极限拉扯，最终打开电源开关，进入车间侧门，拿到 Token02。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-80ef-af76-e0ff18f11700" class="">4. 右侧区域：立体仓库 -&gt; 获取 Token03</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8054-8686-c87c62a77a50" class="bulleted-list"><li style="list-style-type:disc"><strong>垂直维度的终极考验：</strong> 仓库具有3层楼的垂直高度。<div style="display:contents" dir="auto"><ul id="32e429ec-b252-8001-b36f-c15628380cdd" class="bulleted-list"><li style="list-style-type:circle"><strong>底层：</strong> 被传送带切割的区域，遍布实体A，形成迷宫压力。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8003-abba-c36bf2b364e9" class="bulleted-list"><li style="list-style-type:circle"><strong>中层通往高层：</strong> 玩家需要搭乘未启动的传送带和可移动平台。半空中布置有实体B（扫视）和实体C（挡路）。玩家在乘坐平台跨越深渊时，若遇红光扫射，必须在狭小的移动平台上<strong>绝对静止</strong>，稍有不慎即会坠入底层的怪物堆。</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-802d-9b64-fa6ccf3a27d2" class="bulleted-list"><li style="list-style-type:disc"><strong>捷径折返（Shortcut）：</strong> 玩家在顶层拿到 Token03 后，无需原路受苦，可直接操控移动平台作为捷径，快速滑降返回中枢大厅。</li></ul></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-80d8-8f51-c92a63a749cd" class="">5. 终极反转：扭蛋机的“下班”盲盒 (Demo End)</h3></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80ee-8095-f99ef65db6c2" class="bulleted-list"><li style="list-style-type:disc"><strong>高潮爆发：</strong> 玩家带着所有的计算单元回到扭蛋机前。投入最后一枚代币。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80fa-8659-c0dbef7a99e2" class="bulleted-list"><li style="list-style-type:disc"><strong>结局演出：</strong> 扭蛋机发出极其欢快、中大奖般的夸张音乐与霓虹彩带。随后灯光爆闪，机器吐出一颗巨大的邦布</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8078-876c-df6a19b83e12" class="bulleted-list"><li style="list-style-type:disc"><strong>黑色幽默收尾：</strong> 扭蛋炸开，一只体型极其庞大的邦布直接冲破屏幕，<strong>毫无废话地一拳将玩家锤死</strong>。</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8041-96ce-e8f26e703b8d" class="bulleted-list"><li style="list-style-type:disc">画面瞬间黑屏，伴随一行字：“<em>恭喜抽出隐藏款。您的下班申请已被物理驳回。</em>” Demo惊艳谢幕。<br/></li></ul></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-80e5-beaf-f304cc7378dc" class="image"><a href="image.png"><img style="width:3066px" src="image.png"/></a></figure></div><div style="display:contents" dir="auto"><hr id="32e429ec-b252-80f9-964e-e11749a4cdcf"/></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-8052-a8ee-e6eea0b7ada5" class="">五、 环境叙事与打破第四面墙</h2></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80f1-a4e4-f11a5414b974" class="">摒弃系统级UI教学，所有提示均通过“企业荒诞标语”与“幸存者绝望涂鸦”的<strong>强烈反差</strong>来呈现。</p></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8054-8d3b-c022daa0f612" class="bulleted-list"><li style="list-style-type:disc"><strong>关于操作教学（运输通道）：</strong><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8018-9505-ece0ec14a8f5" class="bulleted-list"><li style="list-style-type:circle">企业广播：“<em>完美邦布的标准高度为1.2米，超出的有机体头部将被自动裁切。</em>”</li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80c3-9a81-c89fd09ed164" class="bulleted-list"><li style="list-style-type:circle">幸存者涂鸦：“<em>它没给你装膝盖！按 Ctrl 蹲下保住你的脑袋！</em>”</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8026-9d07-c1b5626efdbb" class="bulleted-list"><li style="list-style-type:disc"><strong>关于扭蛋机与目标引导（Hub前台）：</strong><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80cb-8c10-fa6759889b09" class="bulleted-list"><li style="list-style-type:circle">扭蛋机屏幕闪烁：“<em>只需投入 1 个计算单元，就能来伟大扭蛋机赌上一次。说不定下次就能抽出【永久下班特权】了哟~（当前进度：1/3）</em>”</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8047-b6ad-fa15b9b6066b" class="bulleted-list"><li style="list-style-type:disc"><strong>关于怪物机制提示（装配间入口）：</strong><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80ff-9388-db9940951340" class="bulleted-list"><li style="list-style-type:circle">企业海报：“<em>保持视觉接触是职场基本礼仪！背对主管者即刻开除！</em>”</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="32e429ec-b252-80e6-96b9-c55a1f7d1d7f" class="bulleted-list"><li style="list-style-type:disc"><strong>搞怪细节互动：</strong><div style="display:contents" dir="auto"><ul id="32e429ec-b252-8078-a918-f0d1043457ec" class="bulleted-list"><li style="list-style-type:circle">玩家在前台可以翻阅《访客入园登记簿》：“<em>访客002：在红光扫描时试图打喷嚏。处理结果：已被气化，连扭蛋壳都省了。</em>”</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h2 id="32e429ec-b252-80c2-94c3-c04ea05615a8" class="">附录</h2></div><div style="display:contents" dir="auto"><h3 id="32e429ec-b252-808c-9b09-c280829aeba0" class="">关卡环境落地图示</h3></div><div style="display:contents" dir="auto"><div id="32e429ec-b252-80f0-8e9c-fdc4f4b0952f" class="column-list"><div style="display:contents" dir="auto"><div id="32e429ec-b252-8046-9a31-d4612af796dd" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8067-bc75-e42e7471883a" class="image"><a href="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517979957912.png"><img style="width:1120px" src="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517979957912.png"/></a><figcaption>区域A：工厂入口</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8021-b29b-c2c0a82c0871" class="image"><a href="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_1751798112650.png"><img style="width:1110px" src="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_1751798112650.png"/></a><figcaption>Zone2：前厅展览区域01</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-80e7-9a26-e0ae6090d66d" class="image"><a href="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517981935261.png"><img style="width:1110px" src="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517981935261.png"/></a><figcaption>Zone2：前厅展览区域03</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8084-837e-d0ba8d44d989" class="image"><a href="23732b601dcc8ed49ca1b3b053f61cc5.png"><img style="width:1120px" src="23732b601dcc8ed49ca1b3b053f61cc5.png"/></a><figcaption>Zone4：装配车间入口</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8091-aacd-f0a7ef6bf269" class="image"><a href="ee1c100a5d3e4bb925935f1e60112e5e.png"><img style="width:1120px" src="ee1c100a5d3e4bb925935f1e60112e5e.png"/></a><figcaption>Zone5：仓库</figcaption></figure></div></div></div><div style="display:contents" dir="auto"><div id="32e429ec-b252-8094-97ca-ff0718d8f1c1" style="width:50%" class="column"><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8077-b1dc-d95154823417" class="image"><a href="ae6b069f43f8f466a8a71fa2219a2a04.png"><img style="width:1110px" src="ae6b069f43f8f466a8a71fa2219a2a04.png"/></a><figcaption>Zone2 前厅大门</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-80f0-8fe5-c71736467373" class="image"><a href="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517981611576.png"><img style="width:1120px" src="%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17517981611576.png"/></a><figcaption>Zone2：前厅展览区域02</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-80f3-ba77-cfdef31b7a6c" class="image"><a href="cbea49675b1ba556251e9dbaeeb826bd.png"><img style="width:321px" src="cbea49675b1ba556251e9dbaeeb826bd.png"/></a><figcaption>Zone3: HUB中心</figcaption></figure></div><div style="display:contents" dir="ltr"><figure id="32e429ec-b252-8021-89a5-ef7e69b50462" class="image"><a href="ea14edd029bacfa7920abec8d9fb59ec.png"><img style="width:1110px" src="ea14edd029bacfa7920abec8d9fb59ec.png"/></a><figcaption>Zone4：装配车间</figcaption></figure></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80b8-a1f7-f380c2f91362" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><p id="32e429ec-b252-80e7-89da-f90677306f12" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

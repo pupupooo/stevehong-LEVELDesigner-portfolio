@@ -1,0 +1,711 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>从《ARC Raiders》的系统切片看海外局内外循环构建</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="310429ec-b252-801e-8bc3-e60c7edbb1e6" class="page sans"><header><h1 class="page-title" dir="auto"><strong>从《ARC Raiders》的系统切片看海外局内外循环构建</strong></h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><h2 id="310429ec-b252-8094-bc1f-ec982825544f" class=""><strong>Part 1：基本循环拆解与设计逻辑洞察</strong></h2></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80af-9568-e5ab74fd8d1f" class=""><br/>在拆解一款搜打撤游戏时，我们通常会带入一套<strong>传统的经济学模型与长线养成框架</strong>——即“局内搜刮高价值物品→局外市场交易变现 → 购买顶级军备反哺局内战斗”的黄金三角。在这个闭环下，市场不仅是价值的锚点，更是驱动玩家重复体验的核心纽带。<br/>但在当前的海外射击品类大盘中，赛道正经历着从“硬核生存”向“多元体验”的快速演变。作为近期跑出亮眼成绩的代表，《ARC Raiders》在其局内体验与局外系统的构建上，采取了极其反常识的“系统减法”。它并非完美，甚至在中后期的体验上充满痛点，但正是这些“痛点”，折射出了其对海外特定受众底色的精准顺应。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-8043-a857-e56b50a138d5" class=""><strong>1. 经济循环的异化：“无市场”生态下的沉浸感与深坑</strong></h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8016-9db7-e310b74fc5bf" class=""><br/>《ARC Raiders》最核心的生态异变，源于它彻底移除了“玩家交易市场”这一万能解药。<br/>从我们在分析中的拆解图表可以看出，当游戏没有市场来为“垃圾”托底时，玩家的循环纽带就断裂了。每一次撤离带出的物资只能用于死板的个人工作台升级或单线配方制造。随着进度的推进，这种设计必然导致普通玩家在制造台 2 级升 3 级时，陷入一个<strong>极其漫长的养成深坑</strong>——高级材料获取困难，低级材料失去价值，挫败感急剧上升。</p></div><div style="display:contents" dir="ltr"><figure id="310429ec-b252-80c2-a863-fdd0c58353ac" class="image"><a href="coreloop02.png"><img style="width:2694px" src="coreloop02.png"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="310429ec-b252-8016-b022-c543abc70681" class="image"><a href="coreloop01.png"><img style="width:2649px" src="coreloop01.png"/></a></figure></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8071-8647-ed1c4a216069" class=""><strong>那为什么要这么做？</strong><br/>如果我们拿《三角洲行动》来做横向对比，逻辑就非常清晰了。《三角洲行动》的烽火地带模式，本质上是以“局内爽快战斗”和“跨对局的财富积累与局外成长（搜刮囤积变现养成）”为双支柱的。为了支撑高烈度高频率的交战，它必须有一个“自由市场”让玩家将曼德尔砖或大金大红迅速变现，完成“破产-暴富”的短循环。<br/>但《ARC Raiders》的底层逻辑不同，它的体验支柱中包含了 <strong>Role Play和与强大的敌人对抗等PVE元素</strong>。在欧美市场，由《使命召唤》、《战地》等老牌3A培养出的硬核射击用户，对视听沉浸感和“在废土中生存”的代入感有着天然的情感联结。“无市场”的设定，是基于目标玩家的习惯，将游戏目标强聚焦于特定的 PVE 掉落物和生存本身，是对这批欧美主机/PC 核心射击受众内容偏好的一次精准顺应。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-8063-a550-d189558a8a08" class=""><strong>2. 矛盾的循环：由“利益驱动”向“情绪驱动”降维的 PvP</strong></h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-807b-bc7b-dca75f6d7bb2" class=""><br/>在没有市场作为硬通货支撑的前提下，《ARC Raiders》的 PvP 体验呈现出一种强烈的撕裂感。<br/>在大部分同类产品中，击杀玩家意味着掠夺对方的资产并在市场中变现，PVP 是一项高收益投资。但在 Arc 里，漫长的 TTK、极高的试错成本，加上对方身上爆出的专属材料大概率不是你当前需要的，导致 <strong>PvP 彻底沦为了一项高风险、低收益的“亏本买卖”</strong>。<br/>这看起来像是一个失败的数值循环，但从更长线的体验维度来看，我认为这其实是一种目标管理策略。它实质上将游戏模糊地切分成了两个阶段：<br/>• <strong>成长期（PVE 导向）：</strong> 玩家为了升级工作台，专注于避战、搜刮、打败低级 AI，稳步建立循环。<br/>• <strong>平台期/终局（PvP 导向）：</strong> 当玩家完成阶段性目标（如击杀族母获取蓝图），陷入“长草期”时，游戏内容消耗殆尽。此时，PvP 不再承担经济增长的功能，而是完全转变为一种<strong>单纯的情绪消耗品</strong>。玩家去打架，纯粹是为了释放压力、寻找刺激和破坏他人的体验。<br/>长线体验下来，结合<strong>ABMM（侵略性匹配机制）</strong>将核心成长体系与 PvP 剥离的做法，有效地避免了成长期玩家过早被老玩家当成“提款机”而流失，确立了游戏初期的生态稳态。</p></div><div style="display:contents" dir="ltr"><figure id="310429ec-b252-803e-9cf2-da173078c756" class="image"><a href="ECOSYSTEM_DECONSTRUCTION.png"><img style="width:4414px" src="ECOSYSTEM_DECONSTRUCTION.png"/></a><figcaption>Arc Raiders玩家生态分析</figcaption></figure></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8045-98f2-f35a65a0b752" class=""><br/><strong>小结：</strong><br/>从传统的系统设计视角来看，《ARC Raiders》这种剥离市场、拉长养成深坑、且 PvP 收益极度不对等的设计，无疑是在走钢丝。按照常理，当大部分泛用户在几十个小时后撞上“制造台升 3 级”的资源高墙时，极易因动力缺失而引发断崖式的活跃度崩塌。<br/>但反常识的数据却给出了截然不同的答案。在 2025 年末的那个窗口期，当传统的射击巨头纷纷陷入泥潭时，《ARC Raiders》却在 12 月迎来了一次不可思议的 U 型反转。<br/>当常规的经济学循环似乎走入死局时，究竟是什么力量，支撑住了如此庞大的长线活跃数据？</p></div><div style="display:contents" dir="auto"><h2 id="310429ec-b252-8052-a98e-e60a6993d761" class="">Part 2：大盘红利与系统解法——“社会工程学”如何盘活脆弱的生态循环</h2></div><div style="display:contents" dir="auto"><p id="310429ec-b252-801a-8db6-f499d09e5fb7" class="">正如我们在Part1的末尾所说，按照传统的系统框架，《ARC Raiders》那漫长的养成深坑与低收益的 PvP 机制，极易在中后期引发断崖式的玩家流失。但在静态的系统推演之外，如果我们切入到 2025 年末的真实市场环境中，会发现玩家用真实的活跃数据，给出了一个截然不同的答案。</p></div><div style="display:contents" dir="ltr"><figure id="310429ec-b252-8052-9a79-cd4554d13f5c" class="image"><a href="steamdb_chart_compare.png"><img style="width:710px" src="steamdb_chart_compare.png"/></a><figcaption>自发售以来ARC Raiders的玩家数据走势  图源：SteamDB</figcaption></figure></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-8016-a728-d848ef41084b" class="">1. “十二月奇迹”的背后：大盘真空与核心受众的“精准迁徙”</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8036-9482-c33df6509709" class="">2025 年下半年是射击品类的“红海窗口”，但竞争格局却出人意料地迅速洗牌。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8001-8658-c7580e07d9c3" class="">从大盘数据来看，被寄予厚望的《战地 6》在发售后面临了典型的“L型”崩塌，至 2026 年 1 月，其玩家流失率高达 85%-90% 。在这个关键节点，《ARC Raiders》在 12 月中旬画出了一条罕见的“J型”爆发曲线，并在 2026 年 1 月突破了全球 96 万 CCU（同时在线人数）。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8057-ab0a-ed84453a032d" class=""><strong>这种逆势反转，不仅是产品自身的胜利。</strong>查看这些海外射击产品数据时我注意到一个趋势：大量的硬核玩家正在对传统的快节奏 TTK 感到疲劳。以《战地 6》为例，其地图设计的显著缩水导致整体体验更接近竞品《使命召唤》的快节奏“绞肉机”模式 。这种背弃“战术沙盒”传统的做法，引发了老玩家的强烈反弹。这批对快餐化射击感到失望、极度渴求<strong>“高压迫感、战术博弈与沉浸式生存”</strong>的欧美硬核用户，恰好在《ARC Raiders》那套高门槛、慢节奏的废土世界里，找到了最对味的体验。所以我推测，正是这批庞大且垂直的“难民潮”，为《ARC》注入了极其宝贵的大 DAU 基本盘。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-8058-b10a-c830a50b96e0" class="">2. 生态位的保护与隐忧：大 DAU 支撑下的 ABMM 机制推演</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8054-a062-d85826881f22" class="">结合我们在局内梳理的“玩家生态与 AI 博弈关系图”可以发现，搜打撤的底层食物链极其脆弱：顶级资源大量来源于核心 PvE 玩家（探索者），如果任由 PvP 玩家（强盗）无成本地掠夺，探索者必然退坑，最终导致生态链断裂。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8004-be67-f1d411acba14" class="">为了打破“见人就打”的黑暗森林纳什均衡，《ARC Raiders》实装了极具争议的<strong>侵略性匹配机制(ABMM):</strong>系统隐性记录玩家的 PvP/PvE 倾向，将和平的“探索玩家”与好战的“掠夺玩家”分流区隔 。它强行保护了底端的 PvE 探索者度过养成深坑，同时让寻求刺激的老玩家在“蛊毒大厅”中互相倾轧 。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-800d-ad44-c20963476258" class=""><strong>但这引出了我的一个系统推论：这套社会工程学设计，极度依赖大的 DAU 作为底层支撑。</strong><br/>细分玩家行为倾向的匹配逻辑（无论是按侵略性、KD 还是装备价值），都会成倍地消耗匹配池深度。我推测，如果没有我们在上一节提到的那波庞大的“难民潮”作为水池支撑，ABMM 很难流畅运转。一旦游戏热度回落、DAU 下降，系统为了保证基础的匹配速度，大概率会被迫放宽倾向阀值，将“狼”和“羊”再次关进同一个大厅。如果这个推论成立，那么当下的生态稳态实际上是在用大盘红利走钢丝，一旦在线人数跌破某个临界值，底层 PvE 玩家的流失循环将再次开启。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-80cc-aa3d-da135cc2317b" class="">3. 足够高的更新频率，“天气”版更为内容消耗提供缓冲</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80d7-9342-fc023da37ad9" class="">除了匹配机制的干预，为了对冲中后期地图熟悉带来的战术固化，12月上线的“寒潮”更新展现了教科书级别的环境叙事与玩法融合。新地图机制通过直接更改数个核心地点的物理法则与生存压力，为玩家带来持续不断的新体验：</p></div><div style="display:contents" dir="auto"><ul id="310429ec-b252-806e-b807-dec2bc57e63c" class="bulleted-list"><li style="list-style-type:disc"><strong>视野剥夺与踪迹留存：</strong> 暴风雪不仅极大削弱了远程狙击的统治力，雪地还会让玩家的脚印清晰可见。这改变了单局的信息博弈权重，追踪与反追踪变得比正面枪法更重要。</li></ul></div><div style="display:contents" dir="auto"><ul id="310429ec-b252-8064-b056-eb755d3e0d61" class="bulleted-list"><li style="list-style-type:disc"><strong>动线与地貌的重塑：</strong> 冰雪导致的结冰和积雪会形成新的掩体和移动机制，让玩家固有策略发生变化，刷新已有的战术体验。</li></ul></div><div style="display:contents" dir="auto"><ul id="310429ec-b252-808e-8a3b-ddf38dab54a1" class="bulleted-list"><li style="list-style-type:disc"><strong>高压 DoT 与真实掩体判定：</strong> 冻伤成为了一个真实的持续伤害机制。角色在室外会积累积雪、发抖并持续掉血。</li></ul></div><div style="display:contents" dir="auto"><p id="310429ec-b252-807c-800c-c2bbf74be6d3" class="">就寒潮版本本身而言，高危环境的设计，提升了局内“潜行、机动、路线规划”的战术权重，使得野外高烈度交火的成本急剧上升，变相压制了无意义的 PvP 冲动，让每一局体验都充满高压的变数。刷新了原有体验。从玩家曲线也能看出，正是这次更新，接住了下降的在线玩家趋势，迎来了一波明显的逆势上升。</p></div><div style="display:contents" dir="auto"><h2 id="310429ec-b252-804e-a496-d4878ef4d73d" class="">Part 3：社区中充满了不满的声音，但《Arc Raiders》的系统设计失败了吗？</h2></div><div style="display:contents" dir="auto"><p id="310429ec-b252-808b-b8a4-e9346337513e" class="">在确立了大盘红利与匹配机制的宏观基调后，将视角拉回最微观的玩家切片。基于 2025 年 12 月至 2026 年 2 月海外核心社区（如 Reddit）的高热度反馈，玩家对《ARC Raiders》的抱怨集中在“免费低保横行”、“匹配失效导致屠杀”以及“跑图无聊渴望载具”三个维度。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-802e-a78a-dfaaba56a8a6" class="">但玩家的诉求往往是表象的，如果仅仅停留在“头痛医头”的层面，就会陷入设计的盲区。我尝试对其进行深度辨伪，看看这些抱怨背后的系统逻辑，并尝试推导这是否是系统设计层面的失败。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-809b-ab50-c6fce8d5eb6d" class="">1. 经济系统辨伪：“免费低保 Meta”真的是经济崩坏吗？</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-800a-a6bc-d06ec42105bd" class=""><strong>社区痛点：</strong> 玩家极度反感“免费低保装”，认为全装大佬杀人只能舔到垃圾，高风险与低回报彻底脱钩，PvP 沦为了“互换垃圾”。同时，老玩家仓库爆满，渴望加入“个人地下公寓”等资源回收系统。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80c8-9a57-d496a980ac9f" class=""><strong>底层透视：</strong><br/>从传统的“等价交换”经济模型看，这确实是崩坏的。但正如我们在 Part 1 中明确的，《ARC Raiders》的体验支柱中，<strong>“PvP 提供的情绪价值远大于成长价值</strong>”<strong>。</strong>在“无市场”的框架下，这种“全装入局收益不明确 vs 免费入局 0 风险收益无上限”的极端不对等，恰恰是系统有意为之的“多巴胺陷阱”。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8070-9559-f540f7e9ce85" class="">在心理学上，这被称为“<strong>可变比率强化</strong>”（即经典的斯金纳箱赌博模型）。官方投放了诸如“星辰山”这样拥有极高强度 AI 的高危地图，用生存压力迫使玩家穿好装备。但为什么依然有大量玩家选择“裸装”冲锋？因为一旦这种低胜率的冒险成功，带出的高级物资会产生极其巨大且持续的多巴胺分泌；而一旦失败，因为是免费装，挫败感几乎为零。反观全装玩家，即便单次死亡挫败感极强，他们依然可以通过下一次的“免费入局”来获得心理补偿。<br/><strong>结论：</strong> “互换垃圾”的抱怨并非经济崩坏，而是基于“赌徒心理”的底层体验在发挥作用。SteamDB 稳定的长线留存数据，也反向印证了这套低胜率、高多巴胺机制的粘性。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-80f3-8c45-d5229e166884" class="">2. 社交博弈辨伪：红名伪需求与“进化稳定策略”</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80a4-8eea-d61baf5748c0" class=""><strong>社区痛点：</strong> 玩家抱怨 ABMM 匹配系统被玩坏了，好战分子故意在前几局装成和平玩家，骗进 PvE 大厅后大肆屠杀背刺。玩家极度渴望“红名机制”或强制组队契约来分辨善恶。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80e2-8e12-d05947671c9d" class=""><strong>底层透视：</strong><br/>玩家想要“红名”，本质上是想要安全感，但这将极大削弱搜打撤品类“黑暗森林”的张力。那么 ABMM 真的失效了吗？</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8088-86d7-cc31fc570b0f" class="">并不。从博弈论的角度来看，这更像是理查德·道金斯在《自私的基因》中提出的“进化稳定策略”。在生态位中，当“和平探索（鸽派）”玩家大量聚集时，伪装成鸽子的“掠夺者（鹰派）”必然会出现，因为此时背刺的收益最大。但随着掠夺者增多，和平玩家提高警惕或转变为强盗，背刺的成功率又会下降。<br/><strong>结论：</strong> 系统强制的道德筛选（ABMM）只是一层初始滤网，它无法也不应该彻底消灭背刺。玩家在网底自发形成的拟态伪装与反制，最终会在动态博弈中达到一个冷酷的平衡点，这才是最真实、最具长线消耗深度的废土生态。试图用“红名”硬规则去框定道德，不仅会破坏玩家的沉浸感，还会把好不容易建立起来的稳态生态摧毁。</p></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-800e-976c-e4aa3018df7e" class="">3. 大世界节奏辨伪：“跑图疲劳”与载具的假象</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8087-a20a-eb18a3a989d7" class=""><strong>社区痛点：</strong> 随着新鲜感消退，玩家抱怨长距离的徒步跑图枯燥且容易被老六截杀，社区开始激烈争论是否应该加入摩托车或吉普车。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-809f-afb6-e17d703ee028" class=""><strong>底层透视：</strong><br/>载具在未来也许可以作为长线内容的卖点加入，但在当下引入载具更可能是一个*“伪需求”<strong>。</strong>在极其依赖声音信息博弈的搜打撤中，高噪音、高移速的载具会瞬间摧毁游戏步步为营的探索张力。<strong><br/>玩家抱怨“跑图累”，本质上是</strong>“体验的同质化”<strong>导致了</strong>“信息真空期”<strong>。在长距离移动中，一旦缺乏有效的情绪刺激点，玩家的压力阈值就会骤降，注意力涣散，此时一旦遭遇老六埋伏，体验就会极度恶化。<br/>结论： 解决信息真空，不是发一辆车加快移速，而是要</strong>填充移动过程中的动态压力**。《逃离塔科夫》给出的解法是：在动线中段动态刷新 AI，利用枪声像涟漪一样传递给周边玩家，瞬间制造高压战术场。《ARC》初期的巡逻 AI 曾起到类似作用，但随着玩家知识库的丰富（知道如何无伤绕开），原有的压力机制开始失效。因此，核心解法应当是跟进迭代 AI 的刷新逻辑与动态 POI（兴趣点）机制，让长途迁徙始终保持拉扯感。</p></div><div style="display:contents" dir="auto"><h2 id="311429ec-b252-8038-94eb-dce188a925f1" class="">Part 4：从现象到控制——基于系统底层逻辑的重构与推演</h2></div><div style="display:contents" dir="auto"><p id="311429ec-b252-8064-9375-dbc0f270a4b4" class="">在 Part 1 到 Part 3 中，我尝试从“发现问题（A层：玩家体验反馈）”到“解释问题（D层：动态博弈与心理学）”，再到“透视底层（M层：系统规则与缺失）”去做了一个完整的 MDA 拆解。</p></div><div style="display:contents" dir="auto"><p id="311429ec-b252-80a6-94cf-def29a29adcb" class="">但如果仅仅停留在“解释现象”，那便只是一名观察者。在这一部分，我会尝试透视现象之后，思考如何<strong>调控系统</strong>。在不破坏《ARC Raiders》核心体验支柱的前提下，面对大地图信息真空、高频战斗循环断层、以及 ABMM（匹配机制）的博弈失效，我尝试通过系统侧的机制重构，给出以下解法。</p></div><div style="display:contents" dir="auto"><h3 id="311429ec-b252-80d9-acb7-db7549a9e825" class="">1. 跑图疲劳与经济断层的统合解法：“动态涟漪”与“商人声望体系”</h3></div><div style="display:contents" dir="auto"><p id="311429ec-b252-80ee-9912-cab742880b5a" class=""><strong>【痛点溯源】</strong><br/>玩家社区希望添加载具，底层诉求是长距离低压力的无聊跑图导致的，是由于原有固定 AI 压力被玩家适应后产生的“信息真空”。而玩家抱怨“全装低收益、被迫跑刀”，本质是因为在无市场的仓库限制下，高阶资产损耗后缺乏缓冲机制，强行打断了玩家的高频战斗循环。</p></div><div style="display:contents" dir="auto"><p id="311429ec-b252-80f1-80ca-d01425080d8a" class=""><strong>【系统重构思路：顺应 RP 需求的横向养成】</strong><br/>海外玩家极度看重 Role Play（角色扮演）与沉浸感。可以顺应玩家群体的特质，尝试利用《ARC》现有的独特商人 NPC，引入一套“<strong>情景化随机事件与商人声望体系</strong>”。</p></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-8033-b5f2-ea5e4a6203c3" class="bulleted-list"><li style="list-style-type:disc"><strong>机制设计（变废为宝与动态涟漪）：</strong> 将地图上原本固定的主线设施（如发电机修复、通讯塔重启），转化为单局内生成，随机推送的“商人委托事件”。玩家在长途迁徙中顺手完成这些高噪音事件，不仅能打破无聊，还会产生“声音涟漪”吸引周边的 AI 或玩家，人为制造战术压力场。</li></ul></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-80ca-a381-d4f936e482f3" class="bulleted-list"><li style="list-style-type:disc"><strong>奖励与经济出口（双向选择）：</strong> 完成事件获得商人声望。声望不直接售卖成品枪械（避免摧毁核心的拾荒工作台循环），而是提供两条<strong>降低高阶合成门槛</strong>的路径：<div style="display:contents" dir="auto"><ul id="311429ec-b252-8069-9e5a-f31d06e73536" class="bulleted-list"><li style="list-style-type:circle"><strong>路径 A（资源置换）：</strong> 允许玩家将爆仓的常见低级垃圾，按一定比例直接兑换为高级材料。减少纯粹为了几个螺丝去刷图的“垃圾时间”。</li></ul></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-800e-89fb-c69a49c8c811" class="bulleted-list"><li style="list-style-type:circle"><strong>路径 B（核心组件特供）：</strong> 售卖高级武器的“不可制造核心组件”。玩家依然需要拾荒外围材料，但在商人处买到核心后即可快速成型。</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-802c-ae23-c5e399a08d38" class="bulleted-list"><li style="list-style-type:disc"><strong>【底线控制】：</strong> <strong>商人声望与“远征”机制强绑定。</strong> 无论玩家屯了多少声望，一旦完成远征，声望就清零。这既填补了玩家在长草期的横向追求，缩短了破产后的强制跑刀期，又保证了核心经济的重置体验。</li></ul></div><div style="display:contents" dir="auto"><h3 id="311429ec-b252-808c-9b40-c01f3d178510" class="">2. 社交匹配失效的解法：将“暗箱操作”转化为“明牌的狼人杀博弈”</h3></div><div style="display:contents" dir="auto"><p id="311429ec-b252-801d-9a33-c4930601c3f3" class=""><strong>【痛点溯源】</strong><br/>官方试图用 ABMM分流 PvE和PVP 玩家，但“进化稳定策略”注定伪装成鸽子的“鹰”会撕裂这种信任。如果 DAU 下滑导致匹配池扩大，这套匹配机制必然彻底失效。</p></div><div style="display:contents" dir="auto"><p id="311429ec-b252-80fb-a9e4-fcf118c84794" class=""><strong>【系统重构思路：用利益引导代替道德匹配】</strong><br/>顺应人性，把高危玩家的信息补偿转化为一种<strong>主动参与的“明牌狼人杀”地图事件</strong>。</p></div><div style="display:contents" dir="auto"><p id="311429ec-b252-80d9-a321-db7781557b5d" class="">参考《暗区突围：无限》等竞品中“机密文件”的海外社区反馈，玩家其实极度享受那种“高风险被全图猎杀”的极度肾上腺素飙升感。</p></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-8052-bcfc-e4cc2b52ac35" class="bulleted-list"><li style="list-style-type:disc"><strong>机制设计（猎物与猎手的高价值诱饵）：</strong><br/>在地图中随机刷新极高价值的“诱饵物资（如：带有高阶蓝图的受污染硬盘）”。该物品价值连城，但一旦被拾取，拾取者的位置会每隔 30 秒向全图发射一次“EMP 干扰波或雷达红圈”，直接暴露大致坐标。</li></ul></div><div style="display:contents" dir="auto"><ul id="311429ec-b252-805c-9a46-fb8363744991" class="bulleted-list"><li style="list-style-type:disc"><strong>生态调控效应：</strong><br/>此时，拾取者变成了明牌的“高价值猎物（狼）”。全图那些渴望打架、极具侵略性的 PvP 玩家，会像闻到血腥味的鲨鱼一样向该区域疯狂集结。这不仅满足了 PvP 玩家的高强度对抗需求，还产生了一个极其精妙的系统副产品：<strong>它将全图的“好战分子”像吸尘器一样吸到了一个局部区域。</strong> 这从根本上解放了地图边缘的其他 PvE 探索者，让他们获得了极其安全的搜刮环境。</li></ul></div><div style="display:contents" dir="auto"><h3 id="310429ec-b252-8040-8b08-e9f9a07250a6" class="">结语：系统做减法，生态做加法——《Arc Raiders》给我的启示</h3></div><div style="display:contents" dir="auto"><p id="310429ec-b252-80a4-8e29-fd0a0bcddbad" class="">透过对《ARC Raiders》从局内外循环到大盘生态的系统性切片，我认为这是一次“逆流而上”的设计实验。在搜打撤品类逐渐走向系统同质化（极度依赖市场与资产变现）的今天，它大刀阔斧地进行“系统减法” 。通过切断传统的经济纽带，将游戏驱动力从“利益变现”扭转为对高压环境的生存克服与角色扮演沉浸感 。而她的成功也启示了我，因为地区文化和玩家社群的差异，不同的海外用户所具有的特质也是不同的，AC的种种情景化设计和沉浸式体验正精准地踩中了用户的需求，继而爆发出极大的生命力。</p></div><div style="display:contents" dir="auto"><p id="310429ec-b252-8014-a3b9-dcb8ad60431b" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

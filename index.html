@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Design Portfolio - Industrial Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F4F4F0;
+            --text-primary: #111111;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --accent: #FF4500;
+            --border: #111111;
+            --border-light: #CCCCCC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Industrial crosshair decoration */
+        .crosshair {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: var(--accent);
+        }
+
+        .crosshair::before {
+            width: 20px;
+            height: 1px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        .crosshair::after {
+            width: 1px;
+            height: 20px;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+
+        /* Section labels */
+        .section-label {
+            color: var(--accent);
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        /* Navigation items */
+        .nav-item {
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: var(--accent);
+        }
+
+        /* Dividers */
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            width: 100%;
+        }
+
+        .divider-light {
+            height: 1px;
+            background-color: var(--border-light);
+            width: 100%;
+        }
+
+        /* Status dot */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            display: inline-block;
+        }
+
+        /* Portfolio showcase card */
+        .showcase-card {
+            border: 2px solid var(--border);
+            background-color: var(--text-primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+        }
+
+        /* Links */
+        .link-accent {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .link-accent:hover {
+            opacity: 0.7;
+        }
+
+        /* Hero title */
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        /* Log entries */
+        .log-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .log-role {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        /* Specs table */
+        .specs-table {
+            width: 100%;
+        }
+
+        .specs-row {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .specs-row:last-child {
+            border-bottom: none;
+        }
+
+        .specs-category {
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .specs-items {
+            flex: 2;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer-bg {
+            background-color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .log-title {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .log-title {
+                font-size: 20px;
+            }
+
+            .nav-item {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="w-full">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-4">
+                    <span class="text-sm tracking-wider">[PRJ: HONG_XJ]</span>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center gap-10">
+                    <a href="#profile" class="nav-item">[SEC.01: PROFILE]</a>
+                    <a href="#logs" class="nav-item">[SEC.02: LOGS]</a>
+                    <a href="#specs" class="nav-item">[SEC.03: SPECS]</a>
+                    <a href="#protocol" class="nav-item">[SEC.04: PROTOCOL]</a>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <button class="md:hidden text-xl" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+
+        <!-- Header Divider -->
+        <div class="divider"></div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden px-8 py-4 bg-[#F4F4F0]">
+            <nav class="flex flex-col gap-4">
+                <a href="#profile" class="nav-item">[SEC.01: PROFILE]</a>
+                <a href="#logs" class="nav-item">[SEC.02: LOGS]</a>
+                <a href="#specs" class="nav-item">[SEC.03: SPECS]</a>
+                <a href="#protocol" class="nav-item">[SEC.04: PROTOCOL]</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="profile" class="w-full py-16 lg:py-24">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <div class="flex flex-col lg:flex-row justify-between items-start gap-16">
+                <!-- Left: Hero Content -->
+                <div class="flex-1 max-w-[600px]">
+                    <!-- Crosshair Decoration -->
+                    <div class="mb-8">
+                        <div class="crosshair"></div>
+                    </div>
+
+                    <!-- Spec Label -->
+                    <div class="section-label mb-6">[SPEC.00: COVER_SHEET]</div>
+
+                    <!-- Title -->
+                    <h1 class="hero-title mb-4">LEVEL DESIGNER</h1>
+
+                    <!-- Subtitle -->
+                    <div class="text-xl tracking-widest mb-6">HONG XIANGJIAN // 洪祥健</div>
+
+                    <!-- Description -->
+                    <p class="text-[#333333] text-base leading-relaxed max-w-[480px] mb-8" style="line-height: 1.8;">
+                        具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的白盒。关注如何通过区域功能分区、视野控制与信息分层，让玩家在环境压力下做出「动情决策」。
+                    </p>
+
+                    <!-- Status Line -->
+                    <div class="flex items-center gap-4">
+                        <span class="status-dot"></span>
+                        <span class="text-sm">SYS_STATUS: SEEKING_OPPORTUNITY</span>
+                    </div>
+                </div>
+
+                <!-- Right: Portfolio Showcase -->
+                <div class="w-full lg:w-[400px] flex flex-col items-center gap-4">
+                    <!-- Showcase Carousel -->
+                    <div class="showcase-card w-full aspect-[10/7] relative overflow-hidden" id="showcaseCarousel">
+                        <!-- Slide 1: Factory 34 -->
+                        <a href="works/level-design-factory34/index.html" class="carousel-slide absolute inset-0 opacity-100 transition-opacity duration-500" data-slide="0">
+                            <img src="works/level-design-factory34/images/个人作品页入口展示图.png" alt="34号制造厂" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="text-[#F4F4F0] text-sm font-medium">34号制造厂</div>
+                                <div class="text-[#F4F4F0]/70 text-xs">UE5白盒关卡设计</div>
+                            </div>
+                        </a>
+                        <!-- Slide 2: Arc Raiders -->
+                        <a href="works/arc-raiders-analysis/index.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="1">
+                            <img src="works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.png" alt="Arc Raiders系统切片分析" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="text-[#F4F4F0] text-sm font-medium">Arc Raiders系统切片分析</div>
+                                <div class="text-[#F4F4F0]/70 text-xs">海外局内外循环构建研究</div>
+                            </div>
+                        </a>
+                        <!-- Hover overlay -->
+                        <div class="absolute inset-0 bg-[#FF4500] opacity-0 hover:opacity-10 transition-opacity pointer-events-none"></div>
+                    </div>
+
+                    <!-- Carousel Controls -->
+                    <div class="flex items-center gap-4 mt-2">
+                        <button onclick="prevSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">←</button>
+                        <div class="flex gap-2">
+                            <button onclick="goToSlide(0)" class="carousel-dot w-2 h-2 rounded-full bg-[#FF4500] transition-colors" data-dot="0"></button>
+                            <button onclick="goToSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="1"></button>
+                        </div>
+                        <button onclick="nextSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">→</button>
+                    </div>
+
+                    <!-- Showcase Label -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-[#FF4500]">→</span>
+                        <span class="text-sm">个人作品 / PORTFOLIO</span>
+                    </div>
+
+                    <!-- Showcase Links -->
+                    <div class="flex flex-col gap-2 text-center">
+                        <a href="works/level-design-factory34/index.html" class="link-accent text-sm hover:underline">34号制造厂 - 关卡设计文档</a>
+                        <a href="works/arc-raiders-analysis/index.html" class="link-accent text-sm hover:underline">Arc Raiders 系统切片分析</a>
+                    </div>
+
+                    <!-- Hint -->
+                    <div class="text-xs text-[#666666]">[点击查看完整文档]</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Divider -->
+    <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+        <div class="divider"></div>
+    </div>
+
+    <!-- Experience Logs Section -->
+    <section id="logs" class="w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Section Header -->
+            <div class="flex justify-between items-center mb-12">
+                <div class="section-label">[SEC.02: EXPERIENCE_LOGS]</div>
+                <div class="text-sm text-[#666666]">TTL_RECORDS: 03</div>
+            </div>
+
+            <!-- Log Entries -->
+            <div class="flex flex-col gap-12">
+                <!-- Log 1 -->
+                <div class="log-entry">
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="log-title">01. 友塔游戏 — 城市开放世界项目</h2>
+                        <span class="text-sm text-[#666666]">2025 // PRESENT</span>
+                    </div>
+                    <div class="log-role mb-6">ROLE: 关卡策划</div>
+                    <div class="pl-0 lg:pl-6 space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">POI关卡：叙事化流程设计（日式黑帮大宅）</h3>
+                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                                • 符号提取：负责POI（黑帮大宅）的深度体验设计，结合心理学与叙事原理，提取文化符号构建情境与场景叙事<br>
+                                • 空间结构：设计极短/分支结构用于解锁Boss战的引入区域，构建「试图目击→分支探索→闭环解锁」的非线性流程
+                            </p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">冒险/协同拍摄玩法：特殊交互与解谜</h3>
+                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                                • 视觉逻辑解谜：设计基于镜头遮挡与构图的伪造玩法，在3D空间中完成特定信息的构建<br>
+                                • 类魂式环境交互：设计「环境弹幕」类谜题，鼓励玩家利用场景物理物件触发生态连锁反应
+                            </p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">大世界载具玩法</h3>
+                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                                • 玩法框架搭建：基于MDA理论下的系统性玩法框架的设计和白盒落地
+                            </p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">AI 工作流设计</h3>
+                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                                • 与Claude Code协同进行AI工作流设计，参与搭建关卡的Agent框架，推动气泡图、分镜、关卡氛围keyart等关键产出的AI流程化
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Log 2 -->
+                <div class="log-entry">
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="log-title">02. 腾讯光子 — UES开放世界（OG1/LSNJ）</h2>
+                        <span class="text-sm text-[#666666]">2022 — 2025</span>
+                    </div>
+                    <div class="log-role mb-6">ROLE: 关卡策划</div>
+                    <div class="pl-0 lg:pl-6 space-y-4">
+                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                            [切片规划] 基于「现代通天塔」概念，规划垂直关卡切片，构建随海拔变化的玩法主题（如低层追逐、高层解密），把控关卡心流节奏。
+                        </p>
+                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                            [白盒生产] 建立Metrics标准与模块化白盒规范，统一关卡生产管线。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Log 3 -->
+                <div class="log-entry">
+                    <div class="flex justify-between items-end mb-4">
+                        <h2 class="log-title">03. 腾讯光子 — 金铲铲之战</h2>
+                        <span class="text-sm text-[#666666]">2021 — 2022</span>
+                    </div>
+                    <div class="log-role mb-6">ROLE: 商业化策划</div>
+                    <div class="pl-0 lg:pl-6 space-y-4">
+                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                            SKU生产：负责多个「神话级小小英雄」的演出设计；协助完成高价值资产的分级规范。
+                        </p>
+                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                            图鉴追求：设计基于SKU关联的「套装收集效果」，构建局外收集目标，缓解Best-in-slot问题。
+                        </p>
+                        <div>
+                            <h3 class="text-base font-semibold mb-2">■ 高价值小小英雄提案</h3>
+                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
+                                超高价值小小英雄设计案
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider mt-12"></div>
+        </div>
+    </section>
+
+    <!-- Tech Specs Section -->
+    <section id="specs" class="w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Section Header -->
+            <div class="flex justify-between items-center mb-12">
+                <div class="section-label">[SEC.03: TECH_SPECS]</div>
+                <div class="text-sm text-[#666666]">REV: 2025.03</div>
+            </div>
+
+            <!-- Specs Table -->
+            <div class="specs-table">
+                <!-- Header -->
+                <div class="flex gap-4 py-4 text-sm text-[#666666]">
+                    <div class="flex-1">CATEGORY</div>
+                    <div class="flex-2">ITEMS</div>
+                </div>
+                <div class="divider mb-0"></div>
+
+                <!-- Row 1 -->
+                <div class="specs-row">
+                    <div class="specs-category text-[15px]">Gameplay Integration</div>
+                    <div class="specs-items text-[15px]">体验设计与规划 / 白盒验证</div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="specs-row">
+                    <div class="specs-category text-[15px]">Analysis & Logic</div>
+                    <div class="specs-items text-[15px]">关卡脚本 / 动线设计</div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="specs-row">
+                    <div class="specs-category text-[15px]">Tools & Engine</div>
+                    <div class="specs-items text-[15px]">Figma / Claude Code / Blender / UE5 & Unity</div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="specs-row">
+                    <div class="specs-category text-[15px]">Core Skills</div>
+                    <div class="specs-items text-[15px]">空间构成 / 视觉引导 / 战斗节奏 / 场景叙事</div>
+                </div>
+            </div>
+
+            <div class="divider mt-12"></div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Section Header -->
+            <div class="section-label mb-8">[SEC.03-A: EDUCATION]</div>
+
+            <!-- Education Entries -->
+            <div class="flex flex-col lg:flex-row gap-16">
+                <div>
+                    <h3 class="text-base font-semibold mb-2">复旦大学</h3>
+                    <p class="text-sm text-[#666666]">应用心理学 硕士 | 2019 — 2021</p>
+                </div>
+                <div>
+                    <h3 class="text-base font-semibold mb-2">中国地质大学</h3>
+                    <p class="text-sm text-[#666666]">地质工程 学士 | 2013 — 2017</p>
+                </div>
+            </div>
+
+            <div class="divider mt-12"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="protocol" class="footer-bg w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Section Header -->
+            <div class="section-label mb-8">[SEC.04: COMMUNICATION_PROTOCOL]</div>
+
+            <!-- Contact Grid -->
+            <div class="flex flex-col lg:flex-row gap-16 mb-12">
+                <div>
+                    <div class="text-sm text-[#666666] mb-2">EMAIL</div>
+                    <div class="text-base text-[#F4F4F0]">hongsteve119@gmail.com</div>
+                </div>
+                <div>
+                    <div class="text-sm text-[#666666] mb-2">WECHAT</div>
+                    <div class="text-base text-[#F4F4F0]">17269630119</div>
+                </div>
+            </div>
+
+            <!-- Footer Status -->
+            <div class="flex items-center gap-4">
+                <span class="status-dot"></span>
+                <span class="text-sm text-[#666666]">SYS_STATUS: ONLINE // AWAITING_TRANSMISSION</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Close mobile menu if open
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+
+        // Portfolio Carousel
+        let currentSlide = 0;
+        const totalSlides = 2;
+        let autoPlayInterval;
+
+        function updateSlides() {
+            // Update slides opacity
+            document.querySelectorAll('.carousel-slide').forEach((slide, index) => {
+                slide.style.opacity = index === currentSlide ? '1' : '0';
+            });
+            // Update dots
+            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                dot.classList.toggle('bg-[#FF4500]', index === currentSlide);
+                dot.classList.toggle('bg-[#CCCCCC]', index !== currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlides();
+            resetAutoPlay();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateSlides();
+            resetAutoPlay();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlides();
+            resetAutoPlay();
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = setInterval(nextSlide, 5000);
+        }
+
+        // Start auto-play
+        autoPlayInterval = setInterval(nextSlide, 5000);
+
+        // Pause on hover
+        const carousel = document.getElementById('showcaseCarousel');
+        if (carousel) {
+            carousel.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+            carousel.addEventListener('mouseleave', () => {
+                autoPlayInterval = setInterval(nextSlide, 5000);
+            });
+        }
+    </script>
+</body>
+</html>
