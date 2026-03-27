@@ -548,9 +548,11 @@
         let autoPlayInterval;
 
         function updateSlides() {
-            // Update slides opacity
+            // Only the active slide should be interactive.
             document.querySelectorAll('.carousel-slide').forEach((slide, index) => {
-                slide.style.opacity = index === currentSlide ? '1' : '0';
+                const isActive = index === currentSlide;
+                slide.style.opacity = isActive ? '1' : '0';
+                slide.style.pointerEvents = isActive ? 'auto' : 'none';
             });
             // Update dots
             document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
@@ -582,7 +584,8 @@
             autoPlayInterval = setInterval(nextSlide, 5000);
         }
 
-        // Start auto-play
+        // Initialize slide state and start auto-play
+        updateSlides();
         autoPlayInterval = setInterval(nextSlide, 5000);
 
         // Pause on hover
