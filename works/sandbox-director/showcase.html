@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SANDBOX DIRECTOR // 反清单开放世界任务设计</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F4F4F0;
+  --surface: #FFFFFF;
+  --border: #111111;
+  --border-light: #CCCCCC;
+  --text: #111111;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --accent: #FF4500;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans SC', sans-serif;
+  line-height: 1.6;
+}
+
+/* ── CROSSHAIR DECORATION ── */
+.crosshair {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background-color: var(--accent);
+}
+.crosshair::before {
+  width: 20px;
+  height: 1px;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+}
+.crosshair::after {
+  width: 1px;
+  height: 20px;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+}
+
+/* ── DIVIDERS ── */
+.divider {
+  height: 1px;
+  background-color: var(--border);
+  width: 100%;
+}
+.divider-light {
+  height: 1px;
+  background-color: var(--border-light);
+  width: 100%;
+}
+
+/* ── HEADER ── */
+#header {
+  position: fixed; top:0; left:0; right:0; height:60px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; z-index:200;
+}
+#header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+#header h1 {
+  font-size:14px;
+  color: var(--text);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+#header .section-label {
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+#header nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#header nav a {
+  color: var(--text-muted);
+  text-decoration:none;
+  font-size:13px;
+  letter-spacing: 0.5px;
+  padding: 6px 16px;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+#header nav a:hover {
+  color: var(--accent);
+}
+#header nav a.active {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--surface);
+}
+#header nav a.external {
+  color: var(--accent);
+}
+#header nav a.external:hover {
+  opacity: 0.7;
+}
+
+/* ── GAME SECTION ── */
+#game-section {
+  position: fixed; top:60px; left:0; right:0; height:70vh;
+  background: var(--surface);
+  display:flex; justify-content:center; align-items:center;
+  border-bottom: 1px solid var(--border);
+}
+#game-container {
+  width: 100%; height: 100%;
+  display:flex; justify-content:center; align-items:center;
+  position:relative;
+}
+#game-frame {
+  width: 1260px; height: 650px;
+  border: 1px solid var(--border-light);
+  background: #0f0f1a;
+}
+
+/* ── DOC SECTION ── */
+#doc-section {
+  position: fixed; top:calc(60px + 70vh); left:0; right:0; bottom:0;
+  overflow: hidden;
+  background: var(--bg);
+}
+#doc-frame {
+  width: 100%; height: 100%;
+  border: none;
+  background: var(--bg);
+}
+
+/* ── FLOATING CONTROLS ── */
+#float-controls {
+  position: fixed; bottom: 24px; right: 24px;
+  display: flex; gap: 12px; z-index: 300;
+}
+#float-controls button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 20px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#float-controls button:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+/* ── SECTION TOGGLE BAR ── */
+#section-bar {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0;
+  z-index: 250;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+#section-bar button {
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-light);
+  color: var(--text-muted);
+  padding: 12px 24px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#section-bar button:last-child {
+  border-right: none;
+}
+#section-bar button:hover {
+  color: var(--accent);
+}
+#section-bar button.active {
+  color: var(--text);
+  background: rgba(255, 69, 0, 0.05);
+}
+
+/* ── STATUS BAR ── */
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 200;
+}
+#status-bar .status-left,
+#status-bar .status-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bg);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  display: inline-block;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1300px) {
+  #game-frame {
+    width: 100%;
+    transform: scale(0.85);
+  }
+}
+@media (max-width: 768px) {
+  #header {
+    padding: 0 16px;
+  }
+  #header h1 {
+    font-size: 12px;
+  }
+  #header nav a {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  #section-bar {
+    bottom: 60px;
+  }
+  #section-bar button {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div id="header-left">
+    <div class="crosshair"></div>
+    <span class="section-label">[PRJ: SANDBOX_DIRECTOR]</span>
+    <h1>反清单开放世界——沙盒导演系统</h1>
+  </div>
+  <nav>
+    <a href="#game" class="active" onclick="showSection('game')">交互原型</a>
+    <a href="#docs" onclick="showSection('docs')">设计文档</a>
+    <a href="index.html" target="_blank" class="external">单独打开游戏 →</a>
+    <a href="design.html" target="_blank" class="external">单独打开文档 →</a>
+  </nav>
+</header>
+
+<section id="game-section">
+  <div id="game-container">
+    <iframe id="game-frame" src="index.html"></iframe>
+  </div>
+</section>
+
+<section id="doc-section">
+  <iframe id="doc-frame" src="design.html"></iframe>
+</section>
+
+<div id="section-bar">
+  <button id="btn-game" class="active" onclick="showSection('game')">
+    <span style="color: var(--accent);">■</span> 交互原型
+  </button>
+  <button id="btn-docs" onclick="showSection('docs')">
+    <span style="color: var(--text-muted);">■</span> 设计文档
+  </button>
+  <button onclick="toggleLayout()">
+    切换布局
+  </button>
+</div>
+
+<div id="float-controls">
+  <button onclick="resetGame()">↻ 重置游戏</button>
+</div>
+
+<div id="status-bar">
+  <div class="status-left">
+    <span class="status-dot"></span>
+    <span>SYS_STATUS: ONLINE</span>
+  </div>
+  <div class="status-right">
+    <span>REV: 2025.03</span>
+  </div>
+</div>
+
+<script>
+let layoutMode = 'horizontal';
+let currentSection = 'game';
+
+function showSection(section) {
+  currentSection = section;
+  const gameSection = document.getElementById('game-section');
+  const docSection = document.getElementById('doc-section');
+  const btnGame = document.getElementById('btn-game');
+  const btnDocs = document.getElementById('btn-docs');
+
+  // Update header nav
+  document.querySelectorAll('#header nav a').forEach(a => a.classList.remove('active'));
+
+  if (section === 'game') {
+    gameSection.style.display = 'flex';
+    gameSection.style.height = '70vh';
+    gameSection.style.width = '100%';
+    gameSection.style.left = '0';
+    docSection.style.display = 'block';
+    docSection.style.top = 'calc(60px + 70vh)';
+    docSection.style.left = '0';
+    docSection.style.width = '100%';
+    docSection.style.height = 'calc(100vh - 60px - 70vh)';
+
+    btnGame.classList.add('active');
+    btnGame.innerHTML = '<span style="color: var(--accent);">■</span> 交互原型';
+    btnDocs.classList.remove('active');
+    btnDocs.innerHTML = '<span style="color: var(--text-muted);">■</span> 设计文档';
+    document.querySelector('a[href="#game"]').classList.add('active');
+  } else {
+    gameSection.style.display = 'none';
+    docSection.style.display = 'block';
+    docSection.style.top = '60px';
+    docSection.style.left = '0';
+    docSection.style.width = '100%';
+    docSection.style.height = 'calc(100vh - 60px - 28px)';
+
+    btnDocs.classList.add('active');
+    btnDocs.innerHTML = '<span style="color: var(--accent);">■</span> 设计文档';
+    btnGame.classList.remove('active');
+    btnGame.innerHTML = '<span style="color: var(--text-muted);">■</span> 交互原型';
+    document.querySelector('a[href="#docs"]').classList.add('active');
+  }
+
+  layoutMode = 'horizontal';
+}
+
+function resetGame() {
+  document.getElementById('game-frame').contentWindow.location.reload();
+}
+
+function toggleLayout() {
+  const gameSection = document.getElementById('game-section');
+  const docSection = document.getElementById('doc-section');
+
+  if (layoutMode === 'horizontal') {
+    layoutMode = 'vertical';
+    gameSection.style.display = 'flex';
+    gameSection.style.width = '50%';
+    gameSection.style.height = 'calc(100vh - 60px - 28px)';
+    docSection.style.display = 'block';
+    docSection.style.left = '50%';
+    docSection.style.width = '50%';
+    docSection.style.top = '60px';
+    docSection.style.height = 'calc(100vh - 60px - 28px)';
+  } else {
+    layoutMode = 'horizontal';
+    showSection(currentSection);
+  }
+}
+
+// 默认显示游戏，可以通过 URL hash 切换
+if (location.hash === '#docs') {
+  showSection('docs');
+}
+</script>
+
+</body>
+</html>

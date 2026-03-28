@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>反清单开放世界 — 沙盒导演任务系统 </title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f0f1a;color:#d0d0d0;font-family:"Microsoft YaHei","PingFang SC",sans-serif;overflow:hidden;display:flex;justify-content:center;align-items:center;height:100vh}
+#app{display:flex;gap:0;border-radius:8px;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,.6);position:relative}
+canvas{display:block;background:#3a5a3a}
+#panel{width:360px;background:#121828;display:flex;flex-direction:column;height:650px}
+#panel-header{padding:12px 16px;background:#1a2440;border-bottom:1px solid #2a3a5a;font-size:13px}
+#panel-header h2{font-size:15px;color:#e94560;margin-bottom:6px}
+.ctrl-row{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#7a8aaa}
+.ctrl-key{background:#2a3a5a;padding:1px 6px;border-radius:3px;color:#a0b0d0;font-family:monospace}
+#stats{padding:10px 16px;background:#151e35;border-bottom:1px solid #2a3a5a;font-size:12px;display:flex;gap:12px;flex-wrap:wrap}
+.stat{display:flex;align-items:center;gap:4px}.stat-label{color:#6a7a9a}.stat-val{color:#e0e0e0;font-weight:bold}
+#beat-status{padding:8px 16px;background:#1a1030;border-bottom:1px solid #2a3a5a;font-size:12px;min-height:36px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#beat-status .beat-tag{background:#e94560;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px}
+#beat-status .mod-tag{background:#f0a030;color:#1a1a2e;padding:2px 8px;border-radius:10px;font-size:11px}
+#log{flex:1;overflow-y:auto;padding:8px 12px;font-size:12px;line-height:1.7}
+#log::-webkit-scrollbar{width:4px}#log::-webkit-scrollbar-thumb{background:#2a3a5a;border-radius:2px}
+.log-entry{padding:3px 0;border-bottom:1px solid #1a2440;animation:fadeIn .3s}
+.log-t{color:#4a5a7a;font-size:10px;margin-right:6px;font-family:monospace}
+.log-director{color:#60a0ff}.log-beat{color:#50e080}.log-modifier{color:#f0a030}
+.log-combat{color:#e94560}.log-world{color:#a080e0}.log-dialogue{color:#e0d060}
+.log-result{color:#ff6090;font-weight:bold}.log-reaction{color:#80d0d0}.log-gun{color:#ff8040}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+#debug-panel{position:absolute;top:0;left:0;width:280px;height:650px;background:rgba(10,14,28,.95);border-right:1px solid #2a3a5a;padding:12px;overflow-y:auto;font-size:11px;z-index:50;transition:transform .25s ease;transform:translateX(-100%)}
+#debug-panel.open{transform:translateX(0)}
+#debug-panel::-webkit-scrollbar{width:3px}#debug-panel::-webkit-scrollbar-thumb{background:#2a3a5a;border-radius:2px}
+#debug-panel h3{color:#e94560;font-size:13px;margin:10px 0 6px;border-bottom:1px solid #2a3a5a;padding-bottom:4px}
+#debug-panel h3:first-child{margin-top:0}
+.dbg-row{display:flex;align-items:center;gap:6px;margin:5px 0}
+.dbg-row label{flex:0 0 80px;color:#7a8aaa;text-align:right;font-size:10px}
+.dbg-row input[type=range]{flex:1;accent-color:#e94560;height:14px}
+.dbg-row .dbg-val{width:36px;text-align:center;color:#e0e0e0;font-family:monospace;font-size:11px}
+.dbg-btn{background:#2a3a5a;border:1px solid #3a4a6a;color:#c0d0e0;padding:5px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-family:inherit;transition:background .15s}
+.dbg-btn:hover{background:#3a5a8a}.dbg-btn:active{background:#4a6a9a}
+.dbg-btns{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.dbg-entity{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #1a2440}
+.dbg-entity .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dbg-entity .e-name{flex:1;color:#c0c0c0;font-size:10px}
+.dbg-entity .e-state{color:#7a8aaa;font-size:10px;font-family:monospace}
+.dbg-entity .e-hp{color:#4c4;font-size:10px;font-family:monospace}
+#debug-tab{position:absolute;top:8px;left:8px;z-index:51;background:rgba(42,58,90,.7);border:1px solid #3a4a6a;color:#a0b0d0;padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-family:"Microsoft YaHei",sans-serif;transition:opacity .2s}
+#debug-tab:hover{background:rgba(58,90,138,.8)}
+
+#help-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;z-index:100;transition:opacity .3s}
+#help-overlay.hidden{opacity:0;pointer-events:none}
+#help-box{background:#1a2440;padding:36px 44px;border-radius:12px;max-width:560px;text-align:center;border:1px solid #2a3a5a}
+#help-box h1{color:#e94560;font-size:22px;margin-bottom:8px}
+#help-box h3{color:#6a7a9a;font-size:13px;font-weight:normal;margin-bottom:20px}
+#help-box .keys{text-align:left;font-size:13px;line-height:2.1}
+#help-box .keys span{display:inline-block;background:#2a3a5a;padding:1px 8px;border-radius:3px;font-family:monospace;color:#a0b0d0;min-width:60px;text-align:center;margin-right:8px}
+#help-box .start-hint{margin-top:24px;color:#e94560;font-size:13px}
+.keys-section{color:#f0a030;font-size:11px;margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div id="help-overlay">
+<div id="help-box">
+  <h1>反清单开放世界</h1>
+  <h3>Anti-Plot Sandbox Prototype v0.5 — 模块化重构版</h3>
+  <div class="keys">
+    <div class="keys-section">移动与交互</div>
+    <span>WASD</span> 移动玩家<br>
+    <span>E</span> 近距离交互（对话 / 近战）<br>
+    <div class="keys-section">枪械</div>
+    <span>左键按住</span> 瞄准（持续瞄准 = 威慑）<br>
+    <span>右键</span> 射击（需要先瞄准）<br>
+    <span>R</span> 装弹（6发弹仓）<br>
+    <div class="keys-section">系统</div>
+    <span>Q</span> 切换天气<br>
+    <span>Tab</span> 调试面板<br>
+    <span>H</span> 帮助<br>
+  </div>
+  <p style="margin-top:14px;font-size:12px;color:#6a7a9a;text-align:left;line-height:1.8">
+    🔫 瞄准 NPC 会产生威慑效果——试试在对峙中瞄准山贼<br>
+    🎬 导演系统自动触发事件，你的枪改变事件走向<br>
+    🌍 所有 NPC 会对枪声做出不同反应<br>
+    🙏 旅人会向你求助——按 [E] 接受，[R] 拒绝（小心骗局！）
+  </p>
+  <p class="start-hint">按任意键开始</p>
+</div>
+</div>
+
+<div id="app">
+<canvas id="canvas" width="900" height="650"></canvas>
+<button id="debug-tab" title="Tab 键切换">⚙ 调试</button>
+<div id="debug-panel">
+  <h3>⚙️ 参数调整</h3>
+  <div class="dbg-row"><label>Beat冷却</label><input type="range" id="dbg-beat-cd" min="3" max="60" value="18"><span class="dbg-val" id="dbg-beat-cd-v">18s</span></div>
+  <div class="dbg-row"><label>反情节冷却</label><input type="range" id="dbg-ap-cd" min="5" max="120" value="40"><span class="dbg-val" id="dbg-ap-cd-v">40s</span></div>
+  <div class="dbg-row"><label>扫描间隔</label><input type="range" id="dbg-scan" min="1" max="15" value="4"><span class="dbg-val" id="dbg-scan-v">4s</span></div>
+  <div class="dbg-row"><label>声望</label><input type="range" id="dbg-rep" min="0" max="100" value="50"><span class="dbg-val" id="dbg-rep-v">50</span></div>
+  <div class="dbg-row"><label>战力</label><input type="range" id="dbg-pow" min="1" max="50" value="10"><span class="dbg-val" id="dbg-pow-v">10</span></div>
+  <div class="dbg-row"><label>检测半径</label><input type="range" id="dbg-radius" min="100" max="600" value="350"><span class="dbg-val" id="dbg-radius-v">350</span></div>
+  <h3>🎬 手动触发</h3>
+  <div class="dbg-btns">
+    <button class="dbg-btn" onclick="manualTrigger('confrontation')">触发 [对峙]</button>
+    <button class="dbg-btn" onclick="manualTrigger('discovery')">触发 [发现]</button>
+    <button class="dbg-btn" onclick="manualTrigger('request')">触发 [请求]</button>
+  </div>
+  <div class="dbg-btns">
+    <button class="dbg-btn" onclick="toggleRain()">切换天气</button>
+    <button class="dbg-btn" onclick="resetWorld()">重置世界</button>
+    <button class="dbg-btn" onclick="respawnAll()">复活所有</button>
+  </div>
+  <div class="dbg-btns">
+    <button class="dbg-btn" onclick="forceCooldownClear()">清除冷却</button>
+    <button class="dbg-btn" onclick="gun.ammo=6;log('🔧 弹药已填满','gun')">填满弹药</button>
+    <button class="dbg-btn" onclick="world.godMode=!world.godMode;log('🔧 无敌: '+(world.godMode?'开':'关'),'director')">无敌模式</button>
+    <button class="dbg-btn" onclick="world.player.hp=world.player.maxHp;log('🔧 HP已满','director')">回满HP</button>
+  </div>
+  <h3>📊 实体状态</h3>
+  <div id="dbg-entities"></div>
+  <h3>📋 当前状态</h3>
+  <div id="dbg-status" style="color:#7a8aaa;line-height:1.8;font-size:10px"></div>
+</div>
+
+<div id="panel">
+  <div id="panel-header">
+    <h2>🎬 导演系统日志</h2>
+    <div class="ctrl-row">
+      <span><span class="ctrl-key">WASD</span> 移动</span>
+      <span><span class="ctrl-key">左键</span> 瞄准</span>
+      <span><span class="ctrl-key">右键</span> 射击</span>
+      <span><span class="ctrl-key">E</span> 交互</span>
+      <span><span class="ctrl-key">Tab</span> 调试</span>
+    </div>
+  </div>
+  <div id="stats">
+    <div class="stat"><span class="stat-label">HP:</span><span class="stat-val" id="s-hp">200</span></div>
+    <div class="stat"><span class="stat-label">声望:</span><span class="stat-val" id="s-rep">50</span></div>
+    <div class="stat"><span class="stat-label">战力:</span><span class="stat-val" id="s-pow">10</span></div>
+    <div class="stat"><span class="stat-label">弹药:</span><span class="stat-val" id="s-ammo">6/6</span></div>
+    <div class="stat"><span class="stat-label">天气:</span><span class="stat-val" id="s-weather">☀️ 晴</span></div>
+    <div class="stat"><span class="stat-label">紧张度:</span><span class="stat-val" id="s-tension">0</span></div>
+  </div>
+  <div id="beat-status"><span style="color:#4a5a7a">待机中...</span></div>
+  <div id="log"></div>
+</div>
+</div>
+
+<!-- ═══ 模块化 JS 加载（顺序敏感） ═══ -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/world.js"></script>
+<script src="js/events.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/beats.js"></script>
+<script src="js/director.js"></script>
+<script src="js/gun.js"></script>
+<script src="js/render.js"></script>
+<script src="js/debug.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+//  INPUT
+// ═══════════════════════════════════════════════════════════
+const keys = {};
+
+canvas.addEventListener('mousemove', e => {
+  const r = canvas.getBoundingClientRect();
+  mouseX = e.clientX - r.left; mouseY = e.clientY - r.top;
+});
+canvas.addEventListener('mousedown', e => {
+  if (e.button === 0) gun.isAiming = true;
+  if (e.button === 2) shoot();
+});
+canvas.addEventListener('mouseup', e => {
+  if (e.button === 0) { gun.isAiming = false; gun.aimDuration = 0; gun.aimTarget = null; gun.intimidated.clear(); }
+});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+document.addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  const ov = document.getElementById('help-overlay');
+  if (!ov.classList.contains('hidden')) { ov.classList.add('hidden'); e.preventDefault(); return; }
+  if (e.key === 'Tab') { e.preventDefault(); document.getElementById('debug-panel').classList.toggle('open'); }
+  if (e.key.toLowerCase() === 'h') ov.classList.toggle('hidden');
+  if (e.key.toLowerCase() === 'q') toggleRain();
+  if (e.key.toLowerCase() === 'e') { if (!tryRequestInteract()) tryInteract(); }
+  if (e.key.toLowerCase() === 'r') { if (!tryRequestDecline()) startReload(); }
+});
+document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+document.getElementById('debug-tab').addEventListener('click', () => {
+  document.getElementById('debug-panel').classList.toggle('open');
+});
+
+// ═══════════════════════════════════════════════════════════
+//  WEATHER
+// ═══════════════════════════════════════════════════════════
+function initRainDrops() {
+  world.rainDrops = [];
+  for (let i = 0; i < 150; i++) world.rainDrops.push({ x: Math.random() * W, y: Math.random() * H, speed: randRange(300, 500), len: randRange(8, 18) });
+}
+
+function toggleRain() {
+  world.isRaining = !world.isRaining;
+  document.getElementById('s-weather').textContent = world.isRaining ? '🌧️ 雨' : '☀️ 晴';
+  log(world.isRaining ? '🌧️ 开始下雨了...' : '☀️ 雨停了，天空放晴。', 'world');
+  if (world.isRaining) initRainDrops();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PLAYER
+// ═══════════════════════════════════════════════════════════
+function updatePlayer(dt) {
+  const p = world.player;
+  if (p.floatingTextTimer > 0) p.floatingTextTimer -= dt;
+  if (p.flashTimer > 0) p.flashTimer -= dt;
+  p.bobOffset += dt * 2;
+  let dx = 0, dy = 0;
+  if (keys['w'] || keys['arrowup']) dy = -1;
+  if (keys['s'] || keys['arrowdown']) dy = 1;
+  if (keys['a'] || keys['arrowleft']) dx = -1;
+  if (keys['d'] || keys['arrowright']) dx = 1;
+  if (dx || dy) {
+    const l = Math.hypot(dx, dy);
+    p.x = clamp(p.x + (dx / l) * p.speed * dt, 16, W - 16);
+    p.y = clamp(p.y + (dy / l) * p.speed * dt, 16, H - 16);
+  }
+}
+
+function tryRequestInteract() {
+  const b = world.activeBeat;
+  if (b && b.template.id === 'request' && b.phase === 'active' && !b.playerAccepted && !b.playerDeclined) {
+    b.playerAccepted = true; return true;
+  }
+  return false;
+}
+
+function tryRequestDecline() {
+  const b = world.activeBeat;
+  if (b && b.template.id === 'request' && b.phase === 'active' && !b.playerAccepted && !b.playerDeclined) {
+    b.playerDeclined = true; return true;
+  }
+  return false;
+}
+
+function tryInteract() {
+  const p = world.player;
+  for (const pkg of world.packages) {
+    if (!pkg.found && _dist(p, pkg) < 35) {
+      pkg.found = true;
+      showFloatingText(p, '获得包裹！', 2);
+      log(`📦 你找到了包裹！带回给 ${pkg.requester}`, 'world');
+      return;
+    }
+  }
+  let closest = null, cd = 60;
+  for (const e of world.entities) { if (e.dead || e === p) continue; const d = _dist(p, e); if (d < cd) { closest = e; cd = d; } }
+  if (!closest) return;
+  if (closest.tags.includes('hostile')) {
+    const dmg = p.combatPower + randInt(2, 8);
+    closest.hp -= dmg; closest.flashTimer = 0.2;
+    closest.damageLog.push({ source: 'player', amount: dmg, time: world.gameTime });
+    showFloatingText(closest, `-${dmg}`); world.tension = clamp(world.tension + 15, 0, 100);
+    log(`⚔️ 近战攻击 ${closest.name}，${dmg} 伤害！`, 'combat');
+    emitWorldEvent('combat_nearby', { source: p, target: closest, position: { x: closest.x, y: closest.y }, involves_civilian: false, aggressor: p });
+    if (closest.hp <= 0) { killEntity(closest, p); p.reputation = clamp(p.reputation + 10, 0, 100); log(`💀 ${closest.name} 被击倒！声望+10`, 'combat'); }
+    return;
+  }
+  if (closest.tags.includes('civilian')) {
+    const mem = closest.memory.find(m => m.type === 'witnessed_kill' && m.detail?.killer === '玩家' && (world.gameTime - m.time) < 60);
+    let lines;
+    if (mem) { lines = mem.detail?.victimHostile ? ['真的太感谢你了！', '你是恩人！', '以后打折！'] : ['求你别伤害我...', '我什么都没看到...']; }
+    else if (hasRecentMemory(closest, 'heard_gunshot', 30)) { lines = ['你...你有枪的对吧...', '别对着我就行...', '那个枪声是你？']; }
+    else { lines = { merchant: ['最近不太平...', '要买点什么？', '森林有野猪，小心'], guard: ['我在巡逻', '最近治安不好', '看到可疑人员报告'], traveler: ['路不好走...', '前面好像有人打架？', '世界不太平'] }[closest.type] || ['......']; }
+    const line = pick(Array.isArray(lines) ? lines : ['......']);
+    showFloatingText(closest, line, 3); log(`💬 ${closest.name}: "${line}"`, 'dialogue'); return;
+  }
+  if (closest.tags.includes('animal')) {
+    const dmg = p.combatPower + randInt(2, 6);
+    closest.hp -= dmg; closest.flashTimer = 0.2;
+    closest.damageLog.push({ source: 'player', amount: dmg, time: world.gameTime });
+    showFloatingText(closest, `-${dmg}`); fleeFrom(closest, p, 3);
+    log(`⚔️ 攻击 ${closest.name}，${dmg} 伤害！`, 'combat');
+    emitWorldEvent('combat_nearby', { source: p, target: closest, position: { x: closest.x, y: closest.y } });
+    if (closest.hp <= 0) { killEntity(closest, p); log(`💀 ${closest.name} 被猎杀！`, 'combat'); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STATS UI
+// ═══════════════════════════════════════════════════════════
+function updateStatsUI() {
+  document.getElementById('s-rep').textContent = Math.round(world.player.reputation);
+  document.getElementById('s-pow').textContent = world.player.combatPower;
+  document.getElementById('s-ammo').textContent = gun.reloading ? '装弹中' : `${gun.ammo}/${CFG.maxAmmo}`;
+  document.getElementById('s-tension').textContent = Math.round(world.tension);
+  const el = document.getElementById('beat-status');
+  if (world.activeBeat && world.activeBeat.phase !== 'done') {
+    const b = world.activeBeat;
+    let h = `<span class="beat-tag">${b.template.emoji} ${b.template.name}</span><span style="color:#7a8aaa">${b.phase} (${Math.round(b.elapsed)}s)</span>`;
+    if (b.modifier) h += `<span class="mod-tag">${b.modifier.emoji} ${b.modifier.name}</span>`;
+    el.innerHTML = h;
+  } else {
+    const cd = Math.max(world.beatCooldown, 0);
+    el.innerHTML = cd > 0 ? `<span style="color:#4a5a7a">待机 ${Math.ceil(cd)}s</span>` : `<span style="color:#50e080">● 导演就绪</span>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT & GAME LOOP
+// ═══════════════════════════════════════════════════════════
+function initWorld() {
+  world.player = createEntity({ name: '玩家', type: 'player', x: 450, y: 380, tags: ['player'], faction: 'player', hp: 200, speed: 130, combatPower: 10, color: '#e0e0e0', emoji: '🧑' });
+  world.player.reputation = 50;
+  world.entities.push(world.player);
+  world.entities.push(createEntity({ name: '商人老王', type: 'merchant', x: 440, y: 230, tags: ['civilian', 'merchant'], faction: 'civilian', hp: 60, speed: 35, combatPower: 2, color: '#e8c840', emoji: '🧑‍🌾', homeArea: 'market' }));
+  world.entities.push(createEntity({ name: '货郎小陈', type: 'merchant', x: 500, y: 280, tags: ['civilian', 'merchant'], faction: 'civilian', hp: 50, speed: 30, combatPower: 1, color: '#c8b830', emoji: '🧳', homeArea: 'market' }));
+  world.entities.push(createEntity({ name: '守卫阿强', type: 'guard', x: 760, y: 100, tags: ['civilian', 'guard', 'authority'], faction: 'guard', hp: 150, speed: 55, combatPower: 12, color: '#4080e0', emoji: '💂', homeArea: 'guardPost' }));
+  world.entities.push(createEntity({ name: '山贼大刘', type: 'bandit', x: 180, y: 250, tags: ['hostile', 'greedy'], faction: 'bandit', hp: 80, speed: 50, combatPower: 8, color: '#d04040', emoji: '🗡️', homeArea: 'forest' }));
+  world.entities.push(createEntity({ name: '山贼二毛', type: 'bandit', x: 120, y: 180, tags: ['hostile', 'greedy'], faction: 'bandit', hp: 70, speed: 45, combatPower: 6, color: '#c03030', emoji: '⚔️', homeArea: 'forest' }));
+  world.entities.push(createEntity({ name: '野猪', type: 'boar', x: 100, y: 300, tags: ['animal', 'hungry'], faction: 'wild', hp: 90, speed: 40, combatPower: 15, color: '#8b6914', emoji: '🐗', homeArea: 'forest' }));
+  world.entities.push(createEntity({ name: '旅人阿花', type: 'traveler', x: 150, y: 455, tags: ['civilian', 'traveler'], faction: 'civilian', hp: 40, speed: 35, combatPower: 1, color: '#40c080', emoji: '🚶', homeArea: 'road' }));
+  log('🌍 世界已生成', 'world');
+  log('🔫 你携带了一把枪 (6发) — 左键瞄准，右键射击，R装弹', 'gun');
+  log('🎬 导演系统已启动', 'director');
+  log(`─────────────────────────────`, 'world');
+}
+
+let lastTime = 0, statsTimer = 0, debugTimer = 0;
+function gameLoop(ts) {
+  const dt = Math.min((ts - lastTime) / 1000, 0.05);
+  lastTime = ts; world.gameTime += dt;
+  if (world.playerDead) {
+    updatePlayerRespawn(dt);
+    if (world.player.floatingTextTimer > 0) world.player.floatingTextTimer -= dt;
+  } else {
+    updatePlayer(dt); updateGun(dt); updateAim(dt);
+  }
+  for (const e of world.entities) if (e !== world.player) updateEntityAI(e, dt);
+  checkPlayerDeath();
+  updateDirector(dt); updateRain(dt);
+  statsTimer -= dt;
+  if (statsTimer <= 0) { updateStatsUI(); statsTimer = 0.25; }
+  debugTimer -= dt;
+  if (debugTimer <= 0) { if (document.getElementById('debug-panel').classList.contains('open')) updateDebugPanel(); debugTimer = 0.5; }
+  render();
+  requestAnimationFrame(gameLoop);
+}
+
+initWorld();
+setupDebugPanel();
+requestAnimationFrame(ts => { lastTime = ts; gameLoop(ts); });
+</script>
+</body>
+</html>

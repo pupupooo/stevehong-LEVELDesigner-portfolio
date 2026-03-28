@@ -259,7 +259,7 @@
 
                     <!-- Description -->
                     <p class="text-[#333333] text-base leading-relaxed max-w-[480px] mb-8" style="line-height: 1.8;">
-                        具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的白盒。关注如何通过区域功能分区、视野控制与信息分层，让玩家在环境压力下做出「动情决策」。
+                        具备扎实的关卡设计经验，擅长结合叙事/环境主题搭建符合体验的白盒。关注新技术，有强烈的好奇心。
                     </p>
 
                     <!-- Status Line -->
@@ -302,6 +302,19 @@
                                 <div class="text-[#F4F4F0]/70 text-xs">设计维度、产物与上下文治理</div>
                             </div>
                         </a>
+                        <!-- Slide 4: SandBox Director -->
+                        <a href="works/sandbox-director/showcase.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="3">
+                            <div class="w-full h-full min-h-full bg-gradient-to-br from-[#0e0e18] via-[#151525] to-[#e94560]/35 flex items-center justify-center">
+                                <div class="text-center px-6">
+                                    <div class="text-[#d0d0e0] text-base font-semibold tracking-wide">Anti-Plot 开放世界</div>
+                                    <div class="text-[#d0d0e0]/65 text-xs mt-2">Interactive Prototype</div>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="text-[#F4F4F0] text-sm font-medium">Anti-Plot 开放世界</div>
+                                <div class="text-[#F4F4F0]/70 text-xs">交互原型 + 设计文档</div>
+                            </div>
+                        </a>
                         <!-- Hover overlay -->
                         <div class="absolute inset-0 bg-[#FF4500] opacity-0 hover:opacity-10 transition-opacity pointer-events-none"></div>
                     </div>
@@ -313,6 +326,7 @@
                             <button onclick="goToSlide(0)" class="carousel-dot w-2 h-2 rounded-full bg-[#FF4500] transition-colors" data-dot="0"></button>
                             <button onclick="goToSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="1"></button>
                             <button onclick="goToSlide(2)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="2"></button>
+                            <button onclick="goToSlide(3)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="3"></button>
                         </div>
                         <button onclick="nextSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">→</button>
                     </div>
@@ -328,6 +342,7 @@
                         <a href="works/level-design-factory34/index.html" class="link-accent text-sm hover:underline">34号制造厂 - 关卡设计文档</a>
                         <a href="works/arc-raiders-analysis/index.html" class="link-accent text-sm hover:underline">Arc Raiders 系统切片分析</a>
                         <a href="Level_Design_Agent构思.html" class="link-accent text-sm hover:underline">Level Design × AI Agent 架构方案</a>
+                        <a href="works/sandbox-director/showcase.html" class="link-accent text-sm hover:underline">Anti-Plot 开放世界 - 交互原型</a>
                     </div>
 
                     <!-- Hint -->
@@ -559,7 +574,7 @@
 
         // Portfolio Carousel
         let currentSlide = 0;
-        const totalSlides = 3;
+        const totalSlides = 4;
         let autoPlayInterval;
 
         function updateSlides() {

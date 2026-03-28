@@ -925,6 +925,319 @@
             background: var(--text-muted);
         }
 
+        /* ===== Global Architecture Diagram ===== */
+        .global-arch {
+            display: grid;
+            grid-template-columns: 220px 1fr 240px;
+            gap: 24px;
+            margin: 32px 0;
+            min-height: 700px;
+        }
+
+        .governance-panel,
+        .loops-panel {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 20px;
+        }
+
+        .pipeline-panel {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .governance-title,
+        .pipeline-title,
+        .loops-title {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        /* Governance Layers */
+        .governance-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .gov-layer {
+            border: 2px solid var(--border);
+            padding: 16px;
+            position: relative;
+            background: var(--bg-primary);
+        }
+
+        .gov-layer::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .gov-layer.layer-1::before { background: var(--accent); }
+        .gov-layer.layer-2::before { background: var(--text-secondary); }
+        .gov-layer.layer-3::before { background: var(--text-muted); }
+
+        .layer-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .layer-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .layer-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Pipeline Flow */
+        .pipeline-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .pipe-node {
+            width: 100%;
+            border: 2px solid var(--border);
+            padding: 16px;
+            text-align: center;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .pipe-node.input-node { border-color: var(--text-muted); }
+        .pipe-node.process-node { border-color: var(--accent); border-style: dashed; }
+        .pipe-node.ir-node {
+            border-color: var(--accent);
+            background: rgba(255, 69, 0, 0.05);
+            padding: 20px;
+        }
+        .pipe-node.orchestrator-node { border-color: var(--border); border-width: 3px; }
+        .pipe-node.outputs-node { border-color: var(--border); }
+        .pipe-node.qa-node {
+            border-color: var(--text-secondary);
+            border-style: dashed;
+        }
+        .pipe-node.final-node {
+            border-color: var(--accent);
+            background: rgba(255, 69, 0, 0.05);
+        }
+
+        .node-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .node-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .ir-dims {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin: 12px 0;
+        }
+
+        .ir-dims span {
+            font-size: 10px;
+            padding: 3px 8px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .ir-tag {
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-top: 1px solid var(--border-light);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .bible-inject {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .outputs-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .out-item {
+            font-size: 11px;
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .out-tag {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .final-formats {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .pipe-arrow {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* Three Loops */
+        .loop-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .loop-item {
+            border: 2px solid var(--border);
+            padding: 16px;
+        }
+
+        .loop-item.inner-loop { border-left: 4px solid var(--text-muted); }
+        .loop-item.middle-loop { border-left: 4px solid var(--text-secondary); }
+        .loop-item.outer-loop {
+            border-left: 4px solid var(--accent);
+            background: rgba(255, 69, 0, 0.03);
+        }
+
+        .loop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .loop-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .loop-cycle {
+            font-size: 10px;
+            padding: 2px 8px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .loop-mechanism {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .loop-flow {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .loop-highlight {
+            font-size: 10px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Summary Box */
+        .arch-summary {
+            margin-top: 24px;
+        }
+
+        .summary-box {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .summary-box p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .global-arch {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .governance-layers {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .gov-layer {
+                flex: 1;
+                min-width: 200px;
+            }
+            .loop-items {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .loop-item {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+
         /* ===== Smooth Scroll ===== */
         html {
             scroll-behavior: smooth;
@@ -945,6 +1258,7 @@
 
     <div class="nav-section">
         <div class="nav-section-title">总览</div>
+        <a href="#architecture-overview">全局架构图</a>
         <a href="#overview">核心判断与原则</a>
         <a href="#why-skills">为什么需要这么多 Skill</a>
         <a href="#phases">渐进式路径</a>
@@ -952,7 +1266,7 @@
 
     <div class="nav-section">
         <div class="nav-section-title">架构设计</div>
-        <a href="#ontology">关卡设计本体论</a>
+        <a href="#ontology">关卡设计的元素构成</a>
         <a href="#system-arch">系统总架构</a>
         <a href="#ir">中间表示 (IR)</a>
         <a href="#orchestrator">编排器设计</a>
@@ -982,6 +1296,12 @@
     </div>
 
     <div class="nav-section">
+        <div class="nav-section-title">知识飞轮</div>
+        <a href="#flywheel">两层 Bible 架构</a>
+        <a href="#bible-files">文件结构扩展</a>
+    </div>
+
+    <div class="nav-section">
         <div class="nav-section-title">展望与落地</div>
         <a href="#paradigm">范式转变</a>
         <a href="#risks">风险与边界</a>
@@ -997,7 +1317,7 @@
         <div class="crosshair"></div>
         <div class="hero-badge">[ARCHITECTURE PROPOSAL]</div>
         <h1>大世界关卡设计<br>AI Agent 架构方案</h1>
-        <p>从生产管线优化到范式变革——一套渐进式、可落地、可评估的 AI 辅助关卡设计系统方案。核心理念：文档是渲染层，结构化数据才是真正的资产。</p>
+        <p>希望从不写文档开始，设计一套渐进式、可落地、可评估的 AI 辅助关卡设计的系统方案。构建目标：通过agent辅助，构建一条高效的内容生产管线，同时在循环中让项目的知识资产随着时间增长而增长，完成从工具到壁垒的跨越。</p>
         <div class="hero-stats">
             <div class="hero-stat">
                 <div class="hero-stat-value">6</div>
@@ -1015,8 +1335,135 @@
                 <div class="hero-stat-value">4</div>
                 <div class="hero-stat-label">渐进阶段</div>
             </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">2</div>
+                <div class="hero-stat-label">层 Bible 飞轮</div>
+            </div>
         </div>
         <div style="margin-top: 32px; font-size: 24px; color: var(--text-muted); letter-spacing: 2px;">——洪祥健</div>
+    </section>
+
+    <!-- Global Architecture Overview -->
+    <section class="section" id="architecture-overview">
+        <div class="section-header">
+            <div class="section-label">[全局架构]</div>
+            <h2>从工具到壁垒</h2>
+            <p class="section-desc">这不是一个静态的生产工具，而是一个自我进化的系统——生产线越用越快，知识越积越厚。</p>
+        </div>
+
+        <div class="global-arch">
+            <!-- Left: Governance Layers -->
+            <div class="governance-panel">
+                <div class="governance-title">三层治理</div>
+                <div class="governance-layers">
+                    <div class="gov-layer layer-1">
+                        <div class="layer-label">Layer 1</div>
+                        <div class="layer-name">契约层：管理skill生产</div>
+                        <div class="layer-desc">IR Schema · Skill Registry<br>术语表 · 渲染规范</div>
+                    </div>
+                    <div class="gov-layer layer-2">
+                        <div class="layer-label">Layer 2</div>
+                        <div class="layer-name">开发上下文层</div>
+                        <div class="layer-desc">Dev Brief ~3-4K token<br>恒定大小，不随Skill增长</div>
+                    </div>
+                    <div class="gov-layer layer-3">
+                        <div class="layer-label">Layer 3</div>
+                        <div class="layer-name">运行上下文层</div>
+                        <div class="layer-desc">System Prompt + IR子集<br>最小信息集原则</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Pipeline Flow -->
+            <div class="pipeline-panel">
+                <div class="pipeline-title">一条管线</div>
+                <div class="pipeline-flow">
+                    <div class="pipe-node input-node">
+                        <div class="node-title">设计输入</div>
+                        <div class="node-sub">文本 / 图片 / 对话</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node process-node">
+                        <div class="node-title">InputProcessor</div>
+                        <div class="node-sub">预处理</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node ir-node">
+                        <div class="node-title">6维度 IR</div>
+                        <div class="ir-dims">
+                            <span>SPACE</span><span>FLOW</span><span>FEEL</span>
+                            <span>MECHANIC</span><span>ASSET</span><span>SYSTEM</span>
+                        </div>
+                        <div class="ir-tag">输入管理</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node orchestrator-node">
+                        <div class="node-title">Orchestrator</div>
+                        <div class="node-sub">编排器 + 上下文路由</div>
+                        <div class="bible-inject">← Project Bible 注入</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node outputs-node">
+                        <div class="outputs-row">
+                            <span class="out-item">气泡图</span>
+                            <span class="out-item">流程图</span>
+                            <span class="out-item">物件表</span>
+                            <span class="out-item">氛围图</span>
+                            <span class="out-item">分镜</span>
+                        </div>
+                        <div class="out-tag">Skill / Flow</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node qa-node">
+                        <div class="node-title">QA + 自动评分</div>
+                    </div>
+                    <div class="pipe-arrow">↓</div>
+                    <div class="pipe-node final-node">
+                        <div class="node-title">最终产物</div>
+                        <div class="final-formats">SVG · HTML · Excel · PNG</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Three Loops -->
+            <div class="loops-panel">
+                <div class="loops-title">三个闭环</div>
+                <div class="loop-items">
+                    <div class="loop-item inner-loop">
+                        <div class="loop-header">
+                            <span class="loop-name">内环</span>
+                            <span class="loop-cycle">秒级</span>
+                        </div>
+                        <div class="loop-mechanism">自动重试机制</div>
+                        <div class="loop-flow">Skill产物 → 评分&lt;0.6 → 自动重试（最多2次）</div>
+                    </div>
+                    <div class="loop-item middle-loop">
+                        <div class="loop-header">
+                            <span class="loop-name">中环</span>
+                            <span class="loop-cycle">周级</span>
+                        </div>
+                        <div class="loop-mechanism">Skill迭代</div>
+                        <div class="loop-flow">产物 → 人工评分 → 案例分析 → 修改Prompt → A/B验证</div>
+                    </div>
+                    <div class="loop-item outer-loop">
+                        <div class="loop-header">
+                            <span class="loop-name">外环</span>
+                            <span class="loop-cycle">月级</span>
+                        </div>
+                        <div class="loop-mechanism">知识飞轮</div>
+                        <div class="loop-flow">Level Bible → 模式提取 → Project Bible → 回流注入</div>
+                        <div class="loop-highlight">壁垒所在</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-summary">
+            <div class="summary-box">
+                <div class="summary-title">核心设计理念</div>
+                <p><strong>内环</strong>保证单次产出质量 · <strong>中环</strong>保证Skill持续进化 · <strong>外环</strong>让每一次设计都抬高系统起点</p>
+            </div>
+        </div>
     </section>
 
     <!-- Section 1: Core Judgment -->
@@ -1029,7 +1476,7 @@
 
         <div class="callout insight">
             <div class="callout-title">[CORE INSIGHT]</div>
-            <p>关卡设计管线的核心矛盾在于信息在人与人之间传递时的失真、流程编排的低效、以及品质标准的不统一，而非简单的"缺少智能"。</p>
+            <p>关卡设计管线的一大矛盾在于信息在人与人之间传递时的失真、流程编排的低效、品质标准的不统一以及知识随人流动导致壁垒积攒困难，而非简单的"缺少智能"。</p>
         </div>
 
         <div class="table-wrapper">
@@ -1078,7 +1525,7 @@
             <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin: 20px 0;">
                 <div style="border: 2px solid var(--border); padding: 16px;">
                     <div style="font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px;">[OLD MODE]</div>
-                    <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">策划 <strong>表达设计意图</strong>，由 LLM 生成结构化结果</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">策划 <strong>亲自撰写</strong>，标准化的、可读的设计文档，供他人消费</div>
                 </div>
                 <div style="font-size: 20px; color: var(--accent);">→</div>
                 <div style="border: 2px solid var(--accent); padding: 16px; background: rgba(255,69,0,0.03);">
@@ -1122,7 +1569,7 @@
     <section class="section" id="ontology">
         <div class="section-header">
             <div class="section-label">[PART 02]</div>
-            <h2>关卡设计本体论</h2>
+            <h2>关卡设计的元素构成</h2>
             <p class="section-desc">一个关卡/POI 由 6 个维度的信息构成。所有可视化产物都是从这 6 个维度的数据中"渲染"出来的。这是整个系统的组织框架。</p>
         </div>
 
@@ -1214,7 +1661,7 @@
         </div>
 
         <div class="arch-diagram">
-            <h4 style="text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:12px; letter-spacing:2px;">[DATA FLOW ARCHITECTURE]</h4>
+            <h4 style="text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:12px; letter-spacing:2px;">数据流架构</h4>
             <div class="arch-flow">
                 <div class="arch-node input">
                     用户输入<br>
@@ -1233,7 +1680,7 @@
                 <span class="arch-arrow">→</span>
                 <div class="arch-node process">
                     Orchestrator<br>
-                    <span class="arch-node-label">DAG 编排器</span>
+                    <span class="arch-node-label">单向工作流 编排器</span>
                 </div>
             </div>
             <div class="arch-flow" style="margin-top: 24px;">
@@ -1283,7 +1730,7 @@
 
         <div class="callout insight">
             <div class="callout-title">[KEY DESIGN DECISION]</div>
-            <p>所有输入（图片、对话、文档）都在 InputProcessor 阶段被转化为统一的结构化 IR。下游 Skill 永远不接触原始输入——图片变成文字描述，对话变成决策摘要。节省 token 的真正解法在于路由，而非压缩。</p>
+            <p>所有输入（图片、对话、文档）都在 InputProcessor 阶段被转化为统一的结构化 IR。下游 Skill 永远不接触原始输入——图片变成文字描述，对话变成决策摘要。通过上下文路由来节省token。</p>
         </div>
 
         <div class="code-header"><span>ir_schema_example.json</span></div>
@@ -1377,7 +1824,7 @@
         <div class="section-header">
             <div class="section-label">[PART 04]</div>
             <h2>完整产物清单</h2>
-            <p class="section-desc">按使用者组织，而非按格式。每个产物都是 IR 数据的一种"渲染视图"。</p>
+            <p class="section-desc">按使用者组织，每个产物都是 IR 数据的一种"渲染视图"。</p>
         </div>
 
         <h3>策划自用 / 策划间协作</h3>
@@ -1424,7 +1871,7 @@
                     <tr><td>13</td><td>大世界 POI 总览地图</td><td>多关卡 SPACE 聚合</td><td>HTML 交互地图</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p3">P3</span></td></tr>
                     <tr><td>14</td><td>进度仪表盘</td><td>执行日志</td><td>HTML Dashboard</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p2">P2</span></td></tr>
                     <tr><td>15</td><td>设计一致性报告</td><td>ALL (规则检查)</td><td>Markdown</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
-                    <tr><td>16</td><td>跨关卡同质化检测</td><td>多关卡对比</td><td>HTML 报告</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p3">P3</span></td></tr>
+                    <tr><td>16</td><td>跨关卡质量检测</td><td>多关卡对比</td><td>HTML 报告</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p3">P3</span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -1434,7 +1881,7 @@
             <div class="card">
                 <div class="card-icon">[热力]</div>
                 <h4>玩家动线热力图</h4>
-                <p>基于空间拓扑和流程推断玩家可能的移动密度，用于策划自检。</p>
+                <p>基于空间拓扑关系和玩法流程推断玩家可能的移动密度，用于策划自检。</p>
             </div>
             <div class="card">
                 <div class="card-icon">[视线]</div>
@@ -1444,7 +1891,7 @@
             <div class="card">
                 <div class="card-icon">[难度]</div>
                 <h4>难度曲线图</h4>
-                <p>基于机制密度和节奏推断的难度变化，供策划与制作人参考。</p>
+                <p>基于机制密度和节奏推断的难度变化，供策划与负责人参考。</p>
             </div>
             <div class="card">
                 <div class="card-icon">[测试]</div>
@@ -1493,7 +1940,7 @@
 
         <div class="callout warning">
             <div class="callout-title">[COUNTER-INTUITIVE PRINCIPLE]</div>
-            <p>上下文窗口不需要"看到全貌"，全局一致性依靠局部自治、契约约束和自动化校验来实现。<strong>全局一致性 = 局部自治 + 契约约束 + 自动化校验。</strong>这和微服务架构的思想一致——每个服务不需要知道整个系统，只需要遵守接口契约。</p>
+            <p>上下文窗口不需要"看到全貌"，全局一致性依靠局部自治、契约约束和自动化校验来实现。<strong>全局一致性 = 局部自治 + 契约约束 + 自动化校验。</strong>这和微服务架构的思想一致——每个服务不需要知道整个系统，只需要遵守接口契约，这里文档就是接口契约。</p>
         </div>
 
         <h3 id="context-layers">三层治理架构</h3>
@@ -1504,10 +1951,10 @@
                     <span class="layer-badge l1">LAYER 1</span>
                     <h4>Contract Layer（契约层）</h4>
                 </div>
-                <p>一切的基础。定义 IR Schema、Skill 注册表、渲染规范、全局约束。</p>
+                <p>记录整体架构的文档。定义 IR Schema、Skill 注册表、渲染规范、全局约束。</p>
                 <ul>
-                    <li>IR Schema（6维度，唯一真相源）</li>
-                    <li>Skill Registry（所有 Skill 的接口契约 — "电话簿"）</li>
+                    <li>IR Schema（6维度，映射关卡设计的六元素）</li>
+                    <li>Skill Registry（所有 Skill 的接口文档 ）</li>
                     <li>术语表、命名规范、渲染标准</li>
                     <li>存储为独立文件，纳入版本控制</li>
                     <li>使用者：开发者 + 自动化校验工具</li>
@@ -1523,7 +1970,7 @@
                     <li>自动生成的 Skill Dev Brief（~3-4K token，恒定大小）</li>
                     <li>包含：自己的输入/输出 Schema、上下游列表、项目约束、术语表</li>
                     <li>不包含：其他 Skill 的内部实现、IR 中不相关的维度</li>
-                    <li>使用者：开发 Skill 的你（或 Claude Code）</li>
+                    <li>使用者：skill 开发者（或 Claude Code）</li>
                 </ul>
             </div>
             <div class="layer">
@@ -1534,7 +1981,7 @@
                 <p>每个 Skill 执行时只注入最小必要上下文。</p>
                 <ul>
                     <li>System Prompt（固定，~1K token）</li>
-                    <li>IR 子集（按契约声明裁剪，~1-2K token）</li>
+                    <li>IR 子集（按文档声明的需求字段裁剪，~1-2K token）</li>
                     <li>上游产物（仅依赖项，~0.5-1K token）</li>
                     <li>示例（预算允许时，~1K token）</li>
                     <li>使用者：运行中的 LLM</li>
@@ -1589,14 +2036,14 @@
         <div class="section-header">
             <div class="section-label">[PART 06]</div>
             <h2>契约层详细设计</h2>
-            <p class="section-desc">契约层是整个系统的"宪法"——所有 Skill 的开发和运行都必须遵守。</p>
+            <p class="section-desc">契约层是整个系统的规范文档——所有 Skill 的开发和运行都必须遵守。</p>
         </div>
 
         <h3>文件结构</h3>
         <div class="code-block">
 <span class="comment">/contracts/</span>
 ├── ir_schema.json              <span class="comment"># 6维度 IR 的完整 JSON Schema</span>
-├── skill_registry.yaml         <span class="comment"># 所有 Skill 的注册表（"电话簿"）</span>
+├── skill_registry.yaml         <span class="comment"># 所有 Skill 的注册表</span>
 ├── glossary.yaml               <span class="comment"># 术语表</span>
 ├── render_standards.yaml       <span class="comment"># 渲染规范</span>
 ├── constraints.yaml            <span class="comment"># 全局约束</span>
@@ -1718,7 +2165,7 @@
             <div class="card">
                 <div class="card-icon">[开发]</div>
                 <h4>开发时校验</h4>
-                <p>改了任何契约文件后自动运行。检查：上下游引用合法性、关系对称性、IR 维度合法性、无循环依赖。</p>
+                <p>改了任何契约层的文件后自动运行。检查：上下游引用合法性、关系对称性、IR 维度合法性、无循环依赖。</p>
             </div>
             <div class="card">
                 <div class="card-icon">[变更]</div>
@@ -1826,7 +2273,7 @@
             <div class="card">
                 <div class="card-icon">[对话]</div>
                 <h4>转变 1：文档驱动 → 对话驱动</h4>
-                <p>Agent 成为设计意图的"活的载体"。美术无需翻文档，直接向 Agent 提问："这个大厅的氛围应该是什么感觉？" Agent 带着溯源地回答。</p>
+                <p>Agent 成为设计意图的载体。美术不用翻文档，直接向 Agent 提问："这个大厅的氛围应该是什么感觉？" Agent 带着溯源地回答并生成提示词再通过API生成图片。</p>
             </div>
             <div class="card">
                 <div class="card-icon">[循环]</div>
@@ -1836,7 +2283,7 @@
             <div class="card">
                 <div class="card-icon">[协作]</div>
                 <h4>转变 3：模块化分工 → 语义化协作</h4>
-                <p>CrossModuleCoordinator Agent 监控各模块状态，自动识别跨模块一致性问题。如"策划设计了关灯潜行，但AI系统未实现光照影响警觉度"。</p>
+                <p>跨模块协作 Agent 监控各模块状态，自动识别跨模块一致性问题。如"策划设计了关灯潜行，但AI系统未实现光照影响警觉度"。</p>
             </div>
         </div>
 
@@ -1844,15 +2291,162 @@
             <div class="callout-title">[FOUNDATION FOR THE FUTURE]</div>
             <p><strong>结构化 IR Schema</strong> → Agent 的"思考格式"<br>
             <strong>评分数据</strong> → Agent 的"奖励信号"<br>
-            <strong>执行日志</strong> → Agent 的"经验库"<br>
-            </p>
+            <strong>执行日志</strong> → Agent 的"经验库"<br><br>
+            这三者构成了知识飞轮的数据基础——详见下一节。</p>
         </div>
     </section>
 
-    <!-- Section 9: Risks -->
-    <section class="section" id="risks">
+    <!-- Section 9: Data Flywheel -->
+    <section class="section" id="flywheel">
         <div class="section-header">
             <div class="section-label">[PART 09]</div>
+            <h2>知识飞轮：从生产工具到项目壁垒</h2>
+            <p class="section-desc">Phase 1-3 让 Agent 成为高效的生产工具。但真正的长期价值在于：每一次设计行为都让系统变得更聪明。数据飞轮是项目不可复制的护城河。</p>
+        </div>
+
+        <div class="callout insight">
+            <div class="callout-title">[核心观点]</div>
+            <p>飞轮的"智能"不在于运行时有一个聪明的 Agent 在推理，而在于<strong>离线积累的结构化知识让每一个 Skill 都能拿到更好的上下文</strong>。和第一原则一致——能用 Skill 解决的，不上 Agent。知识积累本身是独立流程，由人工 + LLM 协作完成后，以静态知识的形式交付给 Tool 层。</p>
+        </div>
+
+        <h3>两层 Bible 架构</h3>
+
+        <div class="comparison">
+            <div class="comparison-side good" style="border-color: var(--border);">
+                <h4>[LEVEL BIBLE · 关卡级]</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; text-align:left;">
+                    单个关卡/POI 的完整知识档案<br>
+                    → 完整 IR + 版本历史（每次迭代的 diff）<br>
+                    → 设计意图溯源（"为什么这么设计"）<br>
+                    → 评分日志（自动 + 人工）<br>
+                    → 迭代记录（改了什么、为什么改、效果如何）
+                </p>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">写入者：每次关卡设计/迭代时自动积累</p>
+            </div>
+            <div class="comparison-side good" style="border-color: var(--accent);">
+                <h4>[PROJECT BIBLE · 项目级]</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; text-align:left;">
+                    跨所有关卡的全局知识资产<br>
+                    → 已验证的设计模式库（高分案例的共性提炼）<br>
+                    → 反模式库（持续低分的做法）<br>
+                    → 校准后的品质模型（自动评分权重进化）<br>
+                    → 进化版术语表 + 跨模块接口约定
+                </p>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">写入者：从多个 Level Bible 中离线提炼，人工审核后入库</p>
+            </div>
+        </div>
+
+        <h3>飞轮的五个转动环节</h3>
+
+        <div class="timeline">
+            <div class="timeline-item active">
+                <h4>① 结构化沉淀 <span class="timeline-tag">每次设计时</span></h4>
+                <p>每个关卡设计完成后，不只存最终 IR，而是存完整的"设计决策链"——初始意图、中间迭代、每次迭代的评分与修改原因。全部挂在 Level Bible 下，以 IR Schema 为骨架。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>② 模式提取</h4>
+                <p>积累 5-10 个 Level Bible 后，离线批处理（人工 + LLM 协作）提取共性："所有评分 4+ 的潜行关卡，SPACE 拓扑有什么规律？FEEL 的情绪曲线有什么共性？" 提炼出的模式经人工审核后写入 Project Bible。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>③ 品质模型校准</h4>
+                <p>随着人工评分数据积累，统计分析"人觉得好的产物和哪些自动指标相关性最高"，逐步校准自动评分模型的权重。品质标准从静态经验变为数据驱动。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>④ 上下文注入</h4>
+                <p>设计第 N+1 个关卡时，编排器从 Project Bible 中检索相关模式，裁剪为 ~1-2K token 的摘要，注入到对应 Skill 的运行上下文中。Skill 的上下文大小仍然恒定——检索和裁剪在 Tool 层完成。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>⑤ 闭环加速</h4>
+                <p>更多关卡被设计 → 更丰富的 Bible → 更精准的模式与品质模型 → 新关卡设计更快更好 → 又贡献新的 Bible 数据。飞轮每转一圈，Agent的设计系统知识都会变得更强大。</p>
+            </div>
+        </div>
+
+        <h3>Bible 与现有架构的接合</h3>
+
+        <div class="callout warning">
+            <div class="callout-title">[ARCHITECTURE PRINCIPLE]</div>
+            <p>Bible 操作不引入 子Agent。原因：Agent 间的信息传递和人与人之间一样面临失真问题——引入 子agent 反而重新制造了我们试图消灭的问题。<strong>检索是 Tool 的事，推理是 Skill 的事，积累是离线流程的事。</strong></p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>操作</th><th>归属层级</th><th>时机</th><th>需要 LLM？</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>IR 版本 diff</td><td><span class="tag tool">TOOL</span></td><td>每次 IR 更新</td><td>否，纯算法</td></tr>
+                    <tr><td>相似关卡检索</td><td><span class="tag tool">TOOL</span></td><td>设计新关卡时</td><td>否，embedding / 字段匹配</td></tr>
+                    <tr><td>Bible 片段注入上下文</td><td><span class="tag flow">编排器</span></td><td>Skill 执行时</td><td>否，路由逻辑</td></tr>
+                    <tr><td>QA 对照模式检查</td><td><span class="tag skill">SKILL</span> 增强</td><td>产物评分时</td><td>是，现有 QA Skill 内</td></tr>
+                    <tr><td>跨关卡质量检测</td><td><span class="tag skill">SKILL</span></td><td>新关卡设计时</td><td>是，检索摘要 + 单次推理</td></tr>
+                    <tr><td>模式提取</td><td>离线批处理</td><td>周度 / 积累 N 个关卡后</td><td>是，人工审核后入库</td></tr>
+                    <tr><td>品质模型校准</td><td>离线统计</td><td>积累足够评分后</td><td>否，统计回归</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="bible-files">文件结构扩展</h3>
+
+        <div class="code-block">
+<span class="comment">/contracts/</span>
+├── ir_schema.json
+├── skill_registry.yaml
+├── glossary.yaml                      <span class="comment"># 随项目使用逐步丰富</span>
+├── constraints.yaml                   <span class="comment"># 从失败案例中提取新约束</span>
+│
+├── <span class="field">project_bible/</span>                    <span class="comment"># 项目级知识资产</span>
+│   ├── design_principles.yaml         <span class="comment"># 项目设计原则</span>
+│   ├── pattern_library/               <span class="comment"># 已验证的设计模式</span>
+│   │   ├── stealth_corridor.yaml
+│   │   ├── chase_sequence.yaml
+│   │   └── ...
+│   ├── anti_patterns.yaml             <span class="comment"># 反模式（持续低分的做法）</span>
+│   ├── quality_calibration.json       <span class="comment"># 校准后的品质模型权重</span>
+│   └── cross_module_lessons.yaml      <span class="comment"># 跨模块协作实录</span>
+│
+└── <span class="field">level_bibles/</span>                     <span class="comment"># 关卡级知识档案</span>
+    ├── stealth_museum_01/
+    │   ├── ir_current.json            <span class="comment"># 当前版本 IR</span>
+    │   ├── ir_history.json            <span class="comment"># 版本历史 + diff + rationale</span>
+    │   ├── design_rationale.md        <span class="comment"># 设计意图溯源</span>
+    │   └── scoring_log.json           <span class="comment"># 评分日志</span>
+    └── chase_tower_02/
+        └── ...
+        </div>
+
+        <h3>飞轮效应的量化预期</h3>
+
+        <div style="background:var(--bg-card); border:2px solid var(--border); padding:24px; margin:20px 0;">
+            <h4 style="color:var(--text-muted); font-size:12px; margin-bottom:16px; letter-spacing:1px;">[FLYWHEEL ACCELERATION CURVE]</h4>
+            <div class="token-bar">
+                <span class="token-bar-label">关卡 1-5</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:90%">Agent 白板状态，人工修改量大</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">关卡 5-15</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:55%">3-5 个可用模式，Agent 开始主动建议</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">关卡 15-30</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:30%">品质模型校准完成，自动拦截低质量产出</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">关卡 30+</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:20%">飞轮随项目成长，形成壁垒</div></div>
+            </div>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:16px; text-align:center; letter-spacing:1px;">条形图表示人工介入程度——越短代表系统自主能力越强</p>
+        </div>
+
+        <div class="callout success">
+            <div class="callout-title">[THE MOAT]</div>
+            <p>这套飞轮形成的壁垒是<strong>不可复制的</strong>：它依赖的是项目在真实设计实践中积累的结构化经验——哪些模式在我们的游戏里有效、品质标准如何校准、跨模块的约定是什么。即使换人、换团队，这些知识不会流失。项目开发得越久，飞轮转得越快，后来者的追赶成本越高。</p>
+        </div>
+    </section>
+
+    <!-- Section 10: Risks -->
+    <section class="section" id="risks">
+        <div class="section-header">
+            <div class="section-label">[PART 10]</div>
             <h2>风险与边界</h2>
         </div>
 
@@ -1892,15 +2486,27 @@
                         <td>恶意或无意输入导致异常</td>
                         <td>输入校验 + 输出审查 + 权限隔离</td>
                     </tr>
+                    <tr>
+                        <td><span class="risk-indicator high"></span>高</td>
+                        <td>Bible Pollution</td>
+                        <td>过时的模式未被清理，误导后续设计</td>
+                        <td>模式条目带置信度 + 引用计数，定期 review 淘汰低引用/低置信条目</td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-indicator medium"></span>中</td>
+                        <td>Pattern Overfitting</td>
+                        <td>过度依赖历史模式导致设计同质化</td>
+                        <td>模式注入为"建议"而非"约束"，标注"此为参考，非强制"；鼓励标记"刻意偏离"</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </section>
 
-    <!-- Section 10: Roadmap -->
+    <!-- Section 11: Roadmap -->
     <section class="section" id="roadmap">
         <div class="section-header">
-            <div class="section-label">[PART 10]</div>
+            <div class="section-label">[PART 11]</div>
             <h2>实施路线图</h2>
             <p class="section-desc">渐进式落地，每一步都有可验证的产出。</p>
         </div>
