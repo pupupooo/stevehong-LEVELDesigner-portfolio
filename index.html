@@ -289,6 +289,19 @@
                                 <div class="text-[#F4F4F0]/70 text-xs">海外局内外循环构建研究</div>
                             </div>
                         </a>
+                        <!-- Slide 3: Level Design Agent 架构 -->
+                        <a href="Level_Design_Agent构思.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="2">
+                            <div class="w-full h-full min-h-full bg-gradient-to-br from-[#111111] via-[#1f1f1f] to-[#FF4500]/35 flex items-center justify-center">
+                                <div class="text-center px-6">
+                                    <div class="text-[#F4F4F0] text-base font-semibold tracking-wide">Level Design × AI Agent</div>
+                                    <div class="text-[#F4F4F0]/65 text-xs mt-2">Architecture Proposal</div>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="text-[#F4F4F0] text-sm font-medium">大世界关卡设计 AI Agent 架构</div>
+                                <div class="text-[#F4F4F0]/70 text-xs">设计维度、产物与上下文治理</div>
+                            </div>
+                        </a>
                         <!-- Hover overlay -->
                         <div class="absolute inset-0 bg-[#FF4500] opacity-0 hover:opacity-10 transition-opacity pointer-events-none"></div>
                     </div>
@@ -299,6 +312,7 @@
                         <div class="flex gap-2">
                             <button onclick="goToSlide(0)" class="carousel-dot w-2 h-2 rounded-full bg-[#FF4500] transition-colors" data-dot="0"></button>
                             <button onclick="goToSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="1"></button>
+                            <button onclick="goToSlide(2)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="2"></button>
                         </div>
                         <button onclick="nextSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">→</button>
                     </div>
@@ -313,6 +327,7 @@
                     <div class="flex flex-col gap-2 text-center">
                         <a href="works/level-design-factory34/index.html" class="link-accent text-sm hover:underline">34号制造厂 - 关卡设计文档</a>
                         <a href="works/arc-raiders-analysis/index.html" class="link-accent text-sm hover:underline">Arc Raiders 系统切片分析</a>
+                        <a href="Level_Design_Agent构思.html" class="link-accent text-sm hover:underline">Level Design × AI Agent 架构方案</a>
                     </div>
 
                     <!-- Hint -->
@@ -544,7 +559,7 @@
 
         // Portfolio Carousel
         let currentSlide = 0;
-        const totalSlides = 2;
+        const totalSlides = 3;
         let autoPlayInterval;
 
         function updateSlides() {

@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Design × AI Agent - Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F4F4F0;
+            --bg-secondary: #E8E8E4;
+            --bg-card: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --accent: #FF4500;
+            --border: #111111;
+            --border-light: #CCCCCC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== Crosshair Decoration ===== */
+        .crosshair {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: var(--accent);
+        }
+
+        .crosshair::before {
+            width: 20px;
+            height: 1px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        .crosshair::after {
+            width: 1px;
+            height: 20px;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+
+        /* ===== Section Labels ===== */
+        .section-label {
+            color: var(--accent);
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* ===== Dividers ===== */
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            width: 100%;
+        }
+
+        .divider-light {
+            height: 1px;
+            background-color: var(--border-light);
+            width: 100%;
+        }
+
+        /* ===== Navigation ===== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 2px solid var(--border);
+            padding: 24px 0;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 16px;
+        }
+
+        .nav-header h2 {
+            font-size: 14px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .nav-header p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .nav-section {
+            padding: 8px 20px;
+        }
+
+        .nav-section-title {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .nav a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 2px;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .nav a:hover {
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+
+        .nav a.active {
+            color: var(--accent);
+            border-left-color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* ===== Main Content ===== */
+        .main {
+            margin-left: 280px;
+            padding: 0;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            padding: 60px 48px 48px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .hero .crosshair {
+            margin-bottom: 24px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+        }
+
+        .hero-stat {
+            text-align: left;
+        }
+
+        .hero-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .hero-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== Section ===== */
+        .section {
+            padding: 48px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        .section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 36px 0 16px;
+            color: var(--text-primary);
+            padding-left: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Cards ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            width: auto;
+            height: auto;
+            display: inline-block;
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: var(--accent);
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+        .card h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ===== Principle Cards ===== */
+        .principle-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .principle-card .principle-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .principle-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .principle-card h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .principle-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-left: 40px;
+            line-height: 1.6;
+        }
+
+        /* ===== Architecture Diagram ===== */
+        .arch-diagram {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 32px;
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .arch-node {
+            padding: 12px 20px;
+            border: 2px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+            background: var(--bg-primary);
+        }
+
+        .arch-node.input { border-color: var(--text-muted); color: var(--text-secondary); }
+        .arch-node.process { border-color: var(--accent); color: var(--accent); }
+        .arch-node.skill { border-color: var(--border); color: var(--text-primary); background: var(--bg-card); }
+        .arch-node.output { border-color: var(--text-secondary); color: var(--text-secondary); }
+        .arch-node.agent { border-color: var(--accent); color: var(--accent); background: rgba(255, 69, 0, 0.05); }
+
+        .arch-arrow {
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+
+        .arch-node-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ===== Tables ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 2px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: var(--bg-secondary);
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 69, 0, 0.03);
+        }
+
+        /* ===== Code Blocks ===== */
+        .code-block {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 20px 24px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .keyword { color: var(--accent); }
+        .code-block .string { color: var(--text-secondary); }
+        .code-block .field { color: var(--text-primary); font-weight: 600; }
+        .code-block .value { color: var(--accent); }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-bottom: none;
+            margin: 16px 0 0;
+        }
+
+        .code-header span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .code-header + .code-block {
+            margin-top: 0;
+            border-top: none;
+        }
+
+        /* ===== Tags ===== */
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border: 1px solid var(--border);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .tag.skill { border-color: var(--border); color: var(--text-secondary); }
+        .tag.flow { border-color: var(--accent); color: var(--accent); }
+        .tag.agent { border-color: var(--accent); color: var(--accent); background: rgba(255, 69, 0, 0.05); }
+        .tag.tool { border-color: var(--text-muted); color: var(--text-muted); }
+        .tag.p0 { border-color: var(--accent); color: var(--accent); }
+        .tag.p1 { border-color: var(--text-secondary); color: var(--text-secondary); }
+        .tag.p2 { border-color: var(--text-muted); color: var(--text-muted); }
+        .tag.p3 { border-color: var(--border-light); color: var(--text-muted); }
+
+        /* ===== Callout ===== */
+        .callout {
+            padding: 20px 24px;
+            border: 2px solid var(--border);
+            margin: 20px 0;
+            font-size: 14px;
+            background: var(--bg-card);
+        }
+
+        .callout.insight {
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout.warning {
+            border-left: 4px solid #FF8C00;
+        }
+
+        .callout.danger {
+            border-left: 4px solid #CC0000;
+        }
+
+        .callout.success {
+            border-left: 4px solid #228B22;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .callout.insight .callout-title { color: var(--accent); }
+        .callout.warning .callout-title { color: #FF8C00; }
+        .callout.danger .callout-title { color: #CC0000; }
+        .callout.success .callout-title { color: #228B22; }
+
+        .callout p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ===== Ontology Diagram ===== */
+        .ontology-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .ontology-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .ontology-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .ontology-card h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .ontology-card .en {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .ontology-card ul {
+            list-style: none;
+            text-align: left;
+            padding: 0;
+        }
+
+        .ontology-card li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 3px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .ontology-card li::before {
+            content: '>';
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+            font-size: 10px;
+        }
+
+        .ontology-card.space { border-top: 3px solid var(--border); }
+        .ontology-card.flow { border-top: 3px solid var(--border); }
+        .ontology-card.feel { border-top: 3px solid var(--accent); }
+        .ontology-card.mechanic { border-top: 3px solid var(--border); }
+        .ontology-card.asset { border-top: 3px solid var(--border); }
+        .ontology-card.system { border-top: 3px solid var(--border); }
+
+        .ontology-formula {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .ontology-formula .formula-row {
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .ontology-formula .formula-label {
+            color: var(--text-muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .ontology-formula .formula-content {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .ontology-formula .times {
+            color: var(--accent);
+            margin: 0 6px;
+        }
+
+        .ontology-formula .equals {
+            color: var(--accent);
+            margin: 0 8px;
+        }
+
+        /* ===== Phase Timeline ===== */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+            margin: 24px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+            padding: 20px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 24px;
+            width: 10px;
+            height: 10px;
+            background: var(--border-light);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .timeline-item.active::before {
+            background: var(--accent);
+        }
+
+        .timeline-item h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .timeline-item p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .timeline-item .timeline-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border: 1px solid var(--accent);
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 6px;
+            color: var(--accent);
+        }
+
+        /* ===== Layer Diagram ===== */
+        .layer-stack {
+            margin: 24px 0;
+        }
+
+        .layer {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 24px;
+            margin-bottom: -2px;
+            position: relative;
+        }
+
+        .layer:first-child {
+            border-bottom: none;
+        }
+
+        .layer:last-child {
+            border-top: none;
+        }
+
+        .layer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .layer-badge {
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .layer-badge.l1 { border-color: var(--accent); color: var(--accent); }
+        .layer-badge.l2 { border-color: var(--text-secondary); color: var(--text-secondary); }
+        .layer-badge.l3 { border-color: var(--text-muted); color: var(--text-muted); }
+
+        .layer h4 {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .layer p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .layer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .layer li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 3px 0 3px 20px;
+            position: relative;
+        }
+
+        .layer li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 10px;
+        }
+
+        /* ===== Comparison ===== */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .comparison-side {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            padding: 24px;
+        }
+
+        .comparison-side.bad {
+            border-left: 4px solid #CC0000;
+        }
+
+        .comparison-side.good {
+            border-left: 4px solid #228B22;
+        }
+
+        .comparison-side h4 {
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .comparison-side.bad h4 { color: #CC0000; }
+        .comparison-side.good h4 { color: #228B22; }
+
+        .comparison-side p, .comparison-side li {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Risk Table ===== */
+        .risk-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 6px;
+        }
+
+        .risk-indicator.high { background: var(--accent); }
+        .risk-indicator.medium { background: var(--text-secondary); }
+        .risk-indicator.low { background: var(--text-muted); }
+
+        /* ===== Token Diagram ===== */
+        .token-bar {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            gap: 12px;
+        }
+        .token-bar-label {
+            width: 140px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .token-bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            position: relative;
+        }
+        .token-bar-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            min-width: 40px;
+        }
+        .token-bar-fill.orange { background: var(--accent); }
+        .token-bar-fill.green { background: #228B22; }
+
+        /* ===== Mobile ===== */
+        .nav-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 200;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+            .nav {
+                transform: translateX(-100%);
+            }
+            .nav.open {
+                transform: translateX(0);
+            }
+            .nav-toggle {
+                display: flex;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .hero {
+                padding: 60px 24px 40px;
+            }
+            .section {
+                padding: 40px 24px;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+            .ontology-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ===== Smooth Scroll ===== */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav Toggle (Mobile) -->
+<button class="nav-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+    <div class="nav-header">
+        <h2>Level Design × AI</h2>
+        <p>架构设计方案 v1.0</p>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">总览</div>
+        <a href="#overview">核心判断与原则</a>
+        <a href="#why-skills">为什么需要这么多 Skill</a>
+        <a href="#phases">渐进式路径</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">架构设计</div>
+        <a href="#ontology">关卡设计本体论</a>
+        <a href="#system-arch">系统总架构</a>
+        <a href="#ir">中间表示 (IR)</a>
+        <a href="#orchestrator">编排器设计</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">产物清单</div>
+        <a href="#artifacts">完整产物清单</a>
+        <a href="#artifact-detail">P0 产物详设</a>
+        <a href="#image-gen">图像生成类产物</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">上下文治理</div>
+        <a href="#context-problem">问题分析</a>
+        <a href="#context-layers">三层治理体系</a>
+        <a href="#contracts">契约层设计</a>
+        <a href="#dev-context">开发上下文层</a>
+        <a href="#runtime-context">运行上下文层</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">迭代与评估</div>
+        <a href="#scoring">打分机制</a>
+        <a href="#dev-log">开发日志</a>
+        <a href="#iteration">迭代闭环</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">展望与落地</div>
+        <a href="#paradigm">范式转变</a>
+        <a href="#risks">风险与边界</a>
+        <a href="#roadmap">实施路线图</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+        <div class="crosshair"></div>
+        <div class="hero-badge">[ARCHITECTURE PROPOSAL]</div>
+        <h1>大世界关卡设计<br>AI Agent 架构方案</h1>
+        <p>从生产管线优化到范式变革——一套渐进式、可落地、可评估的 AI 辅助关卡设计系统方案。核心理念：文档是渲染层，结构化数据才是真正的资产。</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">6</div>
+                <div class="hero-stat-label">设计维度</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">16+</div>
+                <div class="hero-stat-label">标准化产物</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">3</div>
+                <div class="hero-stat-label">上下文治理层</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">4</div>
+                <div class="hero-stat-label">渐进阶段</div>
+            </div>
+        </div>
+        <div style="margin-top: 32px; font-size: 24px; color: var(--text-muted); letter-spacing: 2px;">——洪祥健</div>
+    </section>
+
+    <!-- Section 1: Core Judgment -->
+    <section class="section" id="overview">
+        <div class="section-header">
+            <div class="section-label">[PART 01]</div>
+            <h2>核心判断与原则</h2>
+            <p class="section-desc">Agent 并非万能。能用简单 Flow 解决的问题，不优先上 Agent；能用单 Agent 解决的问题，不轻易拆成多 Agent。</p>
+        </div>
+
+        <div class="callout insight">
+            <div class="callout-title">[CORE INSIGHT]</div>
+            <p>关卡设计管线的核心矛盾在于信息在人与人之间传递时的失真、流程编排的低效、以及品质标准的不统一，而非简单的"缺少智能"。</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>真实痛点</th>
+                        <th>本质</th>
+                        <th>适合的方案</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>信息在人与人之间传递时失真</td>
+                        <td>格式化 + 结构化问题</td>
+                        <td><span class="tag skill">SKILL</span> <span class="tag tool">TOOL</span></td>
+                    </tr>
+                    <tr>
+                        <td>白盒→美术→程序的交接成本高</td>
+                        <td>流程编排问题</td>
+                        <td><span class="tag flow">FLOW</span> + 局部 <span class="tag agent">AGENT</span></td>
+                    </tr>
+                    <tr>
+                        <td>大世界模块多，依赖关系复杂</td>
+                        <td>任务拆解与追踪问题</td>
+                        <td><span class="tag flow">FLOW</span> + PLANNER <span class="tag agent">AGENT</span></td>
+                    </tr>
+                    <tr>
+                        <td>设计意图模糊，迭代时上下文丢失</td>
+                        <td>知识管理 + 语义理解问题</td>
+                        <td><span class="tag agent">AGENT</span> + MEMORY</td>
+                    </tr>
+                    <tr>
+                        <td>品质标准不统一，review 靠经验</td>
+                        <td>评估标准化问题</td>
+                        <td><span class="tag skill">SKILL</span> + <span class="tag agent">AGENT</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 id="why-skills">为什么需要这么多 Skill？</h3>
+
+        <div class="callout insight">
+            <div class="callout-title">[PARADIGM SHIFT]</div>
+            <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin: 20px 0;">
+                <div style="border: 2px solid var(--border); padding: 16px;">
+                    <div style="font-size: 10px; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px;">[OLD MODE]</div>
+                    <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">策划 <strong>表达设计意图</strong>，由 LLM 生成结构化结果</div>
+                </div>
+                <div style="font-size: 20px; color: var(--accent);">→</div>
+                <div style="border: 2px solid var(--accent); padding: 16px; background: rgba(255,69,0,0.03);">
+                    <div style="font-size: 10px; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px;">[NEW MODE]</div>
+                    <div style="font-size: 13px; color: var(--text-primary); line-height: 1.6;">策划 <strong>表达设计意图</strong>，由 LLM 生成结构化结果</div>
+                </div>
+            </div>
+            <div style="border: 2px solid var(--border); padding: 16px; margin-top: 16px;">
+                <div style="font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; letter-spacing: 1px;">[KEY INSIGHTS]</div>
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                    <div>→ LLM 比人更擅长将结构化数据渲染成标准化产物，策划只需专注<strong>表达"想要什么"</strong></div>
+                    <div>→ 每一个 Skill 都是一个<strong>人从 loop 中退出</strong>的机会</div>
+                    <div>→ Skill 越多，Agent 的能力边界越大，最终目标是实现意图直达产物</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 id="phases">渐进式路径</h3>
+
+        <div class="timeline">
+            <div class="timeline-item active">
+                <h4>Phase 1: Skill 层 <span class="timeline-tag">当前阶段</span></h4>
+                <p>把确定性的事情先自动化——标准化文档生成、格式转换、数据提取。不需要 Agent，不需要决策能力。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Phase 2: Flow 层</h4>
+                <p>把管线流程编排起来——任务拆解、依赖管理、自动调度。用 DAG 编排器串联多个 Skill。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Phase 3: Agent 层</h4>
+                <p>在关键决策节点引入智能判断——设计意图理解、跨模块协调、品质审查。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Phase 4: 范式探索</h4>
+                <p>重新思考"关卡策划"这个角色的工作方式——从文档驱动到对话驱动，从线性生产到生成-评估循环。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Ontology -->
+    <section class="section" id="ontology">
+        <div class="section-header">
+            <div class="section-label">[PART 02]</div>
+            <h2>关卡设计本体论</h2>
+            <p class="section-desc">一个关卡/POI 由 6 个维度的信息构成。所有可视化产物都是从这 6 个维度的数据中"渲染"出来的。这是整个系统的组织框架。</p>
+        </div>
+
+        <div class="ontology-grid">
+            <div class="ontology-card space">
+                <h4>SPACE</h4>
+                <div class="en">空间</div>
+                <ul>
+                    <li>拓扑结构</li>
+                    <li>区域定义</li>
+                    <li>尺度比例</li>
+                    <li>视线关系</li>
+                </ul>
+            </div>
+            <div class="ontology-card flow">
+                <h4>FLOW</h4>
+                <div class="en">流程</div>
+                <ul>
+                    <li>玩家动线</li>
+                    <li>分支逻辑</li>
+                    <li>触发条件</li>
+                    <li>失败路径</li>
+                </ul>
+            </div>
+            <div class="ontology-card feel">
+                <h4>FEEL</h4>
+                <div class="en">体验</div>
+                <ul>
+                    <li>情绪曲线</li>
+                    <li>氛围定义</li>
+                    <li>视觉参考</li>
+                    <li>音频意图</li>
+                </ul>
+            </div>
+            <div class="ontology-card mechanic">
+                <h4>MECHANIC</h4>
+                <div class="en">机制</div>
+                <ul>
+                    <li>玩法规则</li>
+                    <li>交互逻辑</li>
+                    <li>AI行为</li>
+                    <li>数值参数</li>
+                </ul>
+            </div>
+            <div class="ontology-card asset">
+                <h4>ASSET</h4>
+                <div class="en">资产</div>
+                <ul>
+                    <li>美术资产</li>
+                    <li>物件清单</li>
+                    <li>特效需求</li>
+                    <li>动画需求</li>
+                </ul>
+            </div>
+            <div class="ontology-card system">
+                <h4>SYSTEM</h4>
+                <div class="en">系统</div>
+                <ul>
+                    <li>依赖系统</li>
+                    <li>接口需求</li>
+                    <li>数据结构</li>
+                    <li>技术约束</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="ontology-formula">
+            <div class="formula-row">
+                <span class="formula-label">策划核心关注</span><br>
+                <span class="formula-content">SPACE <span class="times">×</span> FLOW <span class="times">×</span> FEEL <span class="equals">=</span> 玩家体验</span>
+            </div>
+            <div class="formula-row">
+                <span class="formula-label">程序关注</span><br>
+                <span class="formula-content">MECHANIC <span class="times">×</span> SYSTEM <span class="equals">=</span> 实现层</span>
+            </div>
+            <div class="formula-row">
+                <span class="formula-label">美术关注</span><br>
+                <span class="formula-content">SPACE <span class="times">×</span> FEEL <span class="times">×</span> ASSET <span class="equals">=</span> 表现层</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: System Architecture -->
+    <section class="section" id="system-arch">
+        <div class="section-header">
+            <div class="section-label">[PART 03]</div>
+            <h2>系统总架构</h2>
+            <p class="section-desc">从用户输入到最终产物的完整数据流。核心理念：图片→结构化文字（一次性 Vision token），长对话→决策摘要（只保留结论）。</p>
+        </div>
+
+        <div class="arch-diagram">
+            <h4 style="text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:12px; letter-spacing:2px;">[DATA FLOW ARCHITECTURE]</h4>
+            <div class="arch-flow">
+                <div class="arch-node input">
+                    用户输入<br>
+                    <span class="arch-node-label">文本/图片/对话记录</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node process">
+                    InputProcessor<br>
+                    <span class="arch-node-label">预处理 SKILL</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node process">
+                    6维度 IR<br>
+                    <span class="arch-node-label">结构化中间表示</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node process">
+                    Orchestrator<br>
+                    <span class="arch-node-label">DAG 编排器</span>
+                </div>
+            </div>
+            <div class="arch-flow" style="margin-top: 24px;">
+                <div class="arch-node skill">
+                    气泡图<br>
+                    <span class="arch-node-label">SKILL</span>
+                </div>
+                <div class="arch-node skill">
+                    流程图<br>
+                    <span class="arch-node-label">SKILL</span>
+                </div>
+                <div class="arch-node skill">
+                    物件表<br>
+                    <span class="arch-node-label">SKILL</span>
+                </div>
+                <div class="arch-node agent">
+                    氛围图<br>
+                    <span class="arch-node-label">FLOW + API</span>
+                </div>
+                <div class="arch-node agent">
+                    分镜<br>
+                    <span class="arch-node-label">FLOW + API</span>
+                </div>
+            </div>
+            <div class="arch-flow" style="margin-top: 24px;">
+                <span class="arch-arrow">↓</span>
+            </div>
+            <div class="arch-flow">
+                <div class="arch-node skill">
+                    QA + 评分<br>
+                    <span class="arch-node-label">自动质量检查</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node output">
+                    最终产物<br>
+                    <span class="arch-node-label">SVG / HTML / Excel / PNG</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node output" style="border-color: var(--accent);">
+                    DevLogger<br>
+                    <span class="arch-node-label">过程日志</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 id="ir">中间表示 (IR) 设计</h3>
+
+        <div class="callout insight">
+            <div class="callout-title">[KEY DESIGN DECISION]</div>
+            <p>所有输入（图片、对话、文档）都在 InputProcessor 阶段被转化为统一的结构化 IR。下游 Skill 永远不接触原始输入——图片变成文字描述，对话变成决策摘要。节省 token 的真正解法在于路由，而非压缩。</p>
+        </div>
+
+        <div class="code-header"><span>ir_schema_example.json</span></div>
+        <div class="code-block">
+{
+  <span class="field">"level_id"</span>: <span class="string">"string"</span>,
+  <span class="field">"level_name"</span>: <span class="string">"艺术馆潜行"</span>,
+  <span class="field">"type"</span>: <span class="string">"POI | MainMission | SideQuest"</span>,
+  <span class="field">"SPACE"</span>: {
+    <span class="field">"regions"</span>: [{ <span class="field">"id"</span>, <span class="field">"name"</span>, <span class="field">"function"</span>, <span class="field">"connections"</span>, <span class="field">"spatial_notes"</span> }],
+    <span class="field">"critical_path"</span>: [<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"D"</span>, <span class="string">"F"</span>],
+    <span class="field">"optional_paths"</span>: [<span class="string">"A"</span>, <span class="string">"C"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>]
+  },
+  <span class="field">"FLOW"</span>: { <span class="field">"nodes"</span>, <span class="field">"edges"</span>, <span class="field">"critical_path"</span> },
+  <span class="field">"FEEL"</span>: { <span class="field">"emotional_beats"</span>, <span class="field">"visual_references"</span>, <span class="field">"audio_intent"</span> },
+  <span class="field">"MECHANIC"</span>: { <span class="field">"mechanics"</span>, <span class="field">"ai_behaviors"</span>, <span class="field">"parameters"</span> },
+  <span class="field">"ASSET"</span>: { <span class="field">"required_assets"</span>, <span class="field">"reuse_candidates"</span> },
+  <span class="field">"SYSTEM"</span>: { <span class="field">"dependencies"</span>, <span class="field">"interfaces"</span>, <span class="field">"constraints"</span> },
+  <span class="field">"uncertainty_flags"</span>: [{ <span class="field">"field"</span>, <span class="field">"note"</span>: <span class="string">"策划未明确，AI推断"</span> }],
+  <span class="field">"source_refs"</span>: [{ <span class="field">"type"</span>, <span class="field">"path"</span>, <span class="field">"summary"</span> }]
+}
+        </div>
+
+        <h3 id="orchestrator">编排器：上下文路由</h3>
+
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">每个 Skill 只拿到它需要的 IR 子集，而非全量 IR。这是上下文管理的核心。</p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Skill</th>
+                        <th>读取 IR 维度</th>
+                        <th>依赖上游</th>
+                        <th>预估 Token</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>BubbleChart</td>
+                        <td>FLOW, FEEL</td>
+                        <td>无</td>
+                        <td>~3-5K</td>
+                    </tr>
+                    <tr>
+                        <td>FlowChart</td>
+                        <td>SYSTEM, MECHANIC</td>
+                        <td>无</td>
+                        <td>~3-5K</td>
+                    </tr>
+                    <tr>
+                        <td>AssetList</td>
+                        <td>ASSET, SPACE</td>
+                        <td>无</td>
+                        <td>~2-3K</td>
+                    </tr>
+                    <tr>
+                        <td>MoodImage</td>
+                        <td>FEEL, SPACE</td>
+                        <td>无</td>
+                        <td>~2-3K + API</td>
+                    </tr>
+                    <tr>
+                        <td>POIDocAssembler</td>
+                        <td>ALL (摘要)</td>
+                        <td>BubbleChart, FlowChart, AssetList</td>
+                        <td>~5-8K</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-side bad">
+                <h4>[WITHOUT CONTEXT ROUTING]</h4>
+                <p>所有原始输入塞给一个大 Prompt</p>
+                <p style="margin-top:8px; font-size:20px; font-weight:700; color:#CC0000;">50-100K+ token</p>
+                <p style="font-size:11px; color:var(--text-muted);">质量不可控，成本高</p>
+            </div>
+            <div class="comparison-side good">
+                <h4>[WITH CONTEXT ROUTING]</h4>
+                <p>每个 Skill 只看到需要的 IR 子集</p>
+                <p style="margin-top:8px; font-size:20px; font-weight:700; color:#228B22;">20-30K token (总计)</p>
+                <p style="font-size:11px; color:var(--text-muted);">质量可控，成本低</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Artifacts -->
+    <section class="section" id="artifacts">
+        <div class="section-header">
+            <div class="section-label">[PART 04]</div>
+            <h2>完整产物清单</h2>
+            <p class="section-desc">按使用者组织，而非按格式。每个产物都是 IR 数据的一种"渲染视图"。</p>
+        </div>
+
+        <h3>策划自用 / 策划间协作</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>产物</th><th>数据来源</th><th>输出格式</th><th>方案</th><th>优先级</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>玩法流程气泡图</td><td>FLOW + FEEL</td><td>SVG / HTML</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p0">P0</span></td></tr>
+                    <tr><td>2</td><td>空间拓扑图</td><td>SPACE</td><td>SVG</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>3</td><td>情绪节奏曲线</td><td>FEEL + FLOW</td><td>SVG / HTML</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>4</td><td>分支逻辑图</td><td>FLOW + MECHANIC</td><td>SVG</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>5</td><td>关卡概览卡片</td><td>ALL (摘要)</td><td>HTML 单页</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>跨职能交接</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>产物</th><th>数据来源</th><th>输出格式</th><th>方案</th><th>优先级</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>6</td><td>美术交接包</td><td>SPACE + FEEL + ASSET</td><td>HTML + 图片引用</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>7</td><td>氛围参考图</td><td>FEEL</td><td>图片 (AI生成)</td><td><span class="tag flow">FLOW</span> + API</td><td><span class="tag p2">P2</span></td></tr>
+                    <tr><td>8</td><td>核心流程分镜</td><td>FLOW + FEEL + SPACE</td><td>图片序列</td><td><span class="tag flow">FLOW</span> + API</td><td><span class="tag p2">P2</span></td></tr>
+                    <tr><td>9</td><td>需求物件表</td><td>ASSET</td><td>Excel / CSV</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p0">P0</span></td></tr>
+                    <tr><td>10</td><td>程序需求文档</td><td>MECHANIC + SYSTEM</td><td>Markdown + 流程图</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>11</td><td>系统流程图</td><td>SYSTEM + MECHANIC</td><td>SVG</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p0">P0</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>管理层 / QA</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>产物</th><th>数据来源</th><th>输出格式</th><th>方案</th><th>优先级</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>12</td><td>关卡设计提案 PPT</td><td>ALL</td><td>HTML 幻灯片</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p2">P2</span></td></tr>
+                    <tr><td>13</td><td>大世界 POI 总览地图</td><td>多关卡 SPACE 聚合</td><td>HTML 交互地图</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p3">P3</span></td></tr>
+                    <tr><td>14</td><td>进度仪表盘</td><td>执行日志</td><td>HTML Dashboard</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p2">P2</span></td></tr>
+                    <tr><td>15</td><td>设计一致性报告</td><td>ALL (规则检查)</td><td>Markdown</td><td><span class="tag skill">SKILL</span></td><td><span class="tag p1">P1</span></td></tr>
+                    <tr><td>16</td><td>跨关卡同质化检测</td><td>多关卡对比</td><td>HTML 报告</td><td><span class="tag flow">FLOW</span></td><td><span class="tag p3">P3</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>扩展产物类型</h3>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[热力]</div>
+                <h4>玩家动线热力图</h4>
+                <p>基于空间拓扑和流程推断玩家可能的移动密度，用于策划自检。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[视线]</div>
+                <h4>视线分析图</h4>
+                <p>潜行关卡中各位置的可见性分析，策划与美术共用。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[难度]</div>
+                <h4>难度曲线图</h4>
+                <p>基于机制密度和节奏推断的难度变化，供策划与制作人参考。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[测试]</div>
+                <h4>测试用例表</h4>
+                <p>从流程图的所有路径组合中自动生成测试用例，纯算法实现，价值极高。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[音频]</div>
+                <h4>音频需求表</h4>
+                <p>从 FEEL 维度提取的音效/音乐需求，供音频团队使用。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[变更]</div>
+                <h4>变更影响分析</h4>
+                <p>修改某个节点时，自动分析影响哪些下游产物和关联模块。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Context Management -->
+    <section class="section" id="context-problem">
+        <div class="section-header">
+            <div class="section-label">[PART 05]</div>
+            <h2>上下文治理体系</h2>
+            <p class="section-desc">大体量多 Skill 开发的核心挑战：如何在开发第10个 Skill 时，仍然保持高效生成和整体一致性？</p>
+        </div>
+
+        <h3>问题的三个层面</h3>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[开发]</div>
+                <h4>开发时</h4>
+                <p>第10个 Skill 开发时，前9个的 Schema/Prompt/约束已经记不清了，容易冲突。<br><strong>→ 开发态的知识管理</strong></p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[运行]</div>
+                <h4>运行时</h4>
+                <p>多个 Skill 串行执行时，上下文窗口装不下所有信息。<br><strong>→ 执行态的上下文路由</strong></p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[迭代]</div>
+                <h4>迭代时</h4>
+                <p>改了一个 Schema 字段，不知道会影响哪些下游 Skill。<br><strong>→ 变更态的影响追踪</strong></p>
+            </div>
+        </div>
+
+        <div class="callout warning">
+            <div class="callout-title">[COUNTER-INTUITIVE PRINCIPLE]</div>
+            <p>上下文窗口不需要"看到全貌"，全局一致性依靠局部自治、契约约束和自动化校验来实现。<strong>全局一致性 = 局部自治 + 契约约束 + 自动化校验。</strong>这和微服务架构的思想一致——每个服务不需要知道整个系统，只需要遵守接口契约。</p>
+        </div>
+
+        <h3 id="context-layers">三层治理架构</h3>
+
+        <div class="layer-stack">
+            <div class="layer">
+                <div class="layer-header">
+                    <span class="layer-badge l1">LAYER 1</span>
+                    <h4>Contract Layer（契约层）</h4>
+                </div>
+                <p>一切的基础。定义 IR Schema、Skill 注册表、渲染规范、全局约束。</p>
+                <ul>
+                    <li>IR Schema（6维度，唯一真相源）</li>
+                    <li>Skill Registry（所有 Skill 的接口契约 — "电话簿"）</li>
+                    <li>术语表、命名规范、渲染标准</li>
+                    <li>存储为独立文件，纳入版本控制</li>
+                    <li>使用者：开发者 + 自动化校验工具</li>
+                </ul>
+            </div>
+            <div class="layer">
+                <div class="layer-header">
+                    <span class="layer-badge l2">LAYER 2</span>
+                    <h4>Dev Context Layer（开发上下文层）</h4>
+                </div>
+                <p>每个 Skill 的开发只需要看到与自己相关的最小信息集。</p>
+                <ul>
+                    <li>自动生成的 Skill Dev Brief（~3-4K token，恒定大小）</li>
+                    <li>包含：自己的输入/输出 Schema、上下游列表、项目约束、术语表</li>
+                    <li>不包含：其他 Skill 的内部实现、IR 中不相关的维度</li>
+                    <li>使用者：开发 Skill 的你（或 Claude Code）</li>
+                </ul>
+            </div>
+            <div class="layer">
+                <div class="layer-header">
+                    <span class="layer-badge l3">LAYER 3</span>
+                    <h4>Runtime Context Layer（运行上下文层）</h4>
+                </div>
+                <p>每个 Skill 执行时只注入最小必要上下文。</p>
+                <ul>
+                    <li>System Prompt（固定，~1K token）</li>
+                    <li>IR 子集（按契约声明裁剪，~1-2K token）</li>
+                    <li>上游产物（仅依赖项，~0.5-1K token）</li>
+                    <li>示例（预算允许时，~1K token）</li>
+                    <li>使用者：运行中的 LLM</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>为什么这套方案能 Scale</h3>
+
+        <div style="background:var(--bg-card); border:2px solid var(--border); padding:24px; margin:20px 0;">
+            <h4 style="color:var(--accent); font-size:12px; margin-bottom:16px; letter-spacing:1px;">[TRADITIONAL APPROACH - LINEAR GROWTH]</h4>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 1</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:10%">5K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 2</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:20%">10K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 5</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:50%">25K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 10</span>
+                <div class="token-bar-track"><div class="token-bar-fill orange" style="width:100%">50K 💥</div></div>
+            </div>
+
+            <h4 style="color:#228B22; font-size:12px; margin:24px 0 16px; letter-spacing:1px;">[CONTRACT-DRIVEN APPROACH - CONSTANT SIZE]</h4>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 1</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:8%">4K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 2</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:8%">4K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 5</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:8%">4K</div></div>
+            </div>
+            <div class="token-bar">
+                <span class="token-bar-label">Skill 10</span>
+                <div class="token-bar-track"><div class="token-bar-fill green" style="width:8%">4K ✓</div></div>
+            </div>
+            <p style="font-size:11px; color:var(--text-muted); margin-top:16px; text-align:center; letter-spacing:1px;">一致性由自动化校验保障，而非由人脑或 LLM 记忆保障</p>
+        </div>
+    </section>
+
+    <!-- Section 6: Contracts Detail -->
+    <section class="section" id="contracts">
+        <div class="section-header">
+            <div class="section-label">[PART 06]</div>
+            <h2>契约层详细设计</h2>
+            <p class="section-desc">契约层是整个系统的"宪法"——所有 Skill 的开发和运行都必须遵守。</p>
+        </div>
+
+        <h3>文件结构</h3>
+        <div class="code-block">
+<span class="comment">/contracts/</span>
+├── ir_schema.json              <span class="comment"># 6维度 IR 的完整 JSON Schema</span>
+├── skill_registry.yaml         <span class="comment"># 所有 Skill 的注册表（"电话簿"）</span>
+├── glossary.yaml               <span class="comment"># 术语表</span>
+├── render_standards.yaml       <span class="comment"># 渲染规范</span>
+├── constraints.yaml            <span class="comment"># 全局约束</span>
+│
+├── skills/
+│   ├── bubble_chart/
+│   │   ├── contract.yaml       <span class="comment"># 接口契约</span>
+│   │   ├── prompt.md           <span class="comment"># System Prompt</span>
+│   │   ├── examples/           <span class="comment"># 输入输出示例</span>
+│   │   └── tests/              <span class="comment"># 测试用例</span>
+│   ├── flow_chart/
+│   │   └── ...
+│   └── .../
+│
+└── validators/
+    ├── schema_validator.py     <span class="comment"># IR 合法性校验</span>
+    ├── contract_validator.py   <span class="comment"># Skill 输出合规校验</span>
+    └── consistency_checker.py  <span class="comment"># 跨 Skill 一致性校验</span>
+        </div>
+
+        <h3>Skill Registry（技能注册表）</h3>
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">任何时候想了解全局，看这一个文件就够。每个 Skill 只声明接口，不包含实现。</p>
+
+        <div class="code-header"><span>skill_registry.yaml</span></div>
+        <div class="code-block">
+<span class="field">registry_version</span>: <span class="string">"1.0.0"</span>
+
+<span class="field">skills</span>:
+  <span class="field">BubbleChart</span>:
+    <span class="field">version</span>: <span class="string">"1.0.0"</span>
+    <span class="field">purpose</span>: <span class="string">"生成玩法流程气泡图"</span>
+    <span class="field">ir_dimensions_read</span>: [FLOW, FEEL]
+    <span class="field">ir_dimensions_written</span>: []
+    <span class="field">upstream</span>: [InputProcessor]
+    <span class="field">downstream</span>: [POIDocAssembler, FlowChart]
+    <span class="field">render_format</span>: <span class="string">"SVG via Mermaid"</span>
+    <span class="field">status</span>: <span class="string">"development"</span>
+
+  <span class="field">AssetList</span>:
+    <span class="field">version</span>: <span class="string">"1.0.0"</span>
+    <span class="field">purpose</span>: <span class="string">"生成需求物件表"</span>
+    <span class="field">ir_dimensions_read</span>: [ASSET, SPACE]
+    <span class="field">upstream</span>: [InputProcessor]
+    <span class="field">downstream</span>: [POIDocAssembler, ArtHandoff]
+    <span class="field">render_format</span>: <span class="string">"Excel via openpyxl"</span>
+    <span class="field">status</span>: <span class="string">"planned"</span>
+        </div>
+
+        <h3>单个 Skill 的 Contract</h3>
+        <div class="code-header"><span>skills/bubble_chart/contract.yaml</span></div>
+        <div class="code-block">
+<span class="field">skill_name</span>: BubbleChart
+<span class="field">version</span>: <span class="string">"1.0.0"</span>
+
+<span class="comment"># === 输入契约 ===</span>
+<span class="field">input</span>:
+  <span class="field">ir_fields_required</span>:
+    - <span class="field">path</span>: <span class="string">"FLOW.nodes"</span>
+    - <span class="field">path</span>: <span class="string">"FLOW.edges"</span>
+    - <span class="field">path</span>: <span class="string">"FLOW.critical_path"</span>
+    - <span class="field">path</span>: <span class="string">"FEEL.emotional_beats"</span>
+
+<span class="comment"># === 输出契约 ===</span>
+<span class="field">output</span>:
+  <span class="field">format</span>: <span class="string">"mermaid_flowchart"</span>
+  <span class="field">constraints</span>:
+    - <span class="string">"必须包含 START 和 END 节点"</span>
+    - <span class="string">"所有 IR.FLOW.nodes 中的节点必须出现"</span>
+    - <span class="string">"不得添加 IR 中不存在的节点"</span>
+
+<span class="comment"># === 质量契约 ===</span>
+<span class="field">quality</span>:
+  <span class="field">auto_checks</span>:
+    - <span class="field">name</span>: <span class="string">"node_coverage"</span>
+      <span class="field">rule</span>: <span class="string">"输出节点集 == 输入节点集"</span>
+      <span class="field">severity</span>: <span class="string">"error"</span>
+    - <span class="field">name</span>: <span class="string">"mermaid_syntax_valid"</span>
+      <span class="field">rule</span>: <span class="string">"Mermaid CLI 能成功渲染"</span>
+      <span class="field">severity</span>: <span class="string">"error"</span>
+        </div>
+
+        <h3 id="dev-context">Dev Brief 自动生成</h3>
+
+        <div class="callout success">
+            <div class="callout-title">[CORE MECHANISM]</div>
+            <p>开发任何 Skill 时，运行 <code style="background:var(--bg-secondary); padding:2px 6px; border:1px solid var(--border);">generate_dev_brief.py SkillName</code>，自动生成只包含"与我相关"的最小上下文。无论开发第1个还是第20个 Skill，上下文大小恒定（~3-4K token）。</p>
+        </div>
+
+        <div class="code-header"><span>Dev Brief 包含的内容</span></div>
+        <div class="code-block">
+<span class="comment"># 自动生成的 Skill 开发简报</span>
+
+<span class="value">## 1. 你要开发的 Skill</span>
+→ 名称、职责、输出格式
+
+<span class="value">## 2. 你的输入（IR 中你能看到的字段）</span>
+→ 只展示契约声明的 IR 子集 Schema
+
+<span class="value">## 3. 你的上游（谁给你数据）</span>
+→ 上游 Skill 的输出格式（不含实现）
+
+<span class="value">## 4. 你的下游（谁消费你的输出）</span>
+→ 下游 Skill 对你的输出有什么期望
+
+<span class="value">## 5. 项目约束 + 术语表</span>
+→ 只提取与本 Skill 相关的部分
+
+<span class="value">## 6. 已有类似 Skill 的模式参考</span>
+→ 保持风格一致性
+
+<span class="value">## 7. 你不需要关心的事情</span>
+→ 明确边界，防止越界
+        </div>
+
+        <h3>自动化一致性校验</h3>
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">在三个时机自动运行，确保全局一致性：</p>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[开发]</div>
+                <h4>开发时校验</h4>
+                <p>改了任何契约文件后自动运行。检查：上下游引用合法性、关系对称性、IR 维度合法性、无循环依赖。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[变更]</div>
+                <h4>变更时校验</h4>
+                <p>Skill 契约变更后运行。检查：输出字段是否向后兼容、被删除字段是否有下游依赖、版本号是否更新。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[运行]</div>
+                <h4>运行时校验</h4>
+                <p>每次 Skill 执行后运行。检查：输出是否符合契约 Schema、自动质量检查是否通过、与输入的一致性。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Scoring & Iteration -->
+    <section class="section" id="scoring">
+        <div class="section-header">
+            <div class="section-label">[PART 07]</div>
+            <h2>评分与迭代机制</h2>
+            <p class="section-desc">两种打分结合：自动即时评分决定是否重试，人工反馈评分驱动 Skill 迭代。</p>
+        </div>
+
+        <h3>自动评分（每次执行后立即运行）</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>维度</th><th>检查内容</th><th>权重</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>结构完整性</td><td>必填字段存在、流程图有完整路径、节点数合理</td><td>30%</td></tr>
+                    <tr><td>一致性</td><td>气泡图节点与流程图对应、Layout区域与IR匹配</td><td>30%</td></tr>
+                    <tr><td>规范符合度</td><td>命名规范、格式模板、[待确认] 标记</td><td>20%</td></tr>
+                    <tr><td>信息保真度</td><td>LLM 对比 IR 和产物，检查信息丢失或编造</td><td>20%</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>人工评分（异步，使用产物后填写）</h3>
+        <div class="callout warning">
+            <div class="callout-title">[KEY: KEEP IT SIMPLE]</div>
+            <p>不要让策划填10个维度的表。只问3个问题：<br>
+            <strong>可用性</strong>："拿到这个文档，我能直接开始工作吗？" (1-5)<br>
+            <strong>准确性</strong>："文档描述的和我理解的设计意图一致吗？" (1-5)<br>
+            <strong>完整性</strong>："有没有我觉得重要但文档遗漏的信息？" (1-5)</p>
+        </div>
+
+        <h3>评分驱动的行为</h3>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[重试]</div>
+                <h4>自动评分 &lt; 0.6</h4>
+                <p>自动重试（最多2次），使用不同的生成策略。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[失败]</div>
+                <h4>自动评分 &lt; 0.4</h4>
+                <p>标记为失败，通知开发者排查。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[迭代]</div>
+                <h4>人工评分持续 &lt; 3</h4>
+                <p>触发 Skill 迭代 review，分析低分原因。</p>
+            </div>
+        </div>
+
+        <h3 id="iteration">迭代闭环</h3>
+        <div class="arch-diagram">
+            <div class="arch-flow">
+                <div class="arch-node skill">执行 Skill</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node process">自动评分</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node input">人工评分</div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node output">周度分析报告</div>
+            </div>
+            <div class="arch-flow" style="margin-top:16px;">
+                <div class="arch-node output">
+                    报告内容<br>
+                    <span class="arch-node-label">哪个Skill分最低 / 常见失败模式 / Token消耗趋势</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node agent">
+                    Skill 迭代<br>
+                    <span class="arch-node-label">修改Prompt / 调整Schema / 更新版本号</span>
+                </div>
+                <span class="arch-arrow">→</span>
+                <div class="arch-node skill">
+                    A/B 验证<br>
+                    <span class="arch-node-label">用历史case重跑 / 对比新旧版本分</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Paradigm Shift -->
+    <section class="section" id="paradigm">
+        <div class="section-header">
+            <div class="section-label">[PART 08]</div>
+            <h2>范式转变展望</h2>
+            <p class="section-desc">Phase 1-2 是优化现有管线。真正的范式变化在于重新定义"关卡策划的工作方式"。</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[对话]</div>
+                <h4>转变 1：文档驱动 → 对话驱动</h4>
+                <p>Agent 成为设计意图的"活的载体"。美术无需翻文档，直接向 Agent 提问："这个大厅的氛围应该是什么感觉？" Agent 带着溯源地回答。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[循环]</div>
+                <h4>转变 2：线性生产 → 生成-评估循环</h4>
+                <p>画完 Layout 后，Agent 即时生成动线热力图、视线分析、节奏曲线预测。迭代周期从周/月缩短到小时/天。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[协作]</div>
+                <h4>转变 3：模块化分工 → 语义化协作</h4>
+                <p>CrossModuleCoordinator Agent 监控各模块状态，自动识别跨模块一致性问题。如"策划设计了关灯潜行，但AI系统未实现光照影响警觉度"。</p>
+            </div>
+        </div>
+
+        <div class="callout insight">
+            <div class="callout-title">[FOUNDATION FOR THE FUTURE]</div>
+            <p><strong>结构化 IR Schema</strong> → Agent 的"思考格式"<br>
+            <strong>评分数据</strong> → Agent 的"奖励信号"<br>
+            <strong>执行日志</strong> → Agent 的"经验库"<br>
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 9: Risks -->
+    <section class="section" id="risks">
+        <div class="section-header">
+            <div class="section-label">[PART 09]</div>
+            <h2>风险与边界</h2>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>风险等级</th><th>风险</th><th>说明</th><th>应对</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="risk-indicator high"></span>高</td>
+                        <td>Memory Pollution</td>
+                        <td>Agent 记住过时的设计决策</td>
+                        <td>版本化知识库，标注信息来源和时间</td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-indicator high"></span>高</td>
+                        <td>Hallucinated Actions</td>
+                        <td>Agent 编造策划未做过的设计决策</td>
+                        <td>所有输出可溯源，无法溯源标注 [推断]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-indicator medium"></span>中</td>
+                        <td>Context Window 溢出</td>
+                        <td>大世界关卡信息量巨大</td>
+                        <td>分层摘要 + 按需检索，三层上下文治理</td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-indicator medium"></span>中</td>
+                        <td>过度依赖</td>
+                        <td>团队依赖 Agent 而非自己思考设计</td>
+                        <td>Agent 定位为"信息助手"，禁止做创意建议</td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-indicator low"></span>低</td>
+                        <td>Prompt Injection</td>
+                        <td>恶意或无意输入导致异常</td>
+                        <td>输入校验 + 输出审查 + 权限隔离</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Section 10: Roadmap -->
+    <section class="section" id="roadmap">
+        <div class="section-header">
+            <div class="section-label">[PART 10]</div>
+            <h2>实施路线图</h2>
+            <p class="section-desc">渐进式落地，每一步都有可验证的产出。</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item active">
+                <h4>Week 1-2: 基础设施 <span class="timeline-tag">START HERE</span></h4>
+                <p>
+                    ① 定义 6 维度 IR Schema<br>
+                    ② 创建 /contracts/ 目录结构<br>
+                    ③ 编写 skill_registry.yaml 第一版<br>
+                    ④ 实现 generate_dev_brief.py<br>
+                    ⑤ 实现 consistency_checker.py 基础版<br>
+                    ⑥ 搭建自动评分框架
+                </p>
+            </div>
+            <div class="timeline-item">
+                <h4>Week 3-4: P0 Skill 开发</h4>
+                <p>
+                    ① 用 Dev Brief 流程开发 BubbleChartSkill<br>
+                    ② 开发 AssetListSkill<br>
+                    ③ 开发 SystemFlowchartSkill<br>
+                    ④ 每个 Skill 用 3-5 个真实案例测试<br>
+                    ⑤ 验证：第二个 Skill 的开发体验是否和第一个一样顺畅
+                </p>
+            </div>
+            <div class="timeline-item">
+                <h4>Week 5-6: 编排器 + 端到端</h4>
+                <p>
+                    ① 实现 Orchestrator（DAG 调度 + 上下文路由）<br>
+                    ② 实现 Assembler（产物组装，处理嵌套）<br>
+                    ③ 端到端测试：输入设计描述 → 输出完整 POI 文档<br>
+                    ④ 收集第一批人工评分
+                </p>
+            </div>
+            <div class="timeline-item">
+                <h4>Week 7-8: 迭代 + 扩展</h4>
+                <p>
+                    ① 根据评分数据迭代 Skill Prompt<br>
+                    ② 加入图片输入支持（InputProcessor 扩展）<br>
+                    ③ 加入对话记录输入支持<br>
+                    ④ 建立周度迭代 review 机制<br>
+                    ⑤ 开始 P1 产物开发
+                </p>
+            </div>
+        </div>
+
+        <div class="callout success" style="margin-top:32px;">
+            <div class="callout-title">[CORE OBJECTIVE]</div>
+            <p>AI Agent 对关卡生产管线的最大价值在于成为团队的<strong>"共享大脑"</strong>——让每个人都能即时访问完整的设计上下文，消除信息在人与人之间传递时的损耗。先把 Skill 层做扎实（标准化），再让 Agent 成为团队的上下文层（语义化协作），最后才考虑更深的自动化。</p>
+        </div>
+    </section>
+
+    <!-- Section: Dev Workflow -->
+    <section class="section" id="dev-workflow">
+        <div class="section-header">
+            <div class="section-label">[APPENDIX]</div>
+            <h2>日常 Skill 开发工作流</h2>
+            <p class="section-desc">标准化的开发流程，确保每个 Skill 的开发体验一致。</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>Step 1: 注册</h4>
+                <p>在 skill_registry.yaml 中注册新 Skill（声明输入输出维度、上下游关系）</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 2: 校验</h4>
+                <p>运行 consistency_checker（确认注册信息与现有 Skill 无冲突）</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 3: 生成 Dev Brief</h4>
+                <p>运行 generate_dev_brief.py SkillName（自动生成开发简报，~3-4K token）</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 4: 开发</h4>
+                <p>把 Dev Brief 交给 Claude Code，生成 contract.yaml 和 prompt.md</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 5: 测试</h4>
+                <p>编写 2-3 个测试用例，运行测试检查输出是否符合契约</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 6: 评审</h4>
+                <p>人工评审输出质量，记录评分</p>
+            </div>
+            <div class="timeline-item">
+                <h4>Step 7: 迭代</h4>
+                <p>迭代 Prompt 直到测试通过 + 评分达标，提交并更新 registry status</p>
+            </div>
+        </div>
+
+        <div class="callout warning" style="margin-top:24px;">
+            <div class="callout-title">[CHANGE RULES]</div>
+            <p>任何时候修改已有 Skill 的契约：① 必须先运行 check_contract_compatibility ② 必须更新版本号 ③ 必须在 change_log 中记录原因和关联的低分案例</p>
+        </div>
+    </section>
+
+</main>
+
+<!-- Scroll Spy -->
+<script>
+    const sections = document.querySelectorAll('.section, .hero');
+    const navLinks = document.querySelectorAll('.nav a');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, {
+        rootMargin: '-20% 0px -70% 0px'
+    });
+
+    sections.forEach(section => {
+        if (section.id) observer.observe(section);
+    });
+
+    // Close nav on mobile when clicking a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 900) {
+                document.querySelector('.nav').classList.remove('open');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
