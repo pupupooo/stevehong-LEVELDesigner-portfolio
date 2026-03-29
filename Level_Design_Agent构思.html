@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level Design × AI Agent - Architecture</title>
+    <title>关卡设计Agent的构建 - Architecture</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1252,12 +1252,12 @@
 <!-- Navigation -->
 <nav class="nav" id="nav">
     <div class="nav-header">
-        <h2>Level Design × AI</h2>
+        <h2>关卡设计Agent的构建</h2>
         <p>架构设计方案 v1.0</p>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">总览</div>
+        <div class="nav-section-title">Part 01: 核心判断与原则</div>
         <a href="#architecture-overview">全局架构图</a>
         <a href="#overview">核心判断与原则</a>
         <a href="#why-skills">为什么需要这么多 Skill</a>
@@ -1265,47 +1265,60 @@
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">架构设计</div>
-        <a href="#ontology">关卡设计的元素构成</a>
+        <div class="nav-section-title">Part 02: 关卡设计的元素构成</div>
+        <a href="#ontology">本体论模型</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Part 03: 系统总架构</div>
         <a href="#system-arch">系统总架构</a>
         <a href="#ir">中间表示 (IR)</a>
         <a href="#orchestrator">编排器设计</a>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">产物清单</div>
+        <div class="nav-section-title">Part 04: 完整产物清单</div>
         <a href="#artifacts">完整产物清单</a>
-        <a href="#artifact-detail">P0 产物详设</a>
-        <a href="#image-gen">图像生成类产物</a>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">上下文治理</div>
+        <div class="nav-section-title">Part 05: 上下文治理体系</div>
         <a href="#context-problem">问题分析</a>
-        <a href="#context-layers">三层治理体系</a>
-        <a href="#contracts">契约层设计</a>
-        <a href="#dev-context">开发上下文层</a>
-        <a href="#runtime-context">运行上下文层</a>
+        <a href="#context-layers">上下文分层管理</a>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">迭代与评估</div>
+        <div class="nav-section-title">Part 06: 上下文分层管理详细设计</div>
+        <a href="#contracts">Layer 1: 契约层</a>
+        <a href="#dev-context">Layer 2: 开发上下文层</a>
+        <a href="#runtime-context">Layer 3: 运行上下文层</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Part 07: 评分与迭代机制</div>
         <a href="#scoring">打分机制</a>
-        <a href="#dev-log">开发日志</a>
-        <a href="#iteration">迭代闭环</a>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">知识飞轮</div>
+        <div class="nav-section-title">Part 08: 范式转变展望</div>
+        <a href="#paradigm">范式转变</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Part 09: 知识飞轮</div>
         <a href="#flywheel">两层 Bible 架构</a>
         <a href="#bible-files">文件结构扩展</a>
     </div>
 
     <div class="nav-section">
-        <div class="nav-section-title">展望与落地</div>
-        <a href="#paradigm">范式转变</a>
+        <div class="nav-section-title">Part 10: 风险与边界</div>
         <a href="#risks">风险与边界</a>
+    </div>
+
+    <div class="nav-section">
+        <div class="nav-section-title">Part 11: 实施路线图</div>
         <a href="#roadmap">实施路线图</a>
+        <a href="#dev-workflow">日常 Skill 开发工作流</a>
     </div>
 </nav>
 
@@ -1348,17 +1361,17 @@
         <div class="section-header">
             <div class="section-label">[全局架构]</div>
             <h2>从工具到壁垒</h2>
-            <p class="section-desc">这不是一个静态的生产工具，而是一个自我进化的系统——生产线越用越快，知识越积越厚。</p>
+            <p class="section-desc">期望构建的不仅是静态的生产工具，也是一个自我进化的系统——生产线越用越快，知识越积越厚。</p>
         </div>
 
         <div class="global-arch">
             <!-- Left: Governance Layers -->
             <div class="governance-panel">
-                <div class="governance-title">三层治理</div>
+                <div class="governance-title">上下文分层管理</div>
                 <div class="governance-layers">
                     <div class="gov-layer layer-1">
                         <div class="layer-label">Layer 1</div>
-                        <div class="layer-name">契约层：管理skill生产</div>
+                        <div class="layer-name">契约层：全局文档接口，管理skill生产</div>
                         <div class="layer-desc">IR Schema · Skill Registry<br>术语表 · 渲染规范</div>
                     </div>
                     <div class="gov-layer layer-2">
@@ -1376,7 +1389,7 @@
 
             <!-- Center: Pipeline Flow -->
             <div class="pipeline-panel">
-                <div class="pipeline-title">一条管线</div>
+                <div class="pipeline-title">单向工作流管线</div>
                 <div class="pipeline-flow">
                     <div class="pipe-node input-node">
                         <div class="node-title">设计输入</div>
@@ -1427,11 +1440,11 @@
 
             <!-- Right: Three Loops -->
             <div class="loops-panel">
-                <div class="loops-title">三个闭环</div>
+                <div class="loops-title">评分与知识注入完成迭代</div>
                 <div class="loop-items">
                     <div class="loop-item inner-loop">
                         <div class="loop-header">
-                            <span class="loop-name">内环</span>
+                            <span class="loop-name">每轮结果打分</span>
                             <span class="loop-cycle">秒级</span>
                         </div>
                         <div class="loop-mechanism">自动重试机制</div>
@@ -1439,7 +1452,7 @@
                     </div>
                     <div class="loop-item middle-loop">
                         <div class="loop-header">
-                            <span class="loop-name">中环</span>
+                            <span class="loop-name">产物分析反向迭代</span>
                             <span class="loop-cycle">周级</span>
                         </div>
                         <div class="loop-mechanism">Skill迭代</div>
@@ -1447,7 +1460,7 @@
                     </div>
                     <div class="loop-item outer-loop">
                         <div class="loop-header">
-                            <span class="loop-name">外环</span>
+                            <span class="loop-name">持续的知识注入</span>
                             <span class="loop-cycle">月级</span>
                         </div>
                         <div class="loop-mechanism">知识飞轮</div>
@@ -1461,7 +1474,7 @@
         <div class="arch-summary">
             <div class="summary-box">
                 <div class="summary-title">核心设计理念</div>
-                <p><strong>内环</strong>保证单次产出质量 · <strong>中环</strong>保证Skill持续进化 · <strong>外环</strong>让每一次设计都抬高系统起点</p>
+                <p><strong>单次打分机制</strong>保证单次产出质量 · <strong>产物分析与人工评价</strong>保证Skill持续进化 · <strong>持续的知识注入</strong>让每一次设计都抬高系统起点</p>
             </div>
         </div>
     </section>
@@ -1476,7 +1489,7 @@
 
         <div class="callout insight">
             <div class="callout-title">[CORE INSIGHT]</div>
-            <p>关卡设计管线的一大矛盾在于信息在人与人之间传递时的失真、流程编排的低效、品质标准的不统一以及知识随人流动导致壁垒积攒困难，而非简单的"缺少智能"。</p>
+            <p>传统的关卡设计管线并不缺少智能，其主要矛盾通常是信息在人与人之间传递时的失真、流程编排的低效、品质标准的不统一以及知识随人流动导致壁垒积攒困难。</p>
         </div>
 
         <div class="table-wrapper">
@@ -1552,7 +1565,7 @@
             </div>
             <div class="timeline-item">
                 <h4>Phase 2: Flow 层</h4>
-                <p>把管线流程编排起来——任务拆解、依赖管理、自动调度。用 DAG 编排器串联多个 Skill。</p>
+                <p>把管线流程编排起来——任务拆解、依赖管理、自动调度。用 单向流程 编排器串联多个 Skill。</p>
             </div>
             <div class="timeline-item">
                 <h4>Phase 3: Agent 层</h4>
@@ -1943,7 +1956,7 @@
             <p>上下文窗口不需要"看到全貌"，全局一致性依靠局部自治、契约约束和自动化校验来实现。<strong>全局一致性 = 局部自治 + 契约约束 + 自动化校验。</strong>这和微服务架构的思想一致——每个服务不需要知道整个系统，只需要遵守接口契约，这里文档就是接口契约。</p>
         </div>
 
-        <h3 id="context-layers">三层治理架构</h3>
+        <h3 id="context-layers">上下文分层管理</h3>
 
         <div class="layer-stack">
             <div class="layer">
@@ -2035,11 +2048,11 @@
     <section class="section" id="contracts">
         <div class="section-header">
             <div class="section-label">[PART 06]</div>
-            <h2>契约层详细设计</h2>
-            <p class="section-desc">契约层是整个系统的规范文档——所有 Skill 的开发和运行都必须遵守。</p>
+            <h2>上下文分层管理详细设计</h2>
+            <p class="section-desc">从契约层的"规范"，到开发上下文层的"最小信息集"，再到运行上下文层的"精准注入"——上下文分层管理确保系统在任意规模下都高效可控。</p>
         </div>
 
-        <h3>文件结构</h3>
+        <h3>Layer 1: 契约层——文件结构</h3>
         <div class="code-block">
 <span class="comment">/contracts/</span>
 ├── ir_schema.json              <span class="comment"># 6维度 IR 的完整 JSON Schema</span>
@@ -2178,6 +2191,160 @@
                 <p>每次 Skill 执行后运行。检查：输出是否符合契约 Schema、自动质量检查是否通过、与输入的一致性。</p>
             </div>
         </div>
+
+        <!-- Layer 2: Dev Context Detail -->
+        <h3 id="dev-context-usage">开发上下文层：使用场景</h3>
+
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Dev Brief 以文档作为接口，开始 Skill 开发时的<strong>唯一入口上下文</strong>。以下是它在实际开发流程中的作用方式。</p>
+
+        <div class="callout insight">
+            <div class="callout-title">[USAGE PRINCIPLE]</div>
+            <p>开发者<strong>不直接阅读</strong>契约层原始文件。所有需要知道的信息都通过 <code style="background:var(--bg-secondary); padding:2px 6px; border:1px solid var(--border);">generate_dev_brief.py</code> 自动裁剪、聚合后交付。控制信息量，确保齐全和时效性。</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>场景</th><th>Dev Brief 的作用</th><th>不用 Brief 时的痛点</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>新建 Skill</td>
+                        <td>提供输入 Schema、上下游关系、已有同类 Skill 的模式参考，直接作为 Claude Code 的 System Prompt</td>
+                        <td>开发者需翻阅 registry + 多个 contract.yaml + glossary，信息散落在 5-8 个文件中</td>
+                    </tr>
+                    <tr>
+                        <td>修改已有 Skill</td>
+                        <td>Brief 自动包含下游 Skill 对本 Skill 输出的期望，修改前就能预判影响范围</td>
+                        <td>改了输出格式后才发现下游 Skill 依赖旧字段，迭代返工</td>
+                    </tr>
+                    <tr>
+                        <td>新人接手</td>
+                        <td>无需了解全局架构，一份 Brief 即可开始开发某个具体 Skill</td>
+                        <td>新人需要 1-2 天熟悉整个契约层才能动手</td>
+                    </tr>
+                    <tr>
+                        <td>AI 辅助开发</td>
+                        <td>Brief 的 ~3-4K token 大小专为 LLM 上下文窗口优化，直接粘贴即可</td>
+                        <td>把所有原始文件塞给 LLM 会超出窗口或严重稀释注意力</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">[生成]</div>
+                <h4>Brief 生成时机</h4>
+                <p>① 新 Skill 注册后首次生成<br>② 上游/下游 Skill 的契约变更时自动重新生成<br>③ 全局约束或术语表更新时批量重新生成</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">[保证]</div>
+                <h4>恒定大小的保证机制</h4>
+                <p>Brief 只包含"与我相关"的最小集。上游信息只展示输出 Schema，不含实现；术语表只提取本 Skill 涉及的维度。无论系统有 5 个还是 50 个 Skill，Brief 大小恒定在 ~3-4K token。</p>
+            </div>
+        </div>
+
+        <!-- Layer 3: Runtime Context Detail -->
+        <h3 id="runtime-context">运行上下文层：组装机制</h3>
+
+        <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Skill 执行时，编排器 按照契约声明自动组装上下文。每个 Skill 拿到的不是"全部信息"，而是"恰好够用的信息"。</p>
+
+        <div class="callout warning">
+            <div class="callout-title">[ASSEMBLY RULE]</div>
+            <p>运行上下文由 5 个固定槽位组成，每个槽位有独立的 token 预算。总预算恒定（~5-7K token），无论 IR 多复杂、系统多庞大。</p>
+        </div>
+
+        <div class="code-header"><span>运行上下文的 5 个槽位</span></div>
+        <div class="code-block">
+<span class="comment"># Orchestrator 为每个 Skill 执行时组装的上下文结构</span>
+
+<span class="value">┌─ Slot 1: System Prompt ──────────── ~1K token（固定）</span>
+│  skill的角色定义、输出格式要求、质量标准
+│
+<span class="value">├─ Slot 2: IR 子集 ────────────────── ~1-2K token</span>
+│  按 contract.yaml 的 ir_fields_required 自动裁剪
+│  只包含声明需要的维度和字段
+│
+<span class="value">├─ Slot 3: 上游产物 ──────────────── ~0.5-1K token</span>
+│  仅注入 contract.yaml 声明的 upstream 依赖项的输出
+│  无上游依赖的 Skill 此槽为空
+│
+<span class="value">├─ Slot 4: Bible 摘要 ─────────────── ~1-2K token</span>
+│  从 Project Bible 检索的相关模式/反模式摘要
+│  由 Tool 层完成检索和裁剪后注入
+│
+<span class="value">└─ Slot 5: 示例 ──────────────────── ~0.5-1K token（可选）</span>
+   从 examples/ 目录中选取最相关的输入输出对
+   token 预算紧张时此槽可省略
+        </div>
+
+        <h4 style="margin-top:24px; margin-bottom:16px;">具体示例：BubbleChart Skill 执行时的上下文</h4>
+
+        <div class="code-header"><span>BubbleChart 的实际运行上下文（~5.5K token）</span></div>
+        <div class="code-block">
+<span class="comment">// ═══ Slot 1: System Prompt (~1K) ═══</span>
+
+<span class="field">你是一个关卡设计气泡图生成器。</span>
+<span class="field">输出格式：</span>Mermaid flowchart 语法
+<span class="field">约束：</span>必须包含 START/END 节点，不得添加 IR 中不存在的节点
+<span class="field">渲染标准：</span>节点颜色按情绪类型映射（紧张=#CC0000，平静=#228B22...）
+
+<span class="comment">// ═══ Slot 2: IR 子集 (~1.5K) ═══</span>
+<span class="comment">// 只有 FLOW + FEEL，其他 4 个维度完全不可见</span>
+
+<span class="field">"FLOW"</span>: {
+  <span class="field">"nodes"</span>: [
+    { <span class="field">"id"</span>: <span class="string">"A"</span>, <span class="field">"name"</span>: <span class="string">"潜入大厅"</span>, <span class="field">"type"</span>: <span class="string">"stealth"</span> },
+    { <span class="field">"id"</span>: <span class="string">"B"</span>, <span class="field">"name"</span>: <span class="string">"触发警报"</span>, <span class="field">"type"</span>: <span class="string">"combat"</span> },
+    ...
+  ],
+  <span class="field">"edges"</span>: [...],
+  <span class="field">"critical_path"</span>: [<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"D"</span>, <span class="string">"F"</span>]
+}
+<span class="field">"FEEL"</span>: {
+  <span class="field">"emotional_beats"</span>: [
+    { <span class="field">"node"</span>: <span class="string">"A"</span>, <span class="field">"emotion"</span>: <span class="string">"tension_low"</span> },
+    { <span class="field">"node"</span>: <span class="string">"B"</span>, <span class="field">"emotion"</span>: <span class="string">"tension_spike"</span> },
+    ...
+  ]
+}
+
+<span class="comment">// ═══ Slot 3: 上游产物 (~0K) ═══</span>
+<span class="comment">// BubbleChart 无上游依赖，此槽为空</span>
+
+<span class="comment">// ═══ Slot 4: Bible 摘要 (~1.5K) ═══</span>
+
+<span class="field">[PROJECT PATTERN]</span> <span class="string">"stealth_corridor"</span>
+本项目潜行段落的气泡图通常采用线性主轴 + 1-2 个可选分支。
+情绪节奏：低张力开场 → 中段观察窗口 → 高张力决策点 → 释放。
+参考关卡：stealth_museum_01（评分 4.2/5）
+
+<span class="field">[ANTI-PATTERN]</span>
+避免在单个气泡图中超过 12 个节点——历史数据显示超过 12 节点时
+可读性评分显著下降（平均 -1.2 分）。
+
+<span class="comment">// ═══ Slot 5: 示例 (~1K) ═══</span>
+<span class="comment">// 一个高分案例的输入→输出对</span>
+
+<span class="field">[EXAMPLE INPUT]</span>  4 节点线性流程 + 1 分支
+<span class="field">[EXAMPLE OUTPUT]</span> flowchart TD; A[潜入] -->|成功| B[...]; ...
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-side bad">
+                <h4>[不用槽位机制]</h4>
+                <p>把完整 IR（6 维度）+ 所有 Skill 的历史输出 + 完整 Bible 塞给 LLM</p>
+                <p style="margin-top:8px; font-size:20px; font-weight:700; color:#CC0000;">30-80K+ token</p>
+                <p style="font-size:11px; color:var(--text-muted);">注意力严重稀释，产出质量不可控</p>
+            </div>
+            <div class="comparison-side good">
+                <h4>[5 槽位组装]</h4>
+                <p>按契约声明裁剪 IR + 只注入声明的上游 + Bible 检索后裁剪</p>
+                <p style="margin-top:8px; font-size:20px; font-weight:700; color:#228B22;">~5-7K token（恒定）</p>
+                <p style="font-size:11px; color:var(--text-muted);">信息精准，产出稳定</p>
+            </div>
+        </div>
     </section>
 
     <!-- Section 7: Scoring & Iteration -->
@@ -2206,7 +2373,7 @@
         <h3>人工评分（异步，使用产物后填写）</h3>
         <div class="callout warning">
             <div class="callout-title">[KEY: KEEP IT SIMPLE]</div>
-            <p>不要让策划填10个维度的表。只问3个问题：<br>
+            <p>问3个问题：<br>
             <strong>可用性</strong>："拿到这个文档，我能直接开始工作吗？" (1-5)<br>
             <strong>准确性</strong>："文档描述的和我理解的设计意图一致吗？" (1-5)<br>
             <strong>完整性</strong>："有没有我觉得重要但文档遗漏的信息？" (1-5)</p>
@@ -2306,7 +2473,7 @@
 
         <div class="callout insight">
             <div class="callout-title">[核心观点]</div>
-            <p>飞轮的"智能"不在于运行时有一个聪明的 Agent 在推理，而在于<strong>离线积累的结构化知识让每一个 Skill 都能拿到更好的上下文</strong>。和第一原则一致——能用 Skill 解决的，不上 Agent。知识积累本身是独立流程，由人工 + LLM 协作完成后，以静态知识的形式交付给 Tool 层。</p>
+            <p>飞轮的核心价值在于<strong>离线积累的结构化知识让每一个 Skill 都能拿到更好的上下文</strong>。和第一原则一致——能用 Skill 解决的，不上 Agent。知识积累本身是独立流程，由人工 + LLM 协作完成后，以静态知识的形式交付给 Tool 层。</p>
         </div>
 
         <h3>两层 Bible 架构</h3>
@@ -2328,7 +2495,7 @@
                 <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; text-align:left;">
                     跨所有关卡的全局知识资产<br>
                     → 已验证的设计模式库（高分案例的共性提炼）<br>
-                    → 反模式库（持续低分的做法）<br>
+                    → 低分模式特征合集（持续低分的做法）<br>
                     → 校准后的品质模型（自动评分权重进化）<br>
                     → 进化版术语表 + 跨模块接口约定
                 </p>
