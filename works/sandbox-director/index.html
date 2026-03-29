@@ -115,6 +115,13 @@ canvas{display:block;background:#3a5a3a}
     <button class="dbg-btn" onclick="world.godMode=!world.godMode;log('🔧 无敌: '+(world.godMode?'开':'关'),'director')">无敌模式</button>
     <button class="dbg-btn" onclick="world.player.hp=world.player.maxHp;log('🔧 HP已满','director')">回满HP</button>
   </div>
+  <h3>🃏 注入队列 (Deck Inject)</h3>
+  <div class="dbg-btns">
+    <button class="dbg-btn" onclick="manualInject('confrontation','murder_consequence',10)">塞牌 [对峙]</button>
+    <button class="dbg-btn" onclick="manualInject('request','grateful_response',3)">塞牌 [请求]</button>
+    <button class="dbg-btn" onclick="world.injectedBeats=[];log('🃏 注入队列已清空','director')">清空队列</button>
+  </div>
+  <div id="dbg-inject-queue" style="color:#e8a040;font-size:10px;line-height:1.6;margin:4px 0 8px"></div>
   <h3>📊 实体状态</h3>
   <div id="dbg-entities"></div>
   <h3>📋 当前状态</h3>

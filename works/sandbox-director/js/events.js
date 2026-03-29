@@ -7,6 +7,36 @@ function emitWorldEvent(eventType, data) {
     if (_dist(entity, pos) > radius) continue;
     reactToWorldEvent(entity, eventType, data);
   }
+  // ── Inject Queue: 世界事件 → 导演牌组注入 ──
+  // 重大事件会向导演的注入队列塞入高优先级 Beat 条目，
+  // 形成"行为 → 后果"的因果链（Token 传递机制）
+  if (eventType === 'kill' && data.source === world.player) {
+    if (data.target?.tags?.includes('civilian')) {
+      // 杀害平民 → 导演延迟安排守卫对峙（全城通缉）
+      injectDirectorBeat('confrontation', { reason: 'murder_consequence', victim: data.target?.name }, 10, 120);
+    } else if (data.target?.tags?.includes('hostile')) {
+      // 杀死敌人 → 可能有感恩的 NPC 出来请求帮助
+      injectDirectorBeat('request', { reason: 'grateful_response', killed: data.target?.name }, 3, 180);
+    }
+  }
+  if (eventType === 'gunshot' && data.source === world.player) {
+    // 枪声 → 导演安排可能的对峙（引来注意）
+    injectDirectorBeat('confrontation', { reason: 'noise_investigation' }, 5, 60);
+  }
+}
+
+// ── 注入队列工具函数 ──
+function injectDirectorBeat(beatId, context, priority, ttlSeconds) {
+  // 避免同类型重复注入
+  if (world.injectedBeats.some(b => b.beatId === beatId && b.context?.reason === context?.reason)) return;
+  world.injectedBeats.push({
+    beatId, context, priority,
+    ttl: ttlSeconds,
+    injectedAt: world.gameTime
+  });
+  // 按优先级排序（高优先消费）
+  world.injectedBeats.sort((a, b) => b.priority - a.priority);
+  log(`🃏 导演牌组: 注入 [${beatId}] (原因:${context?.reason || '未知'}, 优先级:${priority}, TTL:${ttlSeconds}s)`, 'director');
 }
 
 function reactToWorldEvent(entity, evt, data) {

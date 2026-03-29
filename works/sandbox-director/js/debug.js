@@ -45,6 +45,10 @@ function manualTrigger(id) {
   }
 }
 
+function manualInject(beatId, reason, priority) {
+  injectDirectorBeat(beatId, { reason: reason || 'manual_debug' }, priority || 5, 120);
+}
+
 function forceCooldownClear() {
   world.beatCooldown = 0; world.antiPlotCooldown = 0; world.directorTimer = 0;
   log('🔧 冷却已清除', 'director');
@@ -58,6 +62,7 @@ function respawnAll() {
 function resetWorld() {
   world.activeBeat = null; world.beatCooldown = 0; world.antiPlotCooldown = 0;
   world.tension = 0; world.caveVisited = false; world.lastAntiPlotType = null;
+  world.injectedBeats = [];
   world.player.reputation = 50; world.player.combatPower = 10; world.player.hp = 200;
   gun.ammo = 6; gun.reloading = false; world.packages = [];
   world.playerDead = false; world.playerRespawnTimer = 0;
@@ -95,7 +100,19 @@ function updateDebugPanel() {
     h += `<div class="dbg-entity"><span class="dot" style="background:${e.color}"></span><span class="e-name">${e.emoji}${e.name}${e.dead ? ' ☠️' : ''}</span><span class="e-state">${e.dead ? 'dead' : e.state}${e.isDirected ? ' [' + e.beatRole + ']' : ''}</span><span class="e-hp">${e.dead ? '—' : Math.round(e.hp)}</span></div>`;
   }
   document.getElementById('dbg-entities').innerHTML = h;
-  document.getElementById('dbg-status').innerHTML = `Beat冷却:${Math.ceil(world.beatCooldown)}s<br>反情节冷却:${Math.ceil(world.antiPlotCooldown)}s<br>扫描:${Math.ceil(world.directorTimer)}s<br>紧张度:${Math.round(world.tension)}<br>Beat:${world.activeBeat ? world.activeBeat.template.name + '(' + world.activeBeat.phase + ')' : '无'}<br>弹药:${gun.ammo}/${CFG.maxAmmo}${gun.reloading ? ' [装弹中]' : ''}`;
+  document.getElementById('dbg-status').innerHTML = `Beat冷却:${Math.ceil(world.beatCooldown)}s<br>反情节冷却:${Math.ceil(world.antiPlotCooldown)}s<br>扫描:${Math.ceil(world.directorTimer)}s<br>紧张度:${Math.round(world.tension)}${world.tension > 70 ? ' ⚠️高' : ''}<br>Beat:${world.activeBeat ? world.activeBeat.template.name + '(' + world.activeBeat.phase + ')' : '无'}<br>弹药:${gun.ammo}/${CFG.maxAmmo}${gun.reloading ? ' [装弹中]' : ''}`;
+  // ── 注入队列显示 ──
+  const iqEl = document.getElementById('dbg-inject-queue');
+  if (iqEl) {
+    if (world.injectedBeats.length === 0) {
+      iqEl.innerHTML = '队列为空';
+    } else {
+      iqEl.innerHTML = world.injectedBeats.map((b, i) => {
+        const remaining = Math.max(0, Math.round(b.ttl - (world.gameTime - b.injectedAt)));
+        return `${i + 1}. 🃏[${b.beatId}] P:${b.priority} TTL:${remaining}s <span style="color:#7a8aaa">${b.context?.reason || ''}</span>`;
+      }).join('<br>');
+    }
+  }
   document.getElementById('dbg-rep').value = world.player.reputation; document.getElementById('dbg-rep-v').textContent = Math.round(world.player.reputation);
   document.getElementById('dbg-pow').value = world.player.combatPower; document.getElementById('dbg-pow-v').textContent = world.player.combatPower;
 }

@@ -413,6 +413,11 @@ li { margin-bottom: 6px; }
   <a href="#insight-2">② 宽进严出</a>
   <a href="#insight-3">③ 结构化自顶向下</a>
 
+  <div class="nav-section">行业借鉴与进化</div>
+  <a href="#deck-ref">羊蹄山卡牌系统借鉴</a>
+  <a href="#deck-compare">架构对照</a>
+  <a href="#deck-evolution">导演系统进化：3 个增量机制</a>
+
   <div class="nav-section">技术方案</div>
   <a href="#architecture">系统架构</a>
   <a href="#mvp">MVP 范围与裁剪</a>
@@ -450,8 +455,8 @@ li { margin-bottom: 6px; }
 <p><strong>Anti-Plot（反情节）</strong>借鉴了科恩兄弟、北野武式的叙事手法——最强力的杀手可能在浴室滑倒摔死；精心策划的抢劫被一只流浪猫打断；等了半天的决战对手压根没来。</p>
 <p>尝试用"不按套路出牌"的体验，使用<em>系统驱动叙事</em>，<strong>让系统规则自然产生意外</strong>。</p>
 
-<h3>灵感参照：Schedule I</h3>
-<p>我在玩Schedule I 的时候，被开头两处连续的反情节体验所吸引，进而联想我们能否在大世界探索中创造这样的体验去替代那些曾经绕不开的<strong>清单化支线任务</strong>。</p>
+<h3>灵感参照：《Schedule I》与《羊蹄山之魂》</h3>
+<p>玩《Schedule I 》的时候，被开头两处连续的反情节体验所吸引，进而联想我们能否在大世界探索中创造这样的体验去替代那些曾经绕不开的<strong>清单化支线任务</strong>。同时从《羊蹄山之魂》的卡牌遭遇系统中获得了更多设计上的启发</p>
 
 <!-- ════════════════════════════════════════════ -->
 <h2 id="core-problem"><span class="num">02</span>核心问题</h2>
@@ -467,7 +472,7 @@ li { margin-bottom: 6px; }
     </ul>
   </div>
   <div class="card card-green">
-    <h4>我的解法</h4>
+    <h4>MVP尝试提供一套解法</h4>
     <ul>
       <li><strong>模板化</strong>：8-12 种 Beat 模板覆盖大部分戏剧结构</li>
       <li><strong>槽位化</strong>：运行时由导演系统填充具体角色</li>
@@ -535,7 +540,7 @@ li { margin-bottom: 6px; }
 <!-- ════════════════════════════════════════════ -->
 <h2 id="anti-patterns"><span class="num">04</span>反情节模式工具箱</h2>
 
-<p>我们总结出 <strong>7 种可复用的反情节模式</strong>，每种对应一类修饰器：</p>
+<p> <strong>7 种可复用的反情节模式</strong>，每种对应一类修饰器：</p>
 
 <table>
   <thead>
@@ -696,7 +701,7 @@ li { margin-bottom: 6px; }
   ├── <span class="hl">player_dead</span>    ← 玩家自己倒下了
   └── <span class="hl">timeout</span>        ← 超时自然消散</div>
 
-<p><strong>我希望通过这个规则设计做到：</strong></p>
+<p><strong>期望目标：</strong></p>
 <ul>
   <li><strong>高频触发</strong>：宽松的入口确保玩家几乎每走一段路就能遇到事件，不会有"跑图空窗期"</li>
   <li><strong>多样性来自出口而非入口</strong>：增加一个新结局只需加一个修饰器，不需要新建 Beat 模板</li>
@@ -748,6 +753,100 @@ li { margin-bottom: 6px; }
 </table>
 
 <p><strong>扩展验证：</strong>从MVP设计时第一版（2 Beat + 4 修饰器）扩展到第三版（4 Beat + 8 修饰器），<strong>核心架构零改动</strong>。新增的 [护送] Beat 和 [商人反水] 修饰器完全复用了已有的 Beat 生命周期。这证明了四层结构的可扩展性——增加内容不会增加架构复杂度。</p>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="deck-ref">来自《羊蹄山之魂》动态遭遇卡牌系统的启发</h2>
+
+<div class="card card-accent">
+  <h4>参考来源</h4>
+  <p>Sucker Punch 在 GDC 上分享的<strong>「Dynamic Encounters Deck System」</strong>——一套用于开放世界骑马旅途中随机遭遇的"抽卡/牌组引擎"。它用极低的性能开销替代了全图实体模拟，通过导演后台"发牌"来控制玩家遇到什么。</p>
+</div>
+
+<h3>核心理念</h3>
+<p>《羊蹄山》的做法是：<strong>世界并不在远方自行运转，导演手里的牌决定了玩家随机遭遇的事件"</strong>。随着玩家骑马移动，导演按节奏抽牌，抽到什么牌就在玩家前方的高速缓存区刷什么事件。牌组里有大量"空牌"来保证节奏张力。</p>
+
+<p>这套系统本质上解决的是<strong>"长距离移动中的事件填充"</strong>问题——让骑马赶路不无聊。</p>
+
+<!-- ── 架构对照 ── -->
+<h3 id="deck-compare">尝试在框架设计上进行借鉴与优化</h3>
+
+<p>框架上的学习与优化：<strong>Beat 导演系统本质也是"后台打牌"，尝试对照他们的做法，迭代导演系统</strong>：</p>
+
+<table>
+  <thead><tr><th>羊蹄山"卡牌概念"</th><th>我们系统中的对应物</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td><strong>牌组</strong></td><td><code>BEAT_TEMPLATES</code> — 4 个 Beat 模板构成的候选池</td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>抽牌</strong></td><td><code>tryTriggerBeat()</code> — 按优先级依次尝试触发</td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>牌面内容</strong></td><td>Beat 模板 + Modifier 修饰器组合</td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>槽位验证</strong></td><td>每个 <code>try*()</code> 函数内的 <code>.filter()</code> 筛选 — tag/距离/存活</td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>弃牌</strong></td><td><code>if (!candidates.length) return false</code> — 条件不满足跳过</td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>空牌/冷却</strong></td><td><code>world.beatCooldown</code> + <code>world.antiPlotCooldown</code></td><td><span class="tag tag-green">已有</span></td></tr>
+    <tr><td><strong>驱动抽牌</strong></td><td><code>world.tension</code> 线性衰减</td><td><span class="tag tag-yellow">缺乏随机性</span></td></tr>
+    <tr><td><strong>塞牌</strong></td><td>信息Token传递</td><td><span class="tag tag-yellow">难落地</span></td></tr>
+    <tr><td><strong>加权抽取</strong></td><td>无 — 固定优先级：发现 → 对峙 → 护送 → 请求</td><td><span class="tag tag-yellow">缺失</span></td></tr>
+  </tbody>
+</table>
+
+<div class="card card-blue">
+  <h4>关键判断</h4>
+  <p><strong>不需要推翻重来</strong>。羊蹄山的 Deck System 解决的是"骑马赶路不无聊"这个单一问题，而我们的导演系统在 Beat 三层架构、归因结算、多阶段生命周期、记忆系统上已经很完整了。</p>
+  <p>借鉴的方式：<strong>从中提取 3 个具体机制，作为增量补丁打到现有导演系统上。</strong></p>
+</div>
+
+<!-- ── 三个进化机制 ── -->
+<h3 id="deck-evolution">导演系统进化：3 个增量机制</h3>
+
+<h4>机制 1：注入队列<span class="tag tag-green" style="margin-left:8px;">已实现</span></h4>
+
+<p>对应羊蹄山的"塞牌"：让世界事件不仅广播给周围 NPC，<strong>还能往导演的待触发队列里注入高优先级 Beat 条目</strong>。</p>
+
+<div class="diagram"><span class="hl2">旧流程</span>
+玩家偷苹果 → emitWorldEvent('crime') → 周围NPC反应 → <span class="hl3">结束</span>
+
+<span class="hl2">新流程</span>
+玩家偷苹果 → emitWorldEvent('crime') → 周围NPC反应
+                                      ↘ <span class="hl">injectBeat('wanted_confrontation', {priority: HIGH, ttl: 300s})</span>
+                                         ↓
+导演下次扫描 → <span class="hl">先检查注入队列</span> → 找到 'wanted_confrontation' → 在玩家前方刷出守卫拦截</div>
+
+<h4>机制 2：紧张度控制<span class="tag tag-green" style="margin-left:8px;">已实现</span></h4>
+
+<p>对应羊蹄山的"空牌比例控制"：让 <code>world.tension</code> 值<strong>真正参与 Beat 触发/抑制决策</strong>，而不只是被动衰减。</p>
+
+<div class="diagram"><span class="hl2">紧张度控制beats逻辑</span>
+
+导演扫描触发 → 读取 world.tension
+  │
+  ├── tension > 70（高紧张）→ <span class="hl3">60% 概率跳过本轮（等效"抽到空牌"）</span>
+  │   玩家刚经历激烈战斗，需要喘息，导演"按住不发"
+  │
+  ├── tension 30~70（正常）→ 正常流程
+  │
+  └── tension < 30（低紧张）→ <span class="hl">提升高冲突 Beat 的触发权重</span>
+      玩家跑图太久没事发生，导演主动制造冲突</div>
+
+<p><strong>效果：</strong>高紧张时自动冷却，低紧张时主动加压。相比羊蹄山"移除所有高冲突牌到弃牌区"更简单，效果一致。</p>
+
+<h4>机制 3：加权抽取<span class="tag tag-yellow" style="margin-left:8px;">设计完成 / 待实现</span></h4>
+
+<p>对应羊蹄山的"洗牌"：将 <code>tryTriggerBeat()</code> 从"固定优先级链式结构改为<strong>基于上下文的加权随机选取</strong>。</p>
+
+<div class="diagram"><span class="hl2">旧做法：固定优先级</span>
+tryTriggerBeat():
+  if (tryDiscovery()) return;       ← 永远第一
+  if (tryConfrontation()) return;   ← 永远第二
+  if (tryEscort()) return;          ← 永远第三
+  tryRequest();                     ← 永远第四
+
+<span class="hl2">新做法：加权随机，设计方案</span>
+tryTriggerBeat():
+  candidates = [                     ← 收集所有可触发的 Beat
+    { beat: 'confrontation', weight: <span class="hl">base × tensionMultiplier</span> },
+    { beat: 'escort',        weight: <span class="hl">base × cooldownBonus</span> },
+    { beat: 'request',       weight: <span class="hl">base × reputationFactor</span> },
+  ]
+  selected = <span class="hl3">weightedRandom(candidates)</span>
+  execute(selected)</div>
 
 <!-- ════════════════════════════════════════════ -->
 <h2 id="architecture"><span class="num">06</span>系统架构</h2>
@@ -1073,9 +1172,9 @@ li { margin-bottom: 6px; }
     <tr><td>玩家杀野猪</td><td>赞叹</td><td>中性</td><td>忌惮</td><td>—</td><td>赞叹</td></tr>
     <tr><td>玩家杀平民</td><td>逃跑</td><td><strong>追捕</strong></td><td>无反应</td><td>逃跑</td><td>逃跑</td></tr>
     <tr><td>山贼攻击平民</td><td>逃跑</td><td><strong>追捕山贼</strong></td><td>—</td><td>逃跑</td><td>逃跑</td></tr>
-    <tr><td>枪声 (gunshot)</td><td>逃跑</td><td><strong>巡逻调查*</strong></td><td>忌惮/逃跑</td><td>逃跑</td><td>逃跑</td></tr>
+    <tr><td>枪声</td><td>逃跑</td><td><strong>巡逻调查*</strong></td><td>忌惮/逃跑</td><td>逃跑</td><td>逃跑</td></tr>
     <tr><td>瞄准威慑</td><td>退缩</td><td>警告</td><td>恐惧/逃跑</td><td>逃跑</td><td>退缩</td></tr>
-    <tr><td>crime_witnessed</td><td>逃跑</td><td><strong>立即追捕</strong></td><td>—</td><td>—</td><td>逃跑</td></tr>
+    <tr><td>犯罪被发现</td><td>逃跑</td><td><strong>立即追捕</strong></td><td>—</td><td>—</td><td>逃跑</td></tr>
   </tbody>
 </table>
 <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">* 守卫听到枪声后进入 patrol 状态前往枪声位置调查；只有玩家声望 &lt; 25 时才直接追捕。</p>
@@ -1122,7 +1221,7 @@ li { margin-bottom: 6px; }
     <span class="status-dot"></span>
     <span>SYS_STATUS: DOCUMENT_COMPLETE</span>
   </div>
-  <div>Anti-Plot Quest System Design Document v1 — REV: 2025.03</div>
+  <div>Anti-Plot Quest System Design Document v1 — REV: 2026.03</div>
 </div>
 
 </main>

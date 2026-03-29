@@ -18,7 +18,11 @@ const world = {
   beatCooldown: 5, antiPlotCooldown: 0, tension: 0,
   directorTimer: 6, gameTime: 0,
   caveVisited: false, lastAntiPlotType: null,
-  godMode: false, playerDead: false, playerRespawnTimer: 0
+  godMode: false, playerDead: false, playerRespawnTimer: 0,
+  // ── Inject Queue（注入队列）── 对马岛 Deck System 借鉴
+  // 世界事件可以往此队列塞入高优先级 Beat 条目
+  // 格式: { beatId: string, context: {}, priority: number, ttl: number, injectedAt: number }
+  injectedBeats: []
 };
 const tracers = [];
 const flashes = [];
