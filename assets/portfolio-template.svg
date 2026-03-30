@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600">
+  <!-- 背景 -->
+  <rect width="1200" height="1600" fill="#F4F4F0"/>
+
+  <!-- 主容器 -->
+  <g transform="translate(60, 60)">
+    <!-- 十字准星装饰 -->
+    <g transform="translate(0, 0)">
+      <line x1="0" y1="10" x2="20" y2="10" stroke="#FF4500" stroke-width="1"/>
+      <line x1="10" y1="0" x2="10" y2="20" stroke="#FF4500" stroke-width="1"/>
+    </g>
+
+    <!-- 规格标签 -->
+    <text x="0" y="50" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#FF4500" letter-spacing="1">[SPEC.00: PORTFOLIO_OVERVIEW]</text>
+
+    <!-- 主标题 -->
+    <text x="0" y="100" font-family="Noto Sans SC, sans-serif" font-size="48" font-weight="700" fill="#111111" letter-spacing="-2">LEVEL DESIGN PORTFOLIO</text>
+
+    <!-- 副标题 -->
+    <text x="0" y="140" font-family="Noto Sans SC, sans-serif" font-size="18" fill="#333333" letter-spacing="2">HONG XIANGJIAN // 洪祥健</text>
+
+    <!-- 分隔线 -->
+    <line x1="0" y1="180" x2="1080" y2="180" stroke="#111111" stroke-width="1"/>
+
+    <!-- 作品区域标题 -->
+    <text x="0" y="220" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#FF4500" letter-spacing="1">[SEC.01: SELECTED_WORKS]</text>
+    <text x="980" y="220" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">TTL_RECORDS: 04</text>
+
+    <!-- 作品1: 34号制造厂 -->
+    <rect x="0" y="250" width="520" height="280" fill="#111111"/>
+    <text x="24" y="280" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#FF4500" letter-spacing="1">[WORK.01]</text>
+    <text x="24" y="320" font-family="Noto Sans SC, sans-serif" font-size="24" font-weight="600" fill="#F4F4F0">34号制造厂</text>
+    <text x="24" y="350" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">UE5白盒关卡设计</text>
+    <text x="24" y="390" font-family="Noto Sans SC, sans-serif" font-size="13" fill="#F4F4F0" opacity="0.8">
+      <tspan x="24" dy="0">工厂主题的UE5白盒关卡，融合叙事与环境设计，</tspan>
+      <tspan x="24" dy="22">打造沉浸式工业探索体验。</tspan>
+    </text>
+
+    <!-- 作品2: Arc Raiders -->
+    <rect x="560" y="250" width="520" height="280" fill="#111111"/>
+    <text x="584" y="280" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#FF4500" letter-spacing="1">[WORK.02]</text>
+    <text x="584" y="320" font-family="Noto Sans SC, sans-serif" font-size="24" font-weight="600" fill="#F4F4F0">Arc Raiders系统切片分析</text>
+    <text x="584" y="350" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">海外局内外循环构建研究</text>
+    <text x="584" y="390" font-family="Noto Sans SC, sans-serif" font-size="13" fill="#F4F4F0" opacity="0.8">
+      <tspan x="584" dy="0">深入分析Arc Raiders的游戏系统设计，研究局内外</tspan>
+      <tspan x="584" dy="22">循环的构建方法与玩家体验优化策略。</tspan>
+    </text>
+
+    <!-- 作品3: AI Agent -->
+    <rect x="0" y="562" width="520" height="280" fill="#111111"/>
+    <text x="24" y="592" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#FF4500" letter-spacing="1">[WORK.03]</text>
+    <text x="24" y="632" font-family="Noto Sans SC, sans-serif" font-size="24" font-weight="600" fill="#F4F4F0">Level Design × AI Agent</text>
+    <text x="24" y="662" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">大世界关卡设计AI Agent架构</text>
+    <text x="24" y="702" font-family="Noto Sans SC, sans-serif" font-size="13" fill="#F4F4F0" opacity="0.8">
+      <tspan x="24" dy="0">探索AI Agent在关卡设计领域的应用，构建设计维度、</tspan>
+      <tspan x="24" dy="22">产物与上下文治理的完整架构方案。</tspan>
+    </text>
+
+    <!-- 作品4: Anti-Plot -->
+    <rect x="560" y="562" width="520" height="280" fill="#111111"/>
+    <text x="584" y="592" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#FF4500" letter-spacing="1">[WORK.04]</text>
+    <text x="584" y="632" font-family="Noto Sans SC, sans-serif" font-size="24" font-weight="600" fill="#F4F4F0">Anti-Plot 开放世界</text>
+    <text x="584" y="662" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">交互原型 + 设计文档</text>
+    <text x="584" y="702" font-family="Noto Sans SC, sans-serif" font-size="13" fill="#F4F4F0" opacity="0.8">
+      <tspan x="584" dy="0">创新的反叙事开放世界设计，结合交互原型与设计文档，</tspan>
+      <tspan x="584" dy="22">探索非传统故事驱动的游戏体验。</tspan>
+    </text>
+
+    <!-- 分隔线 -->
+    <line x1="0" y1="892" x2="1080" y2="892" stroke="#111111" stroke-width="1"/>
+
+    <!-- 底部区域 -->
+    <text x="0" y="940" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#FF4500" letter-spacing="1">[SEC.02: COMMUNICATION_PROTOCOL]</text>
+    <text x="980" y="940" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#666666">STATUS: ONLINE</text>
+
+    <!-- 状态指示 -->
+    <rect x="0" y="965" width="8" height="8" fill="#FF4500"/>
+    <text x="20" y="974" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#333333">SYS_STATUS: SEEKING_OPPORTUNITY</text>
+
+    <!-- 个人主页链接 -->
+    <text x="0" y="1020" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#666666">PORTFOLIO_URL:</text>
+    <text x="0" y="1050" font-family="Noto Sans SC, sans-serif" font-size="16" fill="#FF4500" text-decoration="underline">
+      https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/
+    </text>
+
+    <!-- 邮箱 -->
+    <text x="0" y="1080" font-family="Noto Sans SC, sans-serif" font-size="14" fill="#333333">EMAIL: hongsteve119@gmail.com</text>
+
+    <!-- 分隔线 -->
+    <line x1="0" y1="1120" x2="1080" y2="1120" stroke="#CCCCCC" stroke-width="1"/>
+
+    <!-- 版权信息 -->
+    <text x="0" y="1160" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#666666">© 2025 HONG XIANGJIAN</text>
+    <text x="960" y="1160" font-family="Noto Sans SC, sans-serif" font-size="12" fill="#666666" letter-spacing="1">LEVEL DESIGNER</text>
+  </g>
+</svg>

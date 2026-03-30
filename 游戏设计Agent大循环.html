@@ -1,0 +1,1119 @@
+下面是整合了「总Agent框架 + 关卡Agent改动计划」的完整 HTML 文档，延续你原方案的视觉语言（Noto Sans SC、十字线装饰、橙红强调色、卡片/时间线/层叠结构），并把我们讨论中确认的所有结论结构化呈现。
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总Agent框架 & 关卡Agent改动计划</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F4F4F0;
+            --bg-secondary: #E8E8E4;
+            --bg-card: #FFFFFF;
+            --text-primary: #111111;
+            --text-secondary: #333333;
+            --text-muted: #666666;
+            --accent: #FF4500;
+            --border: #111111;
+            --border-light: #CCCCCC;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;
+            background:var(--bg-primary); color:var(--text-primary); line-height:1.6; overflow-x:hidden;
+        }
+
+        /* ===== Crosshair ===== */
+        .crosshair { position:relative; width:20px; height:20px; }
+        .crosshair::before,.crosshair::after { content:''; position:absolute; background-color:var(--accent); }
+        .crosshair::before { width:20px; height:1px; top:50%; left:0; transform:translateY(-50%); }
+        .crosshair::after { width:1px; height:20px; left:50%; top:0; transform:translateX(-50%); }
+
+        /* ===== Labels & Dividers ===== */
+        .section-label { color:var(--accent); font-size:12px; letter-spacing:2px; font-weight:500; text-transform:uppercase; }
+        .divider { height:1px; background-color:var(--border); width:100%; }
+        .divider-light { height:1px; background-color:var(--border-light); width:100%; }
+
+        /* ===== Navigation ===== */
+        .nav {
+            position:fixed; top:0; left:0; width:280px; height:100vh;
+            background:var(--bg-secondary); border-right:2px solid var(--border);
+            padding:24px 0; overflow-y:auto; z-index:100; transition:transform .3s ease;
+        }
+        .nav-header { padding:0 20px 20px; border-bottom:1px solid var(--border-light); margin-bottom:16px; }
+        .nav-header h2 { font-size:14px; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; font-weight:600; }
+        .nav-header p { font-size:11px; color:var(--text-muted); }
+        .nav-section { padding:8px 20px; }
+        .nav-section-title { font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; padding-left:4px; }
+        .nav a { display:block; padding:8px 12px; color:var(--text-secondary); text-decoration:none; font-size:13px; margin-bottom:2px; transition:all .2s ease; border-left:2px solid transparent; }
+        .nav a:hover { color:var(--accent); border-left-color:var(--accent); }
+        .nav a.active { color:var(--accent); border-left-color:var(--accent); font-weight:500; }
+
+        /* ===== Main ===== */
+        .main { margin-left:280px; padding:0; }
+
+        /* ===== Hero ===== */
+        .hero { padding:60px 48px 48px; border-bottom:2px solid var(--border); }
+        .hero-badge { display:inline-block; font-size:11px; color:var(--accent); letter-spacing:2px; margin-bottom:20px; font-weight:500; }
+        .hero h1 { font-size:36px; font-weight:700; line-height:1.2; margin-bottom:16px; letter-spacing:-1px; }
+        .hero p { font-size:15px; color:var(--text-secondary); max-width:700px; margin-bottom:32px; line-height:1.7; }
+        .hero-stats { display:flex; gap:40px; flex-wrap:wrap; }
+        .hero-stat-value { font-size:28px; font-weight:700; color:var(--accent); }
+        .hero-stat-label { font-size:11px; color:var(--text-muted); margin-top:4px; letter-spacing:1px; }
+
+        /* ===== Section ===== */
+        .section { padding:48px; border-bottom:1px solid var(--border-light); }
+        .section:last-child { border-bottom:none; }
+        .section-header { margin-bottom:32px; }
+        .section h2 { font-size:24px; font-weight:700; margin-bottom:8px; letter-spacing:-.5px; }
+        .section-desc { font-size:14px; color:var(--text-secondary); margin-bottom:24px; max-width:700px; line-height:1.7; }
+        .section h3 { font-size:16px; font-weight:600; margin:36px 0 16px; padding-left:12px; border-left:3px solid var(--accent); }
+        .section h4 { font-size:14px; font-weight:600; margin:24px 0 12px; color:var(--text-secondary); }
+
+        /* ===== Cards ===== */
+        .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin:20px 0; }
+        .card { background:var(--bg-card); border:2px solid var(--border); padding:24px; transition:all .2s ease; }
+        .card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:4px 4px 0 rgba(0,0,0,.1); }
+        .card-icon { display:inline-block; font-size:14px; margin-bottom:12px; color:var(--accent); letter-spacing:1px; }
+        .card h4 { font-size:14px; margin-bottom:8px; font-weight:600; }
+        .card p { font-size:13px; color:var(--text-secondary); line-height:1.6; }
+
+        /* ===== Callout ===== */
+        .callout { padding:20px 24px; border:2px solid var(--border); margin:20px 0; font-size:14px; background:var(--bg-card); }
+        .callout.insight { border-left:4px solid var(--accent); }
+        .callout.warning { border-left:4px solid #FF8C00; }
+        .callout.danger { border-left:4px solid #CC0000; }
+        .callout.success { border-left:4px solid #228B22; }
+        .callout-title { font-weight:700; margin-bottom:6px; font-size:12px; letter-spacing:1px; }
+        .callout.insight .callout-title { color:var(--accent); }
+        .callout.warning .callout-title { color:#FF8C00; }
+        .callout.danger .callout-title { color:#CC0000; }
+        .callout.success .callout-title { color:#228B22; }
+        .callout p { color:var(--text-secondary); font-size:13px; line-height:1.6; }
+
+        /* ===== Tables ===== */
+        .table-wrapper { overflow-x:auto; margin:20px 0; border:2px solid var(--border); }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        thead { background:var(--bg-secondary); }
+        th { padding:12px 16px; text-align:left; font-weight:600; color:var(--text-secondary); font-size:11px; text-transform:uppercase; letter-spacing:1px; border-bottom:2px solid var(--border); }
+        td { padding:12px 16px; border-bottom:1px solid var(--border-light); color:var(--text-secondary); }
+        tr:hover td { background:rgba(255,69,0,.03); }
+
+        /* ===== Code ===== */
+        .code-block { background:var(--bg-secondary); border:2px solid var(--border); padding:20px 24px; margin:16px 0; overflow-x:auto; font-family:'JetBrains Mono','Fira Code',monospace; font-size:12px; line-height:1.7; color:var(--text-primary); white-space:pre; }
+        .code-block .comment { color:var(--text-muted); }
+        .code-block .keyword { color:var(--accent); }
+        .code-block .field { color:var(--text-primary); font-weight:600; }
+        .code-block .value { color:var(--accent); }
+        .code-block .string { color:var(--text-secondary); }
+        .code-header { display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background:var(--bg-secondary); border:2px solid var(--border); border-bottom:none; margin:16px 0 0; }
+        .code-header span { font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; letter-spacing:1px; }
+        .code-header + .code-block { margin-top:0; border-top:none; }
+
+        /* ===== Tags ===== */
+        .tag { display:inline-block; padding:2px 10px; border:1px solid var(--border); font-size:10px; font-weight:600; letter-spacing:.5px; }
+        .tag.p0 { border-color:var(--accent); color:var(--accent); }
+        .tag.p1 { border-color:var(--text-secondary); color:var(--text-secondary); }
+        .tag.p2 { border-color:var(--text-muted); color:var(--text-muted); }
+        .tag.agent { border-color:var(--accent); color:var(--accent); background:rgba(255,69,0,.05); }
+        .tag.skill { border-color:var(--border); color:var(--text-secondary); }
+        .tag.tool { border-color:var(--text-muted); color:var(--text-muted); }
+        .tag.flow { border-color:var(--accent); color:var(--accent); }
+        .tag.safe { border-color:#228B22; color:#228B22; }
+        .tag.danger-tag { border-color:#CC0000; color:#CC0000; }
+
+        /* ===== Timeline ===== */
+        .timeline { position:relative; padding-left:32px; margin:24px 0; }
+        .timeline::before { content:''; position:absolute; left:11px; top:0; bottom:0; width:2px; background:var(--border-light); }
+        .timeline-item { position:relative; margin-bottom:24px; padding:20px 24px; background:var(--bg-card); border:2px solid var(--border); }
+        .timeline-item::before { content:''; position:absolute; left:-27px; top:24px; width:10px; height:10px; background:var(--border-light); border:2px solid var(--bg-primary); }
+        .timeline-item.active::before { background:var(--accent); }
+        .timeline-item h4 { font-size:14px; margin-bottom:8px; font-weight:600; }
+        .timeline-item p { font-size:13px; color:var(--text-secondary); line-height:1.6; }
+        .timeline-tag { display:inline-block; padding:2px 8px; border:1px solid var(--accent); font-size:10px; font-weight:600; margin-left:8px; color:var(--accent); }
+
+        /* ===== Layers ===== */
+        .layer-stack { margin:24px 0; }
+        .layer { background:var(--bg-card); border:2px solid var(--border); padding:24px; margin-bottom:-2px; }
+        .layer-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+        .layer-badge { padding:4px 10px; border:1px solid var(--border); font-size:10px; font-weight:700; letter-spacing:.5px; }
+        .layer-badge.l1 { border-color:var(--accent); color:var(--accent); }
+        .layer-badge.l2 { border-color:var(--text-secondary); color:var(--text-secondary); }
+        .layer-badge.l3 { border-color:var(--text-muted); color:var(--text-muted); }
+        .layer h4 { font-size:14px; margin:0; font-weight:600; }
+        .layer p { font-size:13px; color:var(--text-secondary); margin-bottom:8px; line-height:1.6; }
+        .layer ul { list-style:none; padding:0; }
+        .layer li { font-size:12px; color:var(--text-secondary); padding:3px 0 3px 20px; position:relative; }
+        .layer li::before { content:'>'; position:absolute; left:0; color:var(--accent); font-size:10px; }
+
+        /* ===== Comparison ===== */
+        .comparison { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+        .comparison-side { background:var(--bg-card); border:2px solid var(--border); padding:24px; }
+        .comparison-side.bad { border-left:4px solid #CC0000; }
+        .comparison-side.good { border-left:4px solid #228B22; }
+        .comparison-side h4 { font-size:13px; margin-bottom:12px; font-weight:600; }
+        .comparison-side.bad h4 { color:#CC0000; }
+        .comparison-side.good h4 { color:#228B22; }
+        .comparison-side p,.comparison-side li { font-size:13px; color:var(--text-secondary); }
+
+        /* ===== Arch Diagram ===== */
+        .arch-diagram { background:var(--bg-card); border:2px solid var(--border); padding:32px; margin:24px 0; overflow-x:auto; }
+        .arch-flow { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin:20px 0; }
+        .arch-node { padding:12px 20px; border:2px solid var(--border); font-size:13px; font-weight:600; text-align:center; min-width:120px; background:var(--bg-primary); }
+        .arch-node.input { border-color:var(--text-muted); color:var(--text-secondary); }
+        .arch-node.process { border-color:var(--accent); color:var(--accent); }
+        .arch-node.agent-node { border-color:var(--accent); color:var(--accent); background:rgba(255,69,0,.05); }
+        .arch-node.output { border-color:var(--text-secondary); color:var(--text-secondary); }
+        .arch-node.skill-node { border-color:var(--border); color:var(--text-primary); background:var(--bg-card); }
+        .arch-node-label { font-size:10px; color:var(--text-muted); margin-top:4px; font-weight:400; }
+        .arch-arrow { color:var(--text-muted); font-size:20px; }
+
+        /* ===== Global Arch ===== */
+        .global-arch { display:grid; grid-template-columns:220px 1fr 240px; gap:24px; margin:32px 0; min-height:600px; }
+        .governance-panel,.loops-panel { background:var(--bg-card); border:2px solid var(--border); padding:20px; }
+        .pipeline-panel { background:var(--bg-card); border:2px solid var(--border); padding:24px; display:flex; flex-direction:column; }
+        .governance-title,.pipeline-title,.loops-title { font-size:12px; font-weight:600; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border-light); }
+        .governance-layers { display:flex; flex-direction:column; gap:16px; }
+        .gov-layer { border:2px solid var(--border); padding:16px; position:relative; background:var(--bg-primary); }
+        .gov-layer::before { content:''; position:absolute; left:-2px; top:0; bottom:0; width:4px; }
+        .gov-layer.layer-1::before { background:var(--accent); }
+        .gov-layer.layer-2::before { background:var(--text-secondary); }
+        .gov-layer.layer-3::before { background:var(--text-muted); }
+        .layer-label { font-size:10px; color:var(--text-muted); letter-spacing:1px; margin-bottom:4px; }
+        .layer-name { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:8px; }
+        .layer-desc { font-size:11px; color:var(--text-secondary); line-height:1.5; }
+        .pipeline-flow { display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; justify-content:space-between; }
+        .pipe-node { width:100%; border:2px solid var(--border); padding:16px; text-align:center; background:var(--bg-primary); }
+        .pipe-node.ir-node { border-color:var(--accent); background:rgba(255,69,0,.05); padding:20px; }
+        .pipe-node.orchestrator-node { border-color:var(--border); border-width:3px; }
+        .pipe-node.agent-row-node { border-color:var(--accent); border-style:dashed; }
+        .pipe-node.final-node { border-color:var(--accent); background:rgba(255,69,0,.05); }
+        .node-title { font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:4px; }
+        .node-sub { font-size:11px; color:var(--text-muted); }
+        .pipe-arrow { color:var(--text-muted); font-size:16px; line-height:1; }
+        .ir-dims { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:12px 0; }
+        .ir-dims span { font-size:10px; padding:3px 8px; border:1px solid var(--accent); color:var(--accent); font-weight:600; letter-spacing:.5px; }
+        .loop-items { display:flex; flex-direction:column; gap:16px; }
+        .loop-item { border:2px solid var(--border); padding:16px; }
+        .loop-item.inner-loop { border-left:4px solid var(--text-muted); }
+        .loop-item.middle-loop { border-left:4px solid var(--text-secondary); }
+        .loop-item.outer-loop { border-left:4px solid var(--accent); background:rgba(255,69,0,.03); }
+        .loop-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .loop-name { font-size:13px; font-weight:600; }
+        .loop-cycle { font-size:10px; padding:2px 8px; border:1px solid var(--border); color:var(--text-muted); }
+        .loop-mechanism { font-size:12px; color:var(--text-secondary); font-weight:600; margin-bottom:6px; }
+        .loop-flow { font-size:10px; color:var(--text-muted); line-height:1.5; }
+        .loop-highlight { font-size:10px; color:var(--accent); font-weight:600; margin-top:8px; text-transform:uppercase; letter-spacing:1px; }
+        .summary-box { background:var(--bg-secondary); border:2px solid var(--border); padding:20px 24px; text-align:center; margin-top:24px; }
+        .summary-title { font-size:11px; color:var(--accent); letter-spacing:2px; font-weight:600; margin-bottom:8px; text-transform:uppercase; }
+        .summary-box p { font-size:13px; color:var(--text-secondary); line-height:1.6; }
+
+        /* ===== Risk Indicators ===== */
+        .risk-indicator { display:inline-block; width:8px; height:8px; margin-right:6px; }
+        .risk-indicator.high { background:var(--accent); }
+        .risk-indicator.medium { background:var(--text-secondary); }
+        .risk-indicator.low { background:var(--text-muted); }
+
+        /* ===== Principle Card ===== */
+        .principle-card { background:var(--bg-card); border:2px solid var(--border); padding:20px; margin-bottom:12px; }
+        .principle-card .principle-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+        .principle-number { width:28px; height:28px; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0; }
+        .principle-card h4 { font-size:14px; margin:0; font-weight:600; }
+        .principle-card p { font-size:13px; color:var(--text-secondary); padding-left:40px; line-height:1.6; }
+
+        /* ===== Token Bar ===== */
+        .token-bar { display:flex; align-items:center; margin:8px 0; gap:12px; }
+        .token-bar-label { width:140px; font-size:12px; color:var(--text-secondary); text-align:right; flex-shrink:0; }
+        .token-bar-track { flex:1; height:24px; background:var(--bg-secondary); border:1px solid var(--border-light); overflow:hidden; }
+        .token-bar-fill { height:100%; display:flex; align-items:center; padding-left:8px; font-size:11px; font-weight:600; color:white; min-width:40px; }
+        .token-bar-fill.orange { background:var(--accent); }
+        .token-bar-fill.green { background:#228B22; }
+
+        /* ===== Mobile ===== */
+        .nav-toggle { display:none; position:fixed; top:16px; left:16px; z-index:200; width:40px; height:40px; background:var(--bg-card); border:2px solid var(--border); color:var(--text-primary); font-size:18px; cursor:pointer; align-items:center; justify-content:center; }
+        @media(max-width:1024px){
+            .global-arch { grid-template-columns:1fr; }
+        }
+        @media(max-width:900px){
+            .nav { transform:translateX(-100%); }
+            .nav.open { transform:translateX(0); }
+            .nav-toggle { display:flex; }
+            .main { margin-left:0; }
+            .hero { padding:60px 24px 40px; }
+            .section { padding:40px 24px; }
+            .hero h1 { font-size:28px; }
+            .comparison { grid-template-columns:1fr; }
+            .hero-stats { gap:20px; }
+        }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:var(--border-light); }
+        ::-webkit-scrollbar-thumb:hover { background:var(--text-muted); }
+    </style>
+</head>
+<body>
+
+<button class="nav-toggle" onclick="document.querySelector('.nav').classList.toggle('open')">☰</button>
+
+<!-- =============== NAVIGATION =============== -->
+<nav class="nav" id="nav">
+    <div class="nav-header">
+        <h2>总Agent框架</h2>
+        <p>& 关卡Agent改动计划 v2.0</p>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 01 · 全局视图</div>
+        <a href="#vision">愿景与最小循环</a>
+        <a href="#global-arch">完整形态架构图</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 02 · 角色与权限</div>
+        <a href="#agent-roster">Agent 清单与职责</a>
+        <a href="#permissions">三级权限模型</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 03 · 通信协议</div>
+        <a href="#ir-branch">IR 分支模型</a>
+        <a href="#message-protocol">三种消息类型</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 04 · 回退风险审计</div>
+        <a href="#risk-audit">当前设计审计</a>
+        <a href="#high-risk">高风险改动项</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 05 · 知识库扩展</div>
+        <a href="#bible-scale">Level Bible 分区</a>
+        <a href="#pattern-index">模式索引结构</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 06 · 关卡Agent改动</div>
+        <a href="#registry-rename">注册表升级</a>
+        <a href="#decouple">编排器解耦</a>
+        <a href="#ir-extend">IR Schema 扩展</a>
+        <a href="#ue-contracts">UE 工具接口预留</a>
+    </div>
+    <div class="nav-section">
+        <div class="nav-section-title">Part 07 · 实施计划</div>
+        <a href="#action-plan">优先级排序</a>
+        <a href="#phase-map">阶段映射</a>
+    </div>
+</nav>
+
+<!-- =============== MAIN =============== -->
+<main class="main">
+
+<!-- ============================================================ -->
+<!-- HERO                                                          -->
+<!-- ============================================================ -->
+<section class="hero" id="top">
+    <div class="crosshair"></div>
+    <div class="hero-badge">[FRAMEWORK DESIGN v2.0]</div>
+    <h1>总 Agent 框架<br>& 关卡 Agent 改动计划</h1>
+    <p>基于"关卡Agent"构思的自我审视与扩展——明确完整形态的架构蓝图，审计当前设计的回退风险，在 Phase 1 中以最小改动为大循环预留接口。核心原则：<strong>先跑通最小循环，让飞轮开始转第一圈。</strong></p>
+    <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-value">5</div><div class="hero-stat-label">Agent 角色</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">3</div><div class="hero-stat-label">消息类型</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">3</div><div class="hero-stat-label">权限等级</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">7</div><div class="hero-stat-label">改动项</div></div>
+        <div class="hero-stat"><div class="hero-stat-value">~1-2d</div><div class="hero-stat-label">额外工作量</div></div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 01 · VISION & GLOBAL ARCHITECTURE                        -->
+<!-- ============================================================ -->
+<section class="section" id="vision">
+    <div class="section-header">
+        <div class="section-label">[PART 01]</div>
+        <h2>愿景与最小循环</h2>
+        <p class="section-desc">当前关卡Agent方案是"先落地的验证器"——用它验证整个项目大Agent循环的可行性，再扩展到完整形态。</p>
+    </div>
+
+    <div class="callout insight">
+        <div class="callout-title">[THE MINIMAL LOOP]</div>
+        <p>先在脑子里跑通一个最小循环，架构就基本定了。</p>
+    </div>
+
+    <div class="comparison">
+        <div class="comparison-side bad">
+            <h4>[当前方案的循环]</h4>
+            <p style="font-size:13px; line-height:1.8;">
+                设计意图<br>
+                → <strong>Skill</strong> → 文档 / 图表<br>
+                → <strong>人工翻译</strong> → 引擎里搭建<br><br>
+                中间多了"人工翻译"环节
+            </p>
+        </div>
+        <div class="comparison-side good">
+            <h4>[完整形态的循环]</h4>
+            <p style="font-size:13px; line-height:1.8;">
+                设计意图<br>
+                → <strong>对齐</strong> → IR（结构化意图）<br>
+                → <strong>工具调用</strong> → 引擎产物<br>
+                → <strong>验证</strong> → 反馈 → 迭代<br><br>
+                文档变成中间态，产物直接在引擎里
+            </p>
+        </div>
+    </div>
+
+    <div class="callout warning">
+        <div class="callout-title">[STRATEGY]</div>
+        <p>Phase 1 用不完整但能最快落地的"关卡Agent"验证循环可行性。同时在设计中预留接口，确保核心资产（IR、Registry、Bible、评分、上下文路由）能无痛过渡到大循环。</p>
+    </div>
+</section>
+
+<!-- Global Architecture Diagram -->
+<section class="section" id="global-arch">
+    <div class="section-header">
+        <div class="section-label">[FULL-FORM ARCHITECTURE]</div>
+        <h2>完整形态架构图</h2>
+        <p class="section-desc">五层架构：治理层定义规则，编排层调度任务，Agent层执行职能，工具层对接引擎，验证层闭环反馈。</p>
+    </div>
+
+    <div class="global-arch">
+        <!-- Left: Governance -->
+        <div class="governance-panel">
+            <div class="governance-title">治理 & 知识</div>
+            <div class="governance-layers">
+                <div class="gov-layer layer-1">
+                    <div class="layer-label">GOVERNANCE</div>
+                    <div class="layer-name">治理层</div>
+                    <div class="layer-desc">Project Bible · IR Schema<br>Capability Registry<br>权限模型 · 消息协议</div>
+                </div>
+                <div class="gov-layer layer-2">
+                    <div class="layer-label">KNOWLEDGE</div>
+                    <div class="layer-name">知识层</div>
+                    <div class="layer-desc">Level Bible（每关卡）<br>Project Bible（跨关卡）<br>模式库 · 评分历史</div>
+                </div>
+                <div class="gov-layer layer-3">
+                    <div class="layer-label">CONTEXT</div>
+                    <div class="layer-name">上下文路由</div>
+                    <div class="layer-desc">契约驱动裁剪<br>5 槽位组装<br>恒定 token 预算</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center: Pipeline -->
+        <div class="pipeline-panel">
+            <div class="pipeline-title">五层工作流管线</div>
+            <div class="pipeline-flow">
+                <div class="pipe-node" style="border-color:var(--text-muted);">
+                    <div class="node-title">设计师输入</div>
+                    <div class="node-sub">文本 / 图片 / 对话</div>
+                </div>
+                <div class="pipe-arrow">↓</div>
+                <div class="pipe-node ir-node">
+                    <div class="node-title">6维度 IR</div>
+                    <div class="ir-dims">
+                        <span>SPACE</span><span>FLOW</span><span>FEEL</span>
+                        <span>MECHANIC</span><span>ASSET</span><span>SYSTEM</span>
+                    </div>
+                    <div class="node-sub">Agent 间通信的标准协议</div>
+                </div>
+                <div class="pipe-arrow">↓</div>
+                <div class="pipe-node orchestrator-node">
+                    <div class="node-title">总指挥 Agent</div>
+                    <div class="node-sub">Agent Loop · 任务分发 · 冲突仲裁</div>
+                </div>
+                <div class="pipe-arrow">↓</div>
+                <div class="pipe-node agent-row-node">
+                    <div class="node-title">职能 Agent 层</div>
+                    <div class="node-sub" style="line-height:1.8;">关卡Agent · 美术Agent · NPC AI Agent · 程序Agent · …<br>各自在 IR 分支上操作，提交变更提案</div>
+                </div>
+                <div class="pipe-arrow">↓</div>
+                <div class="pipe-node" style="border-color:var(--border);">
+                    <div class="node-title">工具层 (MCP / CLI)</div>
+                    <div class="node-sub">UE场景工具 · UE蓝图工具 · 文档生成 · 图表渲染 · 图片API</div>
+                </div>
+                <div class="pipe-arrow">↓</div>
+                <div class="pipe-node final-node">
+                    <div class="node-title">验证层</div>
+                    <div class="node-sub">自动评分 · 引擎内验证 · 人工审核 → 回写 Bible</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Loops -->
+        <div class="loops-panel">
+            <div class="loops-title">三层迭代循环</div>
+            <div class="loop-items">
+                <div class="loop-item inner-loop">
+                    <div class="loop-header">
+                        <span class="loop-name">即时评分重试</span>
+                        <span class="loop-cycle">秒级</span>
+                    </div>
+                    <div class="loop-mechanism">自动重试</div>
+                    <div class="loop-flow">产物 → 评分 &lt; 0.6 → 重试（最多2次）</div>
+                </div>
+                <div class="loop-item middle-loop">
+                    <div class="loop-header">
+                        <span class="loop-name">Skill 迭代</span>
+                        <span class="loop-cycle">周级</span>
+                    </div>
+                    <div class="loop-mechanism">人工评分驱动</div>
+                    <div class="loop-flow">产物 → 人工评分 → 案例分析 → Prompt迭代 → A/B验证</div>
+                </div>
+                <div class="loop-item outer-loop">
+                    <div class="loop-header">
+                        <span class="loop-name">知识飞轮</span>
+                        <span class="loop-cycle">月级</span>
+                    </div>
+                    <div class="loop-mechanism">Bible 积累</div>
+                    <div class="loop-flow">Level Bible → 模式提取 → Project Bible → 注入上下文</div>
+                    <div class="loop-highlight">壁垒所在</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-title">关键区分</div>
+        <p><strong>总指挥Agent</strong> 是项目级的编排者（Agent Loop）· <strong>关卡Agent</strong> 是职能Agent之一，但在开放世界中拥有全局视野 · <strong>Phase 1</strong> 先验证关卡Agent自身的 DAG 循环，总指挥的 Agent Loop 留待大循环阶段</p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 02 · AGENT ROSTER & PERMISSIONS                          -->
+<!-- ============================================================ -->
+<section class="section" id="agent-roster">
+    <div class="section-header">
+        <div class="section-label">[PART 02]</div>
+        <h2>Agent 清单与职责</h2>
+        <p class="section-desc">明确每个Agent的角色类型、IR读写权限、归属Skill。职能Agent之间不直接通信——所有协调经过总指挥路由。</p>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>类型</th>
+                    <th>IR 可读</th>
+                    <th>IR 可写</th>
+                    <th>归属 Skill 示例</th>
+                    <th>Phase</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>总指挥</strong></td>
+                    <td><span class="tag agent">COORDINATOR</span></td>
+                    <td>ALL</td>
+                    <td>—（仅合并）</td>
+                    <td>任务分发 · 冲突仲裁 · 合并审核</td>
+                    <td><span class="tag p1">P2+</span></td>
+                </tr>
+                <tr>
+                    <td><strong>关卡Agent</strong></td>
+                    <td><span class="tag skill">FUNCTIONAL</span></td>
+                    <td>ALL</td>
+                    <td>SPACE, FLOW, FEEL, MECHANIC</td>
+                    <td>BubbleChart · FlowChart · POIDoc · 空间拓扑</td>
+                    <td><span class="tag p0">P0 ← 当前</span></td>
+                </tr>
+                <tr>
+                    <td><strong>美术Agent</strong></td>
+                    <td><span class="tag skill">FUNCTIONAL</span></td>
+                    <td>SPACE, FLOW, FEEL, ASSET</td>
+                    <td>SPACE, FEEL, ASSET</td>
+                    <td>氛围图 · UE_POI_Placement · 物件表确认</td>
+                    <td><span class="tag p1">P2</span></td>
+                </tr>
+                <tr>
+                    <td><strong>NPC AI Agent</strong></td>
+                    <td><span class="tag skill">FUNCTIONAL</span></td>
+                    <td>MECHANIC, FLOW, SPACE</td>
+                    <td>MECHANIC</td>
+                    <td>NPC_Behavior_Config · AI行为验证</td>
+                    <td><span class="tag p2">P3</span></td>
+                </tr>
+                <tr>
+                    <td><strong>程序Agent</strong></td>
+                    <td><span class="tag skill">FUNCTIONAL</span></td>
+                    <td>MECHANIC, SYSTEM, FLOW</td>
+                    <td>SYSTEM, MECHANIC</td>
+                    <td>系统流程图确认 · 技术约束声明</td>
+                    <td><span class="tag p2">P3</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="callout insight">
+        <div class="callout-title">[GLOBAL VIEW]</div>
+        <p>关卡Agent在开放世界中拥有<strong>全局视野</strong>（ir_readable: ALL），是最可能触发 coordination_request 的Agent。但它不承担仲裁职责——仲裁归总指挥或人类。</p>
+    </div>
+
+    <h3 id="permissions">三级权限模型</h3>
+
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-icon">[READ]</div>
+            <h4>read — 读取</h4>
+            <p>读取 IR 子集、查询 Bible、检索模式。<br><strong>自动执行</strong>，不需确认，不留审计日志。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">[PROPOSE]</div>
+            <h4>propose — 提案</h4>
+            <p>提交 IR 变更提案、生成文档产物。<br><strong>自动执行</strong>，但所有提案留日志，变更需审核后合并。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">[EXECUTE]</div>
+            <h4>execute — 执行</h4>
+            <p>调用 UE 工具、修改引擎资产。<br><strong>必须人类确认</strong>。执行前快照，可回滚。Phase 3+ 才开放。</p>
+        </div>
+    </div>
+
+    <div class="code-header"><span>capability_registry.yaml (权限声明)</span></div>
+    <div class="code-block"><span class="field">permission_model</span>:
+  <span class="field">levels</span>:
+    <span class="field">read</span>:
+      <span class="field">auto</span>: <span class="value">true</span>
+      <span class="field">audit</span>: <span class="value">false</span>
+
+    <span class="field">propose</span>:
+      <span class="field">auto</span>: <span class="value">true</span>
+      <span class="field">audit</span>: <span class="value">true</span>       <span class="comment"># 所有提案留日志</span>
+
+    <span class="field">execute</span>:
+      <span class="field">auto</span>: <span class="value">false</span>      <span class="comment"># 必须人类确认</span>
+      <span class="field">audit</span>: <span class="value">true</span>
+      <span class="field">checkpoint</span>: <span class="value">true</span>  <span class="comment"># 执行前快照</span></div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 03 · COMMUNICATION PROTOCOL                              -->
+<!-- ============================================================ -->
+<section class="section" id="ir-branch">
+    <div class="section-header">
+        <div class="section-label">[PART 03]</div>
+        <h2>多Agent通信协议</h2>
+        <p class="section-desc">灵感来源："从零开始"文章中的子Agent隔离（Git worktree 分支模型）与显式消息传递。核心原则——Agent 间不直接通信，所有消息经过总指挥路由。</p>
+    </div>
+
+    <h3>IR 分支模型</h3>
+
+    <div class="callout insight">
+        <div class="callout-title">[DESIGN PATTERN: BRANCH & MERGE]</div>
+        <p>每个职能Agent不直接修改主IR，而是在 IR 的"分支"上操作——提交变更提案，由总指挥（或人类）审核后合并。所有变更显式、可审计、可回滚。</p>
+    </div>
+
+    <div class="code-header"><span>ir_branch_proposal.yaml（变更提案示例）</span></div>
+    <div class="code-block"><span class="comment"># 美术Agent对 stealth_museum_01 的IR修改提案</span>
+
+<span class="field">ir_branch</span>:
+  <span class="field">source</span>: <span class="string">"stealth_museum_01/ir/v003_merged.json"</span>
+  <span class="field">author</span>: <span class="string">"art_agent"</span>
+
+  <span class="field">changes</span>:
+    - <span class="field">path</span>: <span class="string">"SPACE.regions[2].spatial_notes"</span>
+      <span class="field">old</span>: <span class="string">"大厅，20m x 15m"</span>
+      <span class="field">new</span>: <span class="string">"大厅，25m x 18m"</span>
+      <span class="field">reason</span>: <span class="string">"原尺寸放不下策划要求的4个掩体+巡逻路线"</span>
+
+    - <span class="field">path</span>: <span class="string">"ASSET.required_assets"</span>
+      <span class="field">action</span>: <span class="string">"append"</span>
+      <span class="field">value</span>: { <span class="field">id</span>: <span class="string">"pillar_gothic_02"</span>, <span class="field">count</span>: <span class="value">6</span> }
+      <span class="field">reason</span>: <span class="string">"扩大后需要额外柱子分割视线"</span>
+
+  <span class="field">side_effects</span>:
+    - <span class="string">"FLOW.edges 中 A→B 的距离可能需要重新计算"</span>
+    - <span class="string">"FEEL.emotional_beats[0] 的节奏可能因空间变大而被稀释"</span>
+
+  <span class="field">status</span>: <span class="string">"pending_review"</span>  <span class="comment"># pending → approved → merged / rejected</span></div>
+
+    <div class="principle-card">
+        <div class="principle-header">
+            <div class="principle-number">!</div>
+            <h4>为什么不直接修改</h4>
+        </div>
+        <p>"信息在人与人之间传递时失真"——Agent和Agent之间同样存在这个问题。分支模型让所有变更都是<strong>显式的、可审计的、可回滚的</strong>。每个提案必须声明 reason（可溯源）和 side_effects（跨维度影响预判）。</p>
+    </div>
+
+    <h3 id="message-protocol">三种消息类型</h3>
+
+    <p class="section-desc">借鉴"从零开始"文章中的最小化多Agent协调协议——"没有消息队列，没有共享状态，只有显式的消息传递。"</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-icon">[MSG-1]</div>
+            <h4>task_assignment</h4>
+            <p><strong>总指挥 → 职能Agent</strong><br><br>分发任务：指定 POI、操作类型（generate / review / revise）、IR子集范围、Bible预检索摘要。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">[MSG-2]</div>
+            <h4>change_proposal</h4>
+            <p><strong>职能Agent → 总指挥</strong><br><br>提交变更：IR分支 + 产物列表 + Agent自评置信度。总指挥审核后决定合并或拒绝。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">[MSG-3]</div>
+            <h4>coordination_request</h4>
+            <p><strong>职能Agent → 总指挥 → 另一职能Agent</strong><br><br>跨职能协调：必须经过总指挥路由。声明问题、提出的变更、向对方提的问题。</p>
+        </div>
+    </div>
+
+    <div class="code-header"><span>message_protocol.yaml（协议定义）</span></div>
+    <div class="code-block"><span class="field">message_protocol</span>:
+  <span class="field">version</span>: <span class="string">"1.0.0"</span>
+  <span class="field">routing_rule</span>: <span class="string">"Agent间不直接通信，所有消息经过总指挥路由"</span>
+
+  <span class="field">types</span>:
+    <span class="field">task_assignment</span>:
+      <span class="field">from</span>: <span class="string">"orchestrator"</span>
+      <span class="field">to</span>: <span class="string">"&lt;functional_agent&gt;"</span>
+      <span class="field">payload</span>:
+        <span class="field">poi_id</span>: <span class="string">"string"</span>
+        <span class="field">action</span>: <span class="string">"generate | review | revise"</span>
+        <span class="field">ir_subset</span>: <span class="string">"IR维度列表"</span>
+        <span class="field">bible_hints</span>: <span class="string">"编排器预检索的Bible摘要"</span>
+
+    <span class="field">change_proposal</span>:
+      <span class="field">from</span>: <span class="string">"&lt;functional_agent&gt;"</span>
+      <span class="field">to</span>: <span class="string">"orchestrator"</span>
+      <span class="field">payload</span>:
+        <span class="field">ir_branch</span>: <span class="string">"IR分支结构"</span>
+        <span class="field">artifacts</span>: <span class="string">"产物列表"</span>
+        <span class="field">confidence</span>: <span class="string">"0.0 - 1.0"</span>
+
+    <span class="field">coordination_request</span>:
+      <span class="field">from</span>: <span class="string">"&lt;functional_agent&gt;"</span>
+      <span class="field">via</span>: <span class="string">"orchestrator"</span>          <span class="comment"># 必须路由</span>
+      <span class="field">to</span>: <span class="string">"&lt;another_functional_agent&gt;"</span>
+      <span class="field">payload</span>:
+        <span class="field">issue</span>: <span class="string">"string"</span>
+        <span class="field">proposed_change</span>: <span class="string">"IR变更摘要"</span>
+        <span class="field">question</span>: <span class="string">"string"</span></div>
+
+    <div class="callout warning">
+        <div class="callout-title">[WHY CENTRALIZED ROUTING]</div>
+        <p>总指挥作为中心节点可以：① 检查消息格式合规 ② 过滤不相关上下文（上下文路由）③ 记录所有通信日志（可审计）④ 在必要时升级给人类决策。防止 Agent 间点对点通信制造信息失真。</p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 04 · RETROGRADE RISK AUDIT                               -->
+<!-- ============================================================ -->
+<section class="section" id="risk-audit">
+    <div class="section-header">
+        <div class="section-label">[PART 04]</div>
+        <h2>当前设计回退风险审计</h2>
+        <p class="section-desc">逐项扫描关卡Agent方案中的设计决策，标注在大循环下哪些可平滑演进、哪些需要预留接口、哪些必须现在改。</p>
+    </div>
+
+    <h3>低风险：可平滑演进</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>当前设计</th><th>大循环下的演进路径</th><th>为什么低风险</th></tr></thead>
+            <tbody>
+                <tr><td>6维度 IR Schema</td><td>作为所有Agent的通信协议，不变</td><td>IR 是"关卡是什么"的建模，与产出形式无关</td></tr>
+                <tr><td>上下文三层管理</td><td>从"管理Skill开发"扩展到"管理多Agent协作"</td><td>契约层的思想直接适用于 Agent Registry</td></tr>
+                <tr><td>评分机制</td><td>从"评文档"扩展到"评引擎产物"</td><td>框架不变，评分维度加字段即可</td></tr>
+                <tr><td>Bible双层架构</td><td>不变，甚至更重要</td><td>飞轮机制与产物形式无关</td></tr>
+                <tr><td>渐进式路径（Phase 1→4）</td><td>节奏正确，重新定义每Phase产物即可</td><td>策略层面的决策，架构层面无负债</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>中风险：需要预留接口</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>当前设计</th><th>潜在问题</th><th>预防措施</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><strong>Skill Registry 只注册 Skill</strong></td>
+                    <td>大循环还需注册 Agent、Tool（UE侧）、通信协议</td>
+                    <td>改名为 <code>capability_registry.yaml</code>，预留 agents: / tools: namespace</td>
+                </tr>
+                <tr>
+                    <td><strong>IR 的 source_refs 只引用设计输入</strong></td>
+                    <td>大循环下IR需要双向引用——不仅"从哪来"，还要"去了哪"</td>
+                    <td>加 <code>downstream_refs</code> 字段（可为空，但字段要有）</td>
+                </tr>
+                <tr>
+                    <td><strong>contract.yaml 的 render_format 绑定文档格式</strong></td>
+                    <td><code>render_format: "SVG via Mermaid"</code> 暗示输出必然是文档</td>
+                    <td>改为 <code>output_type</code>，值域：document / engine_action / data_export</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 id="high-risk">⚠️ 高风险：必须现在改</h3>
+
+    <div class="callout danger">
+        <div class="callout-title">[HIGH RISK: ORCHESTRATOR COUPLING]</div>
+        <p>当前编排器把"上下文路由"和"执行调度"耦合在一起。在大循环下，这两个职责归属不同的层：上下文路由→每个Agent自己的契约声明；执行调度→总指挥Agent的决策。<strong>必须现在解耦。</strong></p>
+    </div>
+
+    <div class="comparison">
+        <div class="comparison-side bad">
+            <h4>[当前：路由和调度耦合]</h4>
+            <p style="font-size:12px; font-family:monospace; line-height:1.8;">
+                orchestrator:<br>
+                &nbsp;&nbsp;pipeline:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;- skill: BubbleChart<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inject: [FLOW, FEEL] &nbsp;← 耦合
+            </p>
+        </div>
+        <div class="comparison-side good">
+            <h4>[改后：路由在契约，编排器只调度]</h4>
+            <p style="font-size:12px; font-family:monospace; line-height:1.8;">
+                # contract.yaml 声明需要什么<br>
+                input:<br>
+                &nbsp;&nbsp;ir_fields_required: [FLOW, FEEL]<br><br>
+                # 编排器只做两件事：<br>
+                # 1. 读contract → 裁剪IR → 组装<br>
+                # 2. 按依赖关系调度执行
+            </p>
+        </div>
+    </div>
+
+    <div class="callout success">
+        <div class="callout-title">[WHY THIS MATTERS]</div>
+        <p>这个改动很小（重构2-4小时），但它让编排器从"路由+调度一体机"变成"纯调度器"。未来总指挥Agent接管调度时，<strong>上下文路由的逻辑完全不用改</strong>。</p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 05 · KNOWLEDGE SCALE                                     -->
+<!-- ============================================================ -->
+<section class="section" id="bible-scale">
+    <div class="section-header">
+        <div class="section-label">[PART 05]</div>
+        <h2>知识库结构扩展</h2>
+        <p class="section-desc">当前 Bible 架构方向正确，但有两个结构性问题会在多Agent写入和模式规模化时暴露。现在改动成本极低。</p>
+    </div>
+
+    <h3>Level Bible 按维度 / 职能分区</h3>
+
+    <div class="callout warning">
+        <div class="callout-title">[PROBLEM]</div>
+        <p>当前设计："一个关卡一个Bible，内部扁平"。多Agent时代，关卡Agent和美术Agent同时写同一个 <code>ir_current.json</code>——谁的版本是对的？<code>design_rationale.md</code> 是策划的意图还是美术的调整理由？</p>
+    </div>
+
+    <div class="code-header"><span>level_bibles/ 改进后的目录结构</span></div>
+    <div class="code-block"><span class="comment">level_bibles/</span>
+  stealth_museum_01/
+    <span class="field">ir/</span>
+      current.json                   <span class="comment"># 当前合并后的 IR（真相）</span>
+      <span class="field">history/</span>
+        v001_level_design.json       <span class="comment"># 关卡Agent写入</span>
+        v002_art_feedback.json       <span class="comment"># 美术Agent反馈的修改</span>
+        v003_merged.json             <span class="comment"># 合并版本</span>
+
+    <span class="field">rationale/</span>
+      level_design.md                <span class="comment"># 关卡策划的设计意图</span>
+      art_direction.md               <span class="comment"># 美术方向的解释</span>
+      tech_constraints.md            <span class="comment"># 程序的技术约束</span>
+
+    <span class="field">scoring/</span>
+      document_scores.json           <span class="comment"># 文档产物评分（Phase 1）</span>
+      engine_scores.json             <span class="comment"># 引擎产物评分（Phase 3+，现在为空）</span>
+      human_feedback.json            <span class="comment"># 人工评分</span></div>
+
+    <p style="font-size:13px; color:var(--text-secondary); margin-top:16px;">这个目录结构不影响 Phase 1 的任何逻辑——当前只有关卡Agent在写入。但它避免了未来多Agent写同一个Bible时的合并地狱。</p>
+
+    <h3 id="pattern-index">模式条目索引结构</h3>
+
+    <div class="callout warning">
+        <div class="callout-title">[PROBLEM]</div>
+        <p>当前 Project Bible 的模式库没有定义检索索引。从5个模式增长到500个时，"检索"不能靠全文扫描。</p>
+    </div>
+
+    <div class="code-header"><span>pattern_library/stealth_corridor.yaml（带索引）</span></div>
+    <div class="code-block"><span class="field">metadata</span>:
+  <span class="field">id</span>: <span class="string">"pattern_stealth_corridor_01"</span>
+  <span class="field">tags</span>: [stealth, corridor, linear, indoor]
+  <span class="field">ir_dimensions</span>: [SPACE, FLOW, FEEL]          <span class="comment"># 涉及哪些维度</span>
+  <span class="field">applicable_poi_types</span>: [stealth, infiltration]
+  <span class="field">confidence</span>: <span class="value">0.82</span>                         <span class="comment"># 置信度</span>
+  <span class="field">citation_count</span>: <span class="value">7</span>                         <span class="comment"># 被引用次数</span>
+  <span class="field">last_validated</span>: <span class="string">"2025-03-01"</span>              <span class="comment"># 上次验证</span>
+
+<span class="field">content</span>:
+  <span class="field">pattern</span>: <span class="string">"本项目潜行段落通常采用线性主轴 + 1-2个可选分支..."</span>
+  <span class="field">anti_pattern</span>: <span class="string">"避免单图超过12个节点..."</span>
+  <span class="field">examples</span>: [<span class="string">"stealth_museum_01"</span>, <span class="string">"stealth_lab_03"</span>]</div>
+
+    <div class="callout success">
+        <div class="callout-title">[SCALABILITY]</div>
+        <p>有了索引字段，检索用纯字段匹配+排序：filter(poi_type) ∩ filter(ir_dimensions) ∩ sort(confidence × citation_count)。<strong>500个模式检索延迟在毫秒级</strong>，不需要 embedding，不需要向量数据库。等真的需要语义检索时，这些索引字段也是向量化的好起点。</p>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 06 · LEVEL AGENT MODIFICATIONS                           -->
+<!-- ============================================================ -->
+<section class="section" id="registry-rename">
+    <div class="section-header">
+        <div class="section-label">[PART 06]</div>
+        <h2>关卡Agent改动清单</h2>
+        <p class="section-desc">七项改动，总工作量约 1-2 天。每一项都很小，但战略意义大——确保 Phase 1 的所有核心资产能无痛过渡到大循环。</p>
+    </div>
+
+    <h3>改动 1：注册表升级</h3>
+
+    <div class="comparison">
+        <div class="comparison-side bad">
+            <h4>[BEFORE]</h4>
+            <p style="font-size:12px; font-family:monospace; line-height:1.8;">
+                <strong>skill_registry.yaml</strong><br><br>
+                skills:<br>
+                &nbsp;&nbsp;BubbleChart:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;version: "1.0.0"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;...
+            </p>
+        </div>
+        <div class="comparison-side good">
+            <h4>[AFTER]</h4>
+            <p style="font-size:12px; font-family:monospace; line-height:1.8;">
+                <strong>capability_registry.yaml</strong><br><br>
+                skills:<br>
+                &nbsp;&nbsp;BubbleChart:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;owner_agent: level_design_agent<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;...<br><br>
+                agents: {} &nbsp;&nbsp;# 预留<br>
+                tools: {} &nbsp;&nbsp;&nbsp;# 预留
+            </p>
+        </div>
+    </div>
+
+    <h3 id="decouple">改动 2：编排器解耦</h3>
+
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">把上下文路由规则从编排器内部移到 <code>contract.yaml</code> 中声明。编排器变成"纯调度器"——读取契约、裁剪IR、组装上下文、按依赖顺序执行。</p>
+
+    <div class="principle-card">
+        <div class="principle-header">
+            <div class="principle-number">!</div>
+            <h4>为什么这是最重要的改动</h4>
+        </div>
+        <p>未来总指挥Agent接管调度时，它会替换编排器的调度逻辑（从静态DAG变为Agent Loop）。但上下文路由是稳定的——它由契约声明驱动，不随调度方式改变。<strong>解耦后，路由逻辑零改动。</strong></p>
+    </div>
+
+    <h3 id="ir-extend">改动 3-4：IR Schema 扩展</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>改动</th><th>具体内容</th><th>工作量</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>加 <code>downstream_refs</code></td>
+                    <td>IR 中每个维度加一个 <code>downstream_refs</code> 字段，记录被哪些产物/操作消费过。Phase 1 可为空。</td>
+                    <td>10分钟</td>
+                </tr>
+                <tr>
+                    <td><code>render_format</code> → <code>output_type</code></td>
+                    <td>contract.yaml 的输出格式声明从 <code>"SVG via Mermaid"</code> 改为 <code>output_type: document</code>，值域预留 engine_action / data_export。</td>
+                    <td>每个Skill 5分钟</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 id="ue-contracts">改动 5：UE 工具层接口预留</h3>
+
+    <div class="callout insight">
+        <div class="callout-title">[PRINCIPLE]</div>
+        <p>UE 工具层放在最后实现完全正确。但<strong>现在就可以定义接口契约，只是不实现它</strong>。写接口的价值：① 开始做 UE 集成时已知需要暴露什么 ② 现在可以用 mock 跑通集成测试 ③ UE 程序员提前对齐接口。</p>
+    </div>
+
+    <div class="code-header"><span>capability_registry.yaml → tools namespace</span></div>
+    <div class="code-block"><span class="field">tools</span>:
+  <span class="field">ue_poi_placement</span>:
+    <span class="field">status</span>: <span class="string">"planned"</span>                <span class="comment"># not_started / planned / mock / production</span>
+    <span class="field">description</span>: <span class="string">"在UE场景中放置POI物件"</span>
+    <span class="field">input_schema</span>:
+      <span class="field">poi_id</span>: <span class="string">string</span>
+      <span class="field">position</span>: { <span class="field">x</span>: <span class="string">float</span>, <span class="field">y</span>: <span class="string">float</span>, <span class="field">z</span>: <span class="string">float</span> }
+      <span class="field">asset_id</span>: <span class="string">string</span>
+      <span class="field">rotation</span>: { <span class="field">pitch</span>: <span class="string">float</span>, <span class="field">yaw</span>: <span class="string">float</span>, <span class="field">roll</span>: <span class="string">float</span> }
+    <span class="field">output_schema</span>:
+      <span class="field">success</span>: <span class="string">boolean</span>
+      <span class="field">placed_actor_id</span>: <span class="string">string</span>        <span class="comment"># UE Actor 引用</span>
+      <span class="field">screenshot_path</span>: <span class="string">string</span>        <span class="comment"># 放置后截图（验证用）</span>
+    <span class="field">permission_level</span>: <span class="string">"execute"</span>
+    <span class="field">mock_behavior</span>: <span class="string">"返回 success: true + 随机ID"</span>
+
+  <span class="field">ue_lighting_setup</span>:
+    <span class="field">status</span>: <span class="string">"planned"</span>
+    <span class="comment"># ...</span></div>
+
+    <h3>改动 6-7：文档与目录结构</h3>
+
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-icon">[DOC]</div>
+            <h4>改动 6：写协议文档</h4>
+            <p>把 <code>message_protocol.yaml</code> 和 <code>permission_model.yaml</code> 写入 <code>/contracts/</code> 目录。Phase 1 不实现，但蓝图可见。<br><br><strong>工作量：2-3小时</strong></p>
+        </div>
+        <div class="card">
+            <div class="card-icon">[DIR]</div>
+            <h4>改动 7：Bible 目录分区</h4>
+            <p>Level Bible 按维度/职能分区（ir/ rationale/ scoring/ 子目录）。Pattern 条目加索引 metadata。<br><br><strong>工作量：1-2小时</strong></p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART 07 · ACTION PLAN                                         -->
+<!-- ============================================================ -->
+<section class="section" id="action-plan">
+    <div class="section-header">
+        <div class="section-label">[PART 07]</div>
+        <h2>实施优先级排序</h2>
+        <p class="section-desc">七项改动按优先级排序。总额外工作量约 1-2 天，换来 Phase 1 所有核心资产能无痛过渡到大循环。</p>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr><th>优先级</th><th>改动</th><th>工作量</th><th>价值</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="tag p0">P0</span></td>
+                    <td><strong>Registry 升级</strong>：<code>skill_registry</code> → <code>capability_registry</code>，预留 agents / tools namespace，Skill 加 owner_agent 字段</td>
+                    <td>30 分钟</td>
+                    <td>避免未来整体重构注册表</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p0">P0</span></td>
+                    <td><strong>编排器解耦</strong>：上下文路由规则提取到 contract.yaml，编排器只做"读取+调度"</td>
+                    <td>2-4 小时</td>
+                    <td>避免最大的回退风险</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p1">P1</span></td>
+                    <td><strong>IR 加 downstream_refs</strong>：支持双向溯源（Phase 1 可为空）</td>
+                    <td>10 分钟</td>
+                    <td>支持未来产物追踪</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p1">P1</span></td>
+                    <td><strong>Level Bible 分区</strong>：ir/ rationale/ scoring/ 子目录结构</td>
+                    <td>1 小时</td>
+                    <td>避免多Agent写入冲突</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p1">P1</span></td>
+                    <td><strong>Pattern 索引 metadata</strong>：每个模式条目加 tags / ir_dimensions / confidence / citation_count</td>
+                    <td>30 分钟/条目</td>
+                    <td>支持规模化检索</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p2">P2</span></td>
+                    <td><strong>协议文档</strong>：写 message_protocol.yaml 和 permission_model.yaml</td>
+                    <td>2-3 小时</td>
+                    <td>给大循环留蓝图</td>
+                </tr>
+                <tr>
+                    <td><span class="tag p2">P2</span></td>
+                    <td><strong>UE 工具接口契约</strong>：在 capability_registry 的 tools: 下定义 planned 状态的接口</td>
+                    <td>1-2 小时</td>
+                    <td>提前对齐 UE 程序员</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 id="phase-map">阶段映射：从验证器到完整形态</h3>
+
+    <div class="timeline">
+        <div class="timeline-item active">
+            <h4>Phase 1：关卡Agent（DAG） <span class="timeline-tag">当前</span></h4>
+            <p>
+                <strong>目标</strong>：证明"设计师对Agent说清楚意图 → IR → 产物"的循环可行<br>
+                <strong>编排</strong>：静态 DAG，够用<br>
+                <strong>产物</strong>：文档/图表（output_type: document）<br>
+                <strong>同时做</strong>：7项改动，为大循环预留接口<br>
+                <strong>验证标准</strong>：用3-5个真实POI跑通端到端流程
+            </p>
+        </div>
+        <div class="timeline-item">
+            <h4>Phase 2：多职能Agent + 总指挥</h4>
+            <p>
+                <strong>目标</strong>：Agent间协作跑通<br>
+                <strong>编排</strong>：总指挥运行 Agent Loop，职能Agent提交变更提案<br>
+                <strong>新增</strong>：美术Agent、IR分支合并机制<br>
+                <strong>产物</strong>：仍以文档为主，但包含跨职能交接包<br>
+                <strong>验证标准</strong>：关卡Agent和美术Agent协作完成一个POI设计
+            </p>
+        </div>
+        <div class="timeline-item">
+            <h4>Phase 3：UE 工具层接入</h4>
+            <p>
+                <strong>目标</strong>：从"文档产出"到"引擎产出"<br>
+                <strong>新增</strong>：UE MCP Server、execute权限开放、引擎内验证<br>
+                <strong>产物</strong>：output_type: engine_action 开始出现<br>
+                <strong>关键</strong>：UE工具粒度定义、执行反馈回传机制<br>
+                <strong>验证标准</strong>：Agent调用UE工具放置一个简单POI的物件
+            </p>
+        </div>
+        <div class="timeline-item">
+            <h4>Phase 4：闭环 + 飞轮加速</h4>
+            <p>
+                <strong>目标</strong>：完整循环——意图 → IR → 引擎产物 → 验证 → Bible → 下一个关卡更快<br>
+                <strong>新增</strong>：NPC AI Agent、程序Agent、跨关卡质量检测<br>
+                <strong>飞轮</strong>：品质模型校准完成，系统自动拦截低质量产出<br>
+                <strong>验证标准</strong>：第N+1个关卡的设计时间比第N个显著缩短
+            </p>
+        </div>
+    </div>
+
+    <div class="callout success" style="margin-top:32px;">
+        <div class="callout-title">[CORE CONCLUSION]</div>
+        <p>Phase 1 的真正目标不是"生成16种文档"，而是<strong>证明"意图 → IR → 产物 → 验证"的循环可行</strong>。文档只是当前阶段的产物形式。如果循环成立，未来换成 UE 工具调用，只是替换 Tool Layer——上面的所有东西（IR、Registry、Bible、评分、上下文路由）全部可以复用。</p>
+    </div>
+
+    <div class="summary-box" style="margin-top:24px;">
+        <div class="summary-title">改动后的 /contracts/ 目录总览</div>
+        <p style="font-size:12px; font-family:monospace; text-align:left; line-height:2; padding:12px 20px;">
+            /contracts/<br>
+            ├── ir_schema.json &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># 6维度 + downstream_refs</em><br>
+            ├── <strong style="color:var(--accent);">capability_registry.yaml</strong> &nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># 原 skill_registry，+agents/tools namespace</em><br>
+            ├── message_protocol.yaml &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># 三种消息类型 (P2)</em><br>
+            ├── permission_model.yaml &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># 三级权限 (P2)</em><br>
+            ├── glossary.yaml<br>
+            ├── render_standards.yaml<br>
+            ├── constraints.yaml<br>
+            ├── skills/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># contract.yaml 用 output_type 替代 render_format</em><br>
+            ├── validators/<br>
+            ├── <strong style="color:var(--accent);">project_bible/</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># pattern 加索引 metadata</em><br>
+            └── <strong style="color:var(--accent);">level_bibles/</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em style="color:var(--text-muted);"># 按 ir/ rationale/ scoring/ 分区</em>
+        </p>
+    </div>
+</section>
+
+</main>
+
+<!-- =============== SCROLL SPY =============== -->
+<script>
+    const sections = document.querySelectorAll('.section, .hero');
+    const navLinks = document.querySelectorAll('.nav a');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + id) link.classList.add('active');
+                });
+            }
+        });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    sections.forEach(s => { if (s.id) observer.observe(s); });
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 900) document.querySelector('.nav').classList.remove('open');
+        });
+    });
+</script>
+
+</body>
+</html>
+```

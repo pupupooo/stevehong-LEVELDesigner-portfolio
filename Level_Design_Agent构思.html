@@ -1242,6 +1242,27 @@
         html {
             scroll-behavior: smooth;
         }
+
+        .page-nav {
+            padding: 24px 48px 40px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .page-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 13px;
+            transition: opacity 0.2s ease;
+        }
+
+        .page-nav a:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -2771,6 +2792,12 @@
             <p>任何时候修改已有 Skill 的契约：① 必须先运行 check_contract_compatibility ② 必须更新版本号 ③ 必须在 change_log 中记录原因和关联的低分案例</p>
         </div>
     </section>
+
+    <div class="page-nav">
+        <a href="works/arc-raiders-analysis/index.html">← 上一篇：Arc Raiders系统切片分析</a>
+        <a href="index.html">返回主页</a>
+        <a href="works/sandbox-director/showcase.html">下一篇：开放世界沙盒任务设计——导演系统交互原型 →</a>
+    </div>
 
 </main>
 
