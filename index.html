@@ -138,6 +138,133 @@
             font-weight: 700;
         }
 
+        /* Portfolio Horizontal Scroll Section */
+        .portfolio-scroll-container {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 24px 0 40px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .portfolio-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .portfolio-scroll-container::-webkit-scrollbar-track {
+            background: var(--border-light);
+            border-radius: 4px;
+        }
+
+        .portfolio-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .portfolio-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: #e03e00;
+        }
+
+        .portfolio-card {
+            flex: 0 0 420px;
+            height: 480px;
+            border: 2px solid var(--border);
+            background-color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            scroll-snap-align: start;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-card:hover {
+            transform: scale(1.02) translateY(-8px);
+            box-shadow: 12px 12px 0 rgba(255, 69, 0, 0.15);
+            border-color: var(--accent);
+        }
+
+        .portfolio-card-image {
+            width: 100%;
+            height: 260px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .portfolio-card-content {
+            flex: 1;
+            padding: 24px;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .portfolio-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .portfolio-card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .portfolio-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .portfolio-card-tag {
+            font-size: 11px;
+            color: var(--accent);
+            padding: 4px 10px;
+            border: 1px solid var(--border-light);
+            letter-spacing: 0.5px;
+        }
+
+        .portfolio-card-hover {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 69, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .portfolio-card:hover .portfolio-card-hover {
+            opacity: 1;
+        }
+
+        .portfolio-card-hover-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Log entries */
+        .log-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
         .log-role {
             color: var(--accent);
             font-size: 14px;
@@ -271,88 +398,137 @@
 
                 <!-- Right: Portfolio Showcase -->
                 <div class="w-full lg:w-[400px] flex flex-col items-center gap-4">
-                    <!-- Showcase Carousel -->
-                    <div class="showcase-card w-full aspect-[10/7] relative overflow-hidden" id="showcaseCarousel">
-                        <!-- Slide 1: Factory 34 -->
-                        <a href="works/level-design-factory34/index.html" class="carousel-slide absolute inset-0 opacity-100 transition-opacity duration-500" data-slide="0">
-                            <img src="works/level-design-factory34/images/个人作品页入口展示图.png" alt="34号制造厂" class="w-full h-full object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="text-[#F4F4F0] text-sm font-medium">34号制造厂</div>
-                                <div class="text-[#F4F4F0]/70 text-xs">UE5白盒关卡设计</div>
-                            </div>
-                        </a>
-                        <!-- Slide 2: Arc Raiders -->
-                        <a href="works/arc-raiders-analysis/index.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="1">
-                            <img src="works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.png" alt="Arc Raiders系统切片分析" class="w-full h-full object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="text-[#F4F4F0] text-sm font-medium">Arc Raiders系统切片分析</div>
-                                <div class="text-[#F4F4F0]/70 text-xs">海外局内外循环构建研究</div>
-                            </div>
-                        </a>
-                        <!-- Slide 3: Level Design Agent 架构 -->
-                        <a href="Level_Design_Agent构思.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="2">
-                            <div class="w-full h-full min-h-full bg-gradient-to-br from-[#111111] via-[#1f1f1f] to-[#FF4500]/35 flex items-center justify-center">
-                                <div class="text-center px-6">
-                                    <div class="text-[#F4F4F0] text-base font-semibold tracking-wide">Level Design × AI Agent</div>
-                                    <div class="text-[#F4F4F0]/65 text-xs mt-2">Architecture Proposal</div>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="text-[#F4F4F0] text-sm font-medium">大世界关卡设计 AI Agent 架构</div>
-                                <div class="text-[#F4F4F0]/70 text-xs">设计维度、产物与上下文治理</div>
-                            </div>
-                        </a>
-                        <!-- Slide 4: SandBox Director -->
-                        <a href="works/sandbox-director/showcase.html" class="carousel-slide absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="3">
-                            <div class="w-full h-full min-h-full bg-gradient-to-br from-[#0e0e18] via-[#151525] to-[#e94560]/35 flex items-center justify-center">
-                                <div class="text-center px-6">
-                                    <div class="text-[#d0d0e0] text-base font-semibold tracking-wide">Anti-Plot 开放世界</div>
-                                    <div class="text-[#d0d0e0]/65 text-xs mt-2">Interactive Prototype</div>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="text-[#F4F4F0] text-sm font-medium">Anti-Plot 开放世界</div>
-                                <div class="text-[#F4F4F0]/70 text-xs">交互原型 + 设计文档</div>
-                            </div>
-                        </a>
-                        <!-- Hover overlay -->
-                        <div class="absolute inset-0 bg-[#FF4500] opacity-0 hover:opacity-10 transition-opacity pointer-events-none"></div>
-                    </div>
-
-                    <!-- Carousel Controls -->
-                    <div class="flex items-center gap-4 mt-2">
-                        <button onclick="prevSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">←</button>
-                        <div class="flex gap-2">
-                            <button onclick="goToSlide(0)" class="carousel-dot w-2 h-2 rounded-full bg-[#FF4500] transition-colors" data-dot="0"></button>
-                            <button onclick="goToSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="1"></button>
-                            <button onclick="goToSlide(2)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="2"></button>
-                            <button onclick="goToSlide(3)" class="carousel-dot w-2 h-2 rounded-full bg-[#CCCCCC] transition-colors" data-dot="3"></button>
-                        </div>
-                        <button onclick="nextSlide()" class="text-[#666666] hover:text-[#FF4500] transition-colors text-lg">→</button>
-                    </div>
-
-                    <!-- Showcase Label -->
-                    <div class="flex items-center gap-2">
-                        <span class="text-[#FF4500]">→</span>
-                        <span class="text-sm">个人作品 / PORTFOLIO</span>
-                    </div>
-
+                    <!-- Crosshair Decoration -->
+                    <div class="crosshair mb-4"></div>
+                    <div class="section-label">[SPEC.01: QUICK_ACCESS]</div>
                     <!-- Showcase Links -->
-                    <div class="flex flex-col gap-2 text-center">
+                    <div class="flex flex-col gap-2 text-center mt-4">
                         <a href="works/level-design-factory34/index.html" class="link-accent text-sm hover:underline">34号制造厂 - 关卡设计文档</a>
                         <a href="works/arc-raiders-analysis/index.html" class="link-accent text-sm hover:underline">Arc Raiders 系统切片分析</a>
                         <a href="Level_Design_Agent构思.html" class="link-accent text-sm hover:underline">关卡设计 Agent 架构方案</a>
                         <a href="works/sandbox-director/showcase.html" class="link-accent text-sm hover:underline">开放世界沙盒任务设计——导演系统交互原型</a>
                     </div>
-
                     <!-- Hint -->
-                    <div class="text-xs text-[#666666]">[点击查看完整文档]</div>
+                    <div class="text-xs text-[#666666] mt-4">[点击下方作品卡片查看详情]</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Hero Divider -->
+    <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+        <div class="divider"></div>
+    </div>
+
+    <!-- Portfolio Showcase Section -->
+    <section class="w-full py-16 lg:py-20">
+        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
+            <!-- Section Header -->
+            <div class="flex justify-between items-center mb-4">
+                <div class="section-label">[SEC.01-A: PORTFOLIO_SHOWCASE]</div>
+                <div class="text-sm text-[#666666]">SCROLL_HORIZONTAL →</div>
+            </div>
+            <!-- Main Title -->
+            <h2 class="text-4xl lg:text-5xl font-bold mb-12 tracking-tight">个人作品集</h2>
+
+            <!-- Horizontal Scroll Cards -->
+            <div class="portfolio-scroll-container">
+                <!-- Card 1: AI Agent架构 -->
+                <a href="Level_Design_Agent构思.html" class="portfolio-card">
+                    <div class="portfolio-card-image" style="background: linear-gradient(135deg, #111111 0%, #1f1f1f 50%, #FF4500 100%);">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="color: #F4F4F0; font-size: 16px; font-weight: 600; letter-spacing: 1px;">Level Design × AI Agent</div>
+                                <div style="color: rgba(244,244,240,0.65); font-size: 12px; margin-top: 8px;">Architecture Proposal</div>
+                            </div>
+                        </div>
+                        <div class="portfolio-card-hover">
+                            <span class="portfolio-card-hover-text">查看详情 →</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-card-content">
+                        <div>
+                            <div class="portfolio-card-title">大世界关卡设计 AI Agent 架构</div>
+                            <div class="portfolio-card-desc">基于Claude Code的关卡设计Agent框架：设计维度、产物与上下文治理的系统化方案</div>
+                        </div>
+                        <div class="portfolio-card-tags">
+                            <span class="portfolio-card-tag">AI Agent</span>
+                            <span class="portfolio-card-tag">工作流设计</span>
+                            <span class="portfolio-card-tag">LLM</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 2: Sandbox Director -->
+                <a href="works/sandbox-director/showcase.html" class="portfolio-card">
+                    <div class="portfolio-card-image" style="background: linear-gradient(135deg, #0e0e18 0%, #151525 50%, #e94560 100%);">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <div style="text-align: center; padding: 20px;">
+                                <div style="color: #d0d0e0; font-size: 16px; font-weight: 600; letter-spacing: 1px;">Anti-Plot 开放世界</div>
+                                <div style="color: rgba(208,208,224,0.65); font-size: 12px; margin-top: 8px;">Interactive Prototype</div>
+                            </div>
+                        </div>
+                        <div class="portfolio-card-hover">
+                            <span class="portfolio-card-hover-text">查看详情 →</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-card-content">
+                        <div>
+                            <div class="portfolio-card-title">沙盒开放世界任务设计</div>
+                            <div class="portfolio-card-desc">基于导演系统的沙盒任务设计原型，探索无剧本叙事与涌现式玩法的开放世界体验</div>
+                        </div>
+                        <div class="portfolio-card-tags">
+                            <span class="portfolio-card-tag">开放世界</span>
+                            <span class="portfolio-card-tag">导演系统</span>
+                            <span class="portfolio-card-tag">交互原型</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 3: 34号制造厂 -->
+                <a href="works/level-design-factory34/index.html" class="portfolio-card">
+                    <div class="portfolio-card-image" style="background-image: url('works/level-design-factory34/images/个人作品页入口展示图.png');">
+                        <div class="portfolio-card-hover">
+                            <span class="portfolio-card-hover-text">查看详情 →</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-card-content">
+                        <div>
+                            <div class="portfolio-card-title">34号制造厂</div>
+                            <div class="portfolio-card-desc">UE5白盒个人作品，异化法则：粗野主义建筑与超现实奇观结合的类怪谈体验，以"视线与移动管理"为核心的极简3C设计</div>
+                        </div>
+                        <div class="portfolio-card-tags">
+                            <span class="portfolio-card-tag">UE5</span>
+                            <span class="portfolio-card-tag">白盒关卡</span>
+                            <span class="portfolio-card-tag">新怪谭</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 4: Arc Raiders系统切片分析 -->
+                <a href="works/arc-raiders-analysis/index.html" class="portfolio-card">
+                    <div class="portfolio-card-image" style="background-image: url('works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.png');">
+                        <div class="portfolio-card-hover">
+                            <span class="portfolio-card-hover-text">查看详情 →</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-card-content">
+                        <div>
+                            <div class="portfolio-card-title">Arc Raiders系统切片分析</div>
+                            <div class="portfolio-card-desc">海外局内外循环构建研究，从系统循环、大盘红利到社区反馈的深度解构，探索海外搜打撤品类的局内外循环构建逻辑</div>
+                        </div>
+                        <div class="portfolio-card-tags">
+                            <span class="portfolio-card-tag">系统分析</span>
+                            <span class="portfolio-card-tag">搜打撤</span>
+                            <span class="portfolio-card-tag">PVPVE</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Divider -->
     <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
         <div class="divider"></div>
     </div>
@@ -572,60 +748,6 @@
             });
         });
 
-        // Portfolio Carousel
-        let currentSlide = 0;
-        const totalSlides = 4;
-        let autoPlayInterval;
-
-        function updateSlides() {
-            // Only the active slide should be interactive.
-            document.querySelectorAll('.carousel-slide').forEach((slide, index) => {
-                const isActive = index === currentSlide;
-                slide.style.opacity = isActive ? '1' : '0';
-                slide.style.pointerEvents = isActive ? 'auto' : 'none';
-            });
-            // Update dots
-            document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
-                dot.classList.toggle('bg-[#FF4500]', index === currentSlide);
-                dot.classList.toggle('bg-[#CCCCCC]', index !== currentSlide);
-            });
-        }
-
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateSlides();
-            resetAutoPlay();
-        }
-
-        function prevSlide() {
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            updateSlides();
-            resetAutoPlay();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlides();
-            resetAutoPlay();
-        }
-
-        function resetAutoPlay() {
-            clearInterval(autoPlayInterval);
-            autoPlayInterval = setInterval(nextSlide, 5000);
-        }
-
-        // Initialize slide state and start auto-play
-        updateSlides();
-        autoPlayInterval = setInterval(nextSlide, 5000);
-
-        // Pause on hover
-        const carousel = document.getElementById('showcaseCarousel');
-        if (carousel) {
-            carousel.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
-            carousel.addEventListener('mouseleave', () => {
-                autoPlayInterval = setInterval(nextSlide, 5000);
-            });
-        }
     </script>
 </body>
 </html>
