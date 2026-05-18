@@ -741,7 +741,7 @@
             <p class="subtitle">从设计源事实出发，把设计意图转化为可检查、可派生、可展示的结构化产物。</p>
             <p class="bridge">这是我在 Level Agent v0.45 之后，对 AI 辅助关卡设计流程更具体的一次落地：先把设计源事实、机械检查和派生产物跑通，再逐步接入职能接口、项目知识与原型能力。</p>
             <div class="actions">
-              <a class="button primary" href="https://github.com/huoshangou/level-design-deck" target="_blank" rel="noreferrer">查看 GitHub 项目</a>
+              <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">查看 WebApp 项目</a>
               <a class="button" href="../../Level_Design_Agent构思.html">查看 v0.45 历史版本</a>
             </div>
           </div>
@@ -774,8 +774,8 @@
               </div>
             </div>
             <div class="hero-shot">
-              <img src="images/img_editor_home.png" alt="level-design-deck 编辑器首页截图">
-              <div class="caption mono">CURRENT PROOF / schema-driven editor + spec source of truth</div>
+              <img src="images/webapp-current-spec.png" alt="level-design-deck Web UI 四栏工作台截图">
+              <div class="caption mono">CURRENT PROOF / warning panel + schema form + preview + chat</div>
             </div>
           </div>
         </div>
@@ -863,10 +863,14 @@
       <section class="section" id="proof">
         <div class="section-inner">
           <div class="section-kicker">CURRENT PROOF</div>
-          <h2 class="section-title">当前版本先证明一件事：设计源事实可以稳定派生文档、Deck 和检查结果。</h2>
-          <p class="section-lead">`level-design-deck` 不是最终产品形态，但它已经把最关键的底座跑通：spec 真源、schema 驱动编辑、机械校验、跨模块检查和多种派生产物。</p>
+          <h2 class="section-title">当前版本已经从单文件编辑器，推进到 Web UI + 本地 daemon 的工作台雏形。</h2>
+          <p class="section-lead">`level-design-deck` 先跑通了 spec 真源、schema 驱动编辑、机械校验、跨模块检查和多种派生产物；今天的 WebApp 版本继续把它推进到更接近产品形态的四栏工作台：告警、表单、预览与 Chat 并存。</p>
 
           <div class="image-grid">
+            <div class="image-tile">
+              <img src="images/webapp-current-spec.png" alt="WebApp 四栏工作台截图">
+              <div>Web UI 把告警栏、schema 表单、HTML 预览和 Chat 放到同一工作台里，设计师不必在命令行、编辑器和浏览器之间来回切换。</div>
+            </div>
             <div class="image-tile">
               <img src="images/img_editor_form.png" alt="schema-driven 表单编辑截图">
               <div>表单由 schema 驱动生成，字段存在与否回到结构定义，而不是在 HTML 里自由发挥。</div>
@@ -886,11 +890,12 @@
               <h3><span class="status-dot"></span>当前已落地</h3>
               <ul>
                 <li>`spec.json` 作为设计源事实</li>
+                <li>React/Vite Web UI + FastAPI 本地 daemon</li>
+                <li>四栏工作台：告警、schema 表单、预览、Chat</li>
                 <li>多种派生产物</li>
                 <li>机械检查和跨模块一致性检查</li>
-                <li>schema-driven 编辑</li>
-                <li>长文档和 Deck 渲染</li>
-                <li>Claude Code skill 工作流</li>
+                <li>长文档、单 spec HTML 和 Deck 渲染</li>
+                <li>本地 cc session / WebSocket Chat 雏形</li>
               </ul>
             </article>
             <article class="status-card">
@@ -898,16 +903,17 @@
               <ul>
                 <li>职能接口文件仍是暂定示例，尚未成为生产契约</li>
                 <li>项目专属蓝图 MCP 尚未接入</li>
-                <li>对话优先交互仍在迭代</li>
+                <li>Chat 当前主要用于讨论和读文件，还没有完全接管写 spec / 跑命令</li>
                 <li>项目目标对齐层还未完整落地</li>
+                <li>团队局域网部署、多用户隔离和远程 AgentRunner 仍在后续阶段</li>
               </ul>
             </article>
             <article class="status-card">
               <h3><span class="status-dot"></span>下一步展望</h3>
               <ul>
-                <li>从结构化文档/Deck 生成，推进到完整内部效率产品</li>
-                <li>对话澄清 -> 设计源事实 -> 职能接口检查</li>
-                <li>原型/文档派生 -> 人工批准门</li>
+                <li>从结构化文档/Deck 生成，推进到可交付给团队的内部效率产品</li>
+                <li>对话澄清 -> 设计源事实 -> 职能接口检查 -> 写入 spec</li>
+                <li>原型/文档派生 -> 人工批准门 -> 团队部署</li>
                 <li>接入项目知识、蓝图能力和更多职能接口校准</li>
               </ul>
             </article>
@@ -919,7 +925,7 @@
         <div class="section-inner">
           <div class="section-kicker">PRODUCT FORM</div>
           <h2 class="section-title">最终形态不是聊天框，也不是文档编辑器，而是面向设计师的对话优先工作台。</h2>
-          <p class="section-lead">我正在参考 `nexu-io/open-design` 这类交互形式：设计师从 IM 式对话进入，工具先澄清问题、给出计划、生成可预览产物，再把关键变化放回人工批准门。</p>
+          <p class="section-lead">我正在参考 `nexu-io/open-design` 这类交互形式：设计师从 IM 式对话进入，工具先澄清问题、给出计划、生成可预览产物，再把关键变化放回人工批准门。今天的 WebApp 已经把 Chat 放进工作台，下一步是让 Chat 更深地写入 spec、调用检查与生成能力。</p>
 
           <div class="vision-layout">
             <div class="conversation-ui">
@@ -950,7 +956,7 @@
                 <li>项目专属蓝图 MCP：让经过维护的实现能力进入原型链路，同时保留 TD/GPP 的维护和审核权。</li>
               </ul>
               <div class="actions">
-                <a class="button primary" href="https://github.com/huoshangou/level-design-deck" target="_blank" rel="noreferrer">打开落地项目</a>
+                <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">打开 WebApp 目录</a>
                 <a class="button" href="https://github.com/nexu-io/open-design" target="_blank" rel="noreferrer">查看交互参考</a>
               </div>
             </div>
