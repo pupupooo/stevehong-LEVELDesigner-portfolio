@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>level-design-deck：AI 辅助关卡设计工作流</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111111;
+      --paper: #f4f4f0;
+      --panel: #1a1a18;
+      --panel-soft: #24231f;
+      --line: rgba(244, 244, 240, 0.22);
+      --line-dark: rgba(17, 17, 17, 0.18);
+      --muted: #77736b;
+      --text-soft: #c9c3b9;
+      --accent: #ff4500;
+      --signal: #38bdf8;
+      --ok: #86efac;
+      --warning: #facc15;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans SC", system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .page-shell {
+      overflow: hidden;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 17, 17, 0.94);
+      color: var(--paper);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      height: 64px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .crosshair {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: var(--accent);
+    }
+
+    .crosshair::before {
+      width: 20px;
+      height: 1px;
+      top: 50%;
+      left: 0;
+    }
+
+    .crosshair::after {
+      width: 1px;
+      height: 20px;
+      left: 50%;
+      top: 0;
+    }
+
+    .topbar nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--text-soft);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .topbar nav a {
+      transition: color 160ms ease;
+    }
+
+    .topbar nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      background:
+        linear-gradient(rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        var(--ink);
+      background-size: 48px 48px;
+      color: var(--paper);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .hero-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 76px 32px 88px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+      gap: 48px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(42px, 6vw, 82px);
+      line-height: 1.06;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin-top: 24px;
+      color: var(--text-soft);
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.75;
+    }
+
+    .bridge {
+      margin-top: 28px;
+      max-width: 720px;
+      border-left: 3px solid var(--accent);
+      padding-left: 18px;
+      color: #ded7cc;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid var(--paper);
+      padding: 10px 18px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .button:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .button.primary:hover {
+      background: #ff6a33;
+      border-color: #ff6a33;
+      color: white;
+    }
+
+    .framework {
+      position: relative;
+      border: 1px solid var(--line);
+      background: rgba(26, 26, 24, 0.88);
+      padding: 22px;
+      box-shadow: 14px 14px 0 rgba(255, 69, 0, 0.12);
+    }
+
+    .control-band {
+      border: 1px solid rgba(255, 69, 0, 0.7);
+      background: rgba(255, 69, 0, 0.12);
+      padding: 16px;
+      color: white;
+    }
+
+    .control-band h2 {
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .control-band p {
+      margin-top: 8px;
+      color: #f0d4c7;
+      font-size: 13px;
+    }
+
+    .flow {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .flow-node {
+      min-height: 132px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .flow-node::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 8px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .flow-node:last-child::after {
+      display: none;
+    }
+
+    .node-index {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+    }
+
+    .node-title {
+      color: var(--paper);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .node-desc {
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .hero-shot {
+      margin-top: 20px;
+      border: 1px solid var(--line);
+      background: #0d0d0c;
+      padding: 10px;
+    }
+
+    .hero-shot img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      object-position: top center;
+      border: 1px solid rgba(244, 244, 240, 0.12);
+    }
+
+    .caption {
+      margin-top: 10px;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .section {
+      border-bottom: 1px solid var(--line-dark);
+    }
+
+    .section.dark {
+      background: var(--ink);
+      color: var(--paper);
+      border-bottom-color: var(--line);
+    }
+
+    .section-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 84px 32px;
+    }
+
+    .section-kicker {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      max-width: 820px;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: 1.16;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      max-width: 860px;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .dark .section-lead {
+      color: var(--text-soft);
+    }
+
+    .two-goals {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .goal-block,
+    .example-panel,
+    .status-card,
+    .vision-card {
+      border: 1px solid var(--line-dark);
+      background: white;
+      padding: 24px;
+    }
+
+    .goal-block h3,
+    .example-panel h3,
+    .status-card h3,
+    .vision-card h3 {
+      font-size: 22px;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .goal-block p,
+    .example-panel p,
+    .status-card p,
+    .vision-card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .dark .example-panel,
+    .dark .vision-card {
+      border-color: var(--line);
+      background: var(--panel);
+    }
+
+    .dark .example-panel p,
+    .dark .vision-card p {
+      color: var(--text-soft);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid var(--line-dark);
+      padding: 3px 9px;
+      color: var(--accent);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .dark .tag {
+      border-color: var(--line);
+    }
+
+    .examples {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 22px;
+      margin-top: 44px;
+      align-items: start;
+    }
+
+    .process-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .process-step {
+      border-left: 2px solid var(--accent);
+      padding: 10px 0 10px 14px;
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .interface-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .interface-item {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+    }
+
+    .interface-item h4 {
+      color: var(--paper);
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .interface-item p {
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .image-grid {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .image-tile {
+      border: 1px solid var(--line-dark);
+      background: white;
+      overflow: hidden;
+    }
+
+    .image-tile img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top center;
+      border-bottom: 1px solid var(--line-dark);
+    }
+
+    .image-tile div {
+      padding: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .status-grid {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .status-card {
+      min-height: 360px;
+    }
+
+    .status-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    .status-card ul,
+    .vision-card ul {
+      margin-top: 16px;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .status-card li,
+    .vision-card li {
+      position: relative;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .status-card li::before,
+    .vision-card li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.78em;
+      width: 7px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .vision-layout {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .conversation-ui {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      color: var(--text-soft);
+      font-size: 12px;
+    }
+
+    .message-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .message {
+      max-width: 88%;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .message.user {
+      margin-left: auto;
+      border-color: rgba(255, 69, 0, 0.55);
+      background: rgba(255, 69, 0, 0.1);
+      color: white;
+    }
+
+    .agent-plan {
+      margin-top: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 14px;
+    }
+
+    .agent-plan h4 {
+      color: var(--signal);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .agent-plan p {
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--text-soft);
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 1080px) {
+      .hero-inner,
+      .examples,
+      .vision-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-inner {
+        padding-top: 58px;
+      }
+
+      .flow,
+      .status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) {
+      .topbar-inner {
+        height: auto;
+        min-height: 64px;
+        padding: 14px 20px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-inner,
+      .section-inner,
+      .footer-inner {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .flow,
+      .two-goals,
+      .interface-grid,
+      .status-grid,
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-node::after {
+        display: none;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="../../index.html">
+          <span class="crosshair"></span>
+          <span class="mono">HONG_XJ / level-design-deck</span>
+        </a>
+        <nav class="mono" aria-label="页面导航">
+          <a href="#framework">框架</a>
+          <a href="#handoff">接口</a>
+          <a href="#proof">落地</a>
+          <a href="#vision">展望</a>
+          <a href="https://github.com/huoshangou/level-design-deck" target="_blank" rel="noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-inner">
+          <div>
+            <div class="eyebrow">PROJECT / AI ASSISTED DESIGN TOOLING</div>
+            <h1>level-design-deck：AI 辅助关卡设计工作流</h1>
+            <p class="subtitle">从设计源事实出发，把设计意图转化为可检查、可派生、可展示的结构化产物。</p>
+            <p class="bridge">这是我在 Level Agent v0.45 之后，对 AI 辅助关卡设计流程更具体的一次落地：先把设计源事实、机械检查和派生产物跑通，再逐步接入职能接口、项目知识与原型能力。</p>
+            <div class="actions">
+              <a class="button primary" href="https://github.com/huoshangou/level-design-deck" target="_blank" rel="noreferrer">查看 GitHub 项目</a>
+              <a class="button" href="../../Level_Design_Agent构思.html">查看 v0.45 历史版本</a>
+            </div>
+          </div>
+
+          <div class="framework" id="framework">
+            <div class="control-band">
+              <h2>人的设计主导覆盖全流程</h2>
+              <p>意图澄清 / 结构化编辑 / 可视化检查 / 批准门，不是最后看一眼，而是在关键节点保持设计判断权。</p>
+            </div>
+            <div class="flow">
+              <div class="flow-node">
+                <span class="node-index">01</span>
+                <div class="node-title">设计意图</div>
+                <div class="node-desc">目标体验、玩法矛盾、空间节奏、项目约束。</div>
+              </div>
+              <div class="flow-node">
+                <span class="node-index">02</span>
+                <div class="node-title">设计源事实</div>
+                <div class="node-desc">用结构化 spec 保存意图、关系、字段和跨模块引用。</div>
+              </div>
+              <div class="flow-node">
+                <span class="node-index">03</span>
+                <div class="node-title">机械检查</div>
+                <div class="node-desc">优先用可复现规则发现占位、断链、越界和不一致。</div>
+              </div>
+              <div class="flow-node">
+                <span class="node-index">04</span>
+                <div class="node-title">派生产物</div>
+                <div class="node-desc">长文档、Deck、检查报告和后续职能接口材料。</div>
+              </div>
+            </div>
+            <div class="hero-shot">
+              <img src="images/img_editor_home.png" alt="level-design-deck 编辑器首页截图">
+              <div class="caption mono">CURRENT PROOF / schema-driven editor + spec source of truth</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-kicker">WHY IT MATTERS</div>
+          <h2 class="section-title">这套工具想加速的，不只是写文档这一个动作。</h2>
+          <p class="section-lead">开放世界关卡策划经常承接大量落地沟通：玩法、空间、美术、灯光、音频、VFX、程序、系统都要从同一份设计中读取不同信息。传统文档即使写得很详细，也很难保证每个职能都能马上找到自己开始工作所需的上下文。</p>
+          <div class="two-goals">
+            <div class="goal-block">
+              <h3>降低文档事务负担</h3>
+              <p>设计师不应该把大量时间消耗在重复整理格式、拆分汇报材料、复制字段、维护多份文档一致性上。设计源事实稳定后，文档和 Deck 应该从同一份结构化记录派生出来。</p>
+              <div class="tag-row">
+                <span class="tag">spec.json 真源</span>
+                <span class="tag">schema-driven 编辑</span>
+                <span class="tag">自动渲染</span>
+              </div>
+            </div>
+            <div class="goal-block">
+              <h3>降低沟通摩擦</h3>
+              <p>真正耗时的不是一次写作，而是职能之间反复确认“你到底需要我做什么”“我现在还缺什么信息”。职能接口文件可以提前暴露缺口，把模糊需求转成可追问、可审核、可交付的材料。</p>
+              <div class="tag-row">
+                <span class="tag">职能接口文件</span>
+                <span class="tag">缺口追问</span>
+                <span class="tag">交付前检查</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="handoff">
+        <div class="section-inner">
+          <div class="section-kicker">INTERFACE EXAMPLES</div>
+          <h2 class="section-title">接口文件不是新模板，而是让协作对象更快开始工作的契约。</h2>
+          <p class="section-lead">下面两个样例都是暂定接口边界，用来说明产品机制。成熟形态中，每个接口都应由实际使用它的职能参与校准。</p>
+
+          <div class="examples">
+            <article class="example-panel">
+              <div class="section-kicker">EXAMPLE 01</div>
+              <h3>玩法原型接口：GD 到 TD/GPP 标准文档</h3>
+              <p>当前流程通常是 GD 写玩法需求，TD 根据需求实现玩法原型组件，GD 再组装调试；原型过审后再转正式需求，由 GPP 开发正式功能。每一层都可能发生重新解释和反复沟通。</p>
+              <div class="process-list">
+                <div class="process-step">TD/GPP 共同维护长期更新的项目专属蓝图 MCP，沉淀可复用蓝图组件、实现模式、项目约束和接口要求。</div>
+                <div class="process-step">GD 在 design deck 中完成玩法设计后，工具根据蓝图 MCP 的接口要求生成 GD 到 TD/GPP 标准文档。</div>
+                <div class="process-step">实现同事不再从宽泛设计文档中反推需求，而是审核标准文档，监管 AI Agent 调用项目专属蓝图 MCP，并在关键节点确认实现逻辑。</div>
+                <div class="process-step">纯原型阶段可以进一步压缩链路：GD 调用经过验证的蓝图能力完成可审查原型，再由接口层转译为 GPP 需要的正式开发信息。</div>
+              </div>
+              <div class="tag-row">
+                <span class="tag">项目专属蓝图 MCP</span>
+                <span class="tag">GD -> TD/GPP</span>
+                <span class="tag">关键逻辑审核</span>
+              </div>
+            </article>
+
+            <article class="example-panel">
+              <div class="section-kicker">EXAMPLE 02</div>
+              <h3>灯光接口文件（暂定示例）</h3>
+              <p>这个示例不是要替灯光师定义最终规范，而是说明：当关卡策划填写设计源事实时，工具可以根据“灯光开始工作需要什么信息”提前检查缺口。</p>
+              <div class="interface-grid">
+                <div class="interface-item">
+                  <h4>已有源事实</h4>
+                  <p>区域功能、情绪曲线、时间段、关键视线、危险/安全区域、重点事件节点。</p>
+                </div>
+                <div class="interface-item">
+                  <h4>开始工作可能需要</h4>
+                  <p>主视觉焦点、导航引导、明暗节奏、动态变化条件、美术和 TA 依赖。</p>
+                </div>
+                <div class="interface-item">
+                  <h4>工具应追问设计师</h4>
+                  <p>哪些区域需要灯光引导？哪些区域必须压迫或迷失？关键事件是否需要状态切换？</p>
+                </div>
+                <div class="interface-item">
+                  <h4>必须由灯光/TA 校准</h4>
+                  <p>实时光和烘焙光边界、性能预算、后处理依赖、材质响应和平台限制。</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="proof">
+        <div class="section-inner">
+          <div class="section-kicker">CURRENT PROOF</div>
+          <h2 class="section-title">当前版本先证明一件事：设计源事实可以稳定派生文档、Deck 和检查结果。</h2>
+          <p class="section-lead">`level-design-deck` 不是最终产品形态，但它已经把最关键的底座跑通：spec 真源、schema 驱动编辑、机械校验、跨模块检查和多种派生产物。</p>
+
+          <div class="image-grid">
+            <div class="image-tile">
+              <img src="images/img_editor_form.png" alt="schema-driven 表单编辑截图">
+              <div>表单由 schema 驱动生成，字段存在与否回到结构定义，而不是在 HTML 里自由发挥。</div>
+            </div>
+            <div class="image-tile">
+              <img src="images/img_check_pass.png" alt="机械检查通过截图">
+              <div>机械检查优先发现占位、断链、类型越界和跨模块引用问题，AI 自信不能替代硬约束。</div>
+            </div>
+            <div class="image-tile">
+              <img src="images/img_deck.png" alt="派生 Deck 截图">
+              <div>同一份设计源事实可以派生为汇报 Deck、长文档和后续接口材料。</div>
+            </div>
+          </div>
+
+          <div class="status-grid">
+            <article class="status-card">
+              <h3><span class="status-dot"></span>当前已落地</h3>
+              <ul>
+                <li>`spec.json` 作为设计源事实</li>
+                <li>多种派生产物</li>
+                <li>机械检查和跨模块一致性检查</li>
+                <li>schema-driven 编辑</li>
+                <li>长文档和 Deck 渲染</li>
+                <li>Claude Code skill 工作流</li>
+              </ul>
+            </article>
+            <article class="status-card">
+              <h3><span class="status-dot"></span>当前缺口</h3>
+              <ul>
+                <li>职能接口文件仍是暂定示例，尚未成为生产契约</li>
+                <li>项目专属蓝图 MCP 尚未接入</li>
+                <li>对话优先交互仍在迭代</li>
+                <li>项目目标对齐层还未完整落地</li>
+              </ul>
+            </article>
+            <article class="status-card">
+              <h3><span class="status-dot"></span>下一步展望</h3>
+              <ul>
+                <li>从结构化文档/Deck 生成，推进到完整内部效率产品</li>
+                <li>对话澄清 -> 设计源事实 -> 职能接口检查</li>
+                <li>原型/文档派生 -> 人工批准门</li>
+                <li>接入项目知识、蓝图能力和更多职能接口校准</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="vision">
+        <div class="section-inner">
+          <div class="section-kicker">PRODUCT FORM</div>
+          <h2 class="section-title">最终形态不是聊天框，也不是文档编辑器，而是面向设计师的对话优先工作台。</h2>
+          <p class="section-lead">我正在参考 `nexu-io/open-design` 这类交互形式：设计师从 IM 式对话进入，工具先澄清问题、给出计划、生成可预览产物，再把关键变化放回人工批准门。</p>
+
+          <div class="vision-layout">
+            <div class="conversation-ui">
+              <div class="chat-header mono">
+                <span>DESIGN SESSION / POI_PROTOTYPE</span>
+                <span>HUMAN CONTROL: ON</span>
+              </div>
+              <div class="message-stack">
+                <div class="message user">我要做一个夜间潜入玩法，玩家需要避开巡逻、恢复电力，并触发一次高风险撤离。</div>
+                <div class="message">已识别：核心体验、流程节点、空间区域、机制依赖仍不完整。需要确认灯光状态切换、敌人警戒条件和蓝图组件边界。</div>
+                <div class="agent-plan">
+                  <h4 class="mono">LIVE PLAN</h4>
+                  <p>1. 追问缺失设计意图<br>2. 写入设计源事实<br>3. 运行职能接口检查<br>4. 生成 GD 到 TD/GPP 标准文档<br>5. 等待关键节点批准</p>
+                </div>
+                <div class="message user">先按纯原型处理，使用已有电力恢复和巡逻状态组件，但撤离事件需要我确认。</div>
+              </div>
+            </div>
+
+            <div class="vision-card">
+              <h3>产品形态展望</h3>
+              <p>对话只是入口，真正的产品能力在于把对话里的意图转成可维护的源事实，并用项目知识、职能接口和机械检查不断约束它。</p>
+              <ul>
+                <li>对话优先交互：用追问和计划降低设计师进入成本。</li>
+                <li>结构化编辑：关键字段回到 schema 和源事实，而不是散落在长文本里。</li>
+                <li>可视化检查：把区域关系、流程节点、派生产物和缺口报告放在可审查界面中。</li>
+                <li>人工批准门：体验判断、关键逻辑和跨职能接口变更必须由人确认。</li>
+                <li>项目目标对齐层：注入项目目标、约束、模式和参考案例，让新设计不从空白 prompt 开始。</li>
+                <li>项目专属蓝图 MCP：让经过维护的实现能力进入原型链路，同时保留 TD/GPP 的维护和审核权。</li>
+              </ul>
+              <div class="actions">
+                <a class="button primary" href="https://github.com/huoshangou/level-design-deck" target="_blank" rel="noreferrer">打开落地项目</a>
+                <a class="button" href="https://github.com/nexu-io/open-design" target="_blank" rel="noreferrer">查看交互参考</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <div>HONG XIANGJIAN // 关卡/玩法策划 + AI 设计工具实践</div>
+        <div><a href="../../index.html">返回作品集首页</a></div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
