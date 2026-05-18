@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SANDBOX DIRECTOR // Design Document</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F4F4F0;
@@ -25,7 +25,11 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
+  background:
+    linear-gradient(rgba(17,17,17,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17,17,17,.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: 48px 48px;
   color: var(--text);
   font-family: 'Noto Sans SC', sans-serif;
   line-height: 1.7;
@@ -61,8 +65,12 @@ body {
 /* ── NAV ── */
 #nav {
   position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
-  background: var(--bg);
-  border-right: 1px solid var(--border);
+  background:
+    linear-gradient(rgba(244,244,240,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,244,240,.07) 1px, transparent 1px),
+    #111111;
+  background-size: 36px 36px;
+  border-right: 1px solid rgba(244,244,240,.2);
   padding: 28px 24px;
   overflow-y: auto;
   z-index: 100;
@@ -73,7 +81,7 @@ body {
 #nav-header {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(244,244,240,.2);
 }
 #nav .section-label {
   color: var(--accent);
@@ -83,20 +91,20 @@ body {
   margin-bottom: 4px;
 }
 #nav h2 {
-  color: var(--text);
+  color: var(--bg);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 #nav .subtitle {
-  color: var(--text-muted);
+  color: #c9c3b9;
   font-size: 11px;
   letter-spacing: 0.5px;
 }
 
 #nav a {
   display: block;
-  color: var(--text-muted);
+  color: #c9c3b9;
   text-decoration: none;
   font-size: 13px;
   padding: 6px 0;
@@ -108,7 +116,7 @@ body {
   color: var(--accent);
 }
 #nav a.active {
-  color: var(--text);
+  color: var(--bg);
   border-left-color: var(--accent);
 }
 #nav .nav-section {
@@ -124,15 +132,17 @@ body {
 /* ── MAIN ── */
 main {
   margin-left: 280px;
-  max-width: 900px;
+  max-width: 980px;
   padding: 60px 50px 120px;
+  background: rgba(244,244,240,.94);
 }
 h1 {
-  font-size: 32px;
+  font-size: clamp(38px, 5vw, 68px);
   color: var(--text);
   margin-bottom: 12px;
-  font-weight: 700;
-  letter-spacing: -1px;
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: 0;
 }
 .hero-sub {
   color: var(--text-muted);
@@ -141,13 +151,14 @@ h1 {
   line-height: 1.8;
 }
 h2 {
-  font-size: 22px;
+  font-size: clamp(26px, 3vw, 38px);
   color: var(--text);
   margin-top: 56px;
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
-  font-weight: 600;
+  font-weight: 800;
+  line-height: 1.2;
 }
 h2 .num {
   color: var(--accent);
@@ -175,9 +186,10 @@ em { color: var(--accent); font-style: normal; font-weight: 500; }
 /* ── COMPONENTS ── */
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(17,17,17,.2);
   padding: 20px 24px;
   margin: 20px 0;
+  box-shadow: 8px 8px 0 rgba(255,69,0,.08);
 }
 .card-accent { border-left: 3px solid var(--accent); }
 .card-green { border-left: 3px solid var(--green); }
@@ -207,6 +219,7 @@ table {
   margin: 20px 0;
   font-size: 13px;
   line-height: 1.6;
+  background: rgba(255,255,255,.72);
 }
 th {
   background: var(--surface);
@@ -232,7 +245,7 @@ code {
 }
 pre {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(17,17,17,.2);
   padding: 20px 24px;
   margin: 16px 0;
   overflow-x: auto;
@@ -262,7 +275,7 @@ li { margin-bottom: 6px; }
 
 .diagram {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(17,17,17,.2);
   padding: 24px;
   margin: 20px 0;
   font-family: "Cascadia Code", monospace;
@@ -279,7 +292,7 @@ li { margin-bottom: 6px; }
 
 .npc-card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(17,17,17,.2);
   padding: 20px 24px;
   margin: 16px 0;
   display: flex;
@@ -379,11 +392,11 @@ li { margin-bottom: 6px; }
     width: 100%;
     height: auto;
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(244,244,240,.2);
   }
   main { margin-left: 0; padding: 30px 20px 60px; }
-  h1 { font-size: 24px; }
-  h2 { font-size: 18px; }
+  h1 { font-size: 36px; }
+  h2 { font-size: 26px; }
 }
 </style>
 </head>

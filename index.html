@@ -1,774 +1,981 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steve Hong Portfolio - 关卡/玩法策划 + AI 设计工具实践</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #F4F4F0;
-            --text-primary: #111111;
-            --text-secondary: #333333;
-            --text-muted: #666666;
-            --accent: #FF4500;
-            --border: #111111;
-            --border-light: #CCCCCC;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steve Hong Portfolio - 关卡/玩法策划 + AI 设计工具实践</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #111111;
+      --paper: #f4f4f0;
+      --panel: #1a1a18;
+      --panel-soft: #24231f;
+      --line: rgba(244, 244, 240, 0.2);
+      --line-dark: rgba(17, 17, 17, 0.18);
+      --muted: #77736b;
+      --text-soft: #c9c3b9;
+      --accent: #ff4500;
+      --blueprint: #38bdf8;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        /* Industrial crosshair decoration */
-        .crosshair {
-            position: relative;
-            width: 20px;
-            height: 20px;
-        }
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans SC", system-ui, sans-serif;
+      line-height: 1.7;
+    }
 
-        .crosshair::before,
-        .crosshair::after {
-            content: '';
-            position: absolute;
-            background-color: var(--accent);
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        .crosshair::before {
-            width: 20px;
-            height: 1px;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-        }
+    img {
+      display: block;
+      max-width: 100%;
+    }
 
-        .crosshair::after {
-            width: 1px;
-            height: 20px;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
-        }
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
 
-        /* Section labels */
-        .section-label {
-            color: var(--accent);
-            font-size: 14px;
-            letter-spacing: 1px;
-            font-weight: 400;
-        }
+    .grid-bg {
+      background:
+        linear-gradient(rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        var(--ink);
+      background-size: 48px 48px;
+    }
 
-        /* Navigation items */
-        .nav-item {
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            color: var(--text-primary);
-            transition: color 0.2s;
-        }
+    .crosshair {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+    }
 
-        .nav-item:hover {
-            color: var(--accent);
-        }
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: var(--accent);
+    }
 
-        /* Dividers */
-        .divider {
-            height: 1px;
-            background-color: var(--border);
-            width: 100%;
-        }
+    .crosshair::before {
+      width: 20px;
+      height: 1px;
+      top: 50%;
+      left: 0;
+    }
 
-        .divider-light {
-            height: 1px;
-            background-color: var(--border-light);
-            width: 100%;
-        }
+    .crosshair::after {
+      width: 1px;
+      height: 20px;
+      left: 50%;
+      top: 0;
+    }
 
-        /* Status dot */
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent);
-            display: inline-block;
-        }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 17, 17, 0.94);
+      color: var(--paper);
+      backdrop-filter: blur(18px);
+    }
 
-        /* Portfolio showcase card */
-        .showcase-card {
-            border: 2px solid var(--border);
-            background-color: var(--text-primary);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+    .topbar-inner {
+      max-width: 1440px;
+      min-height: 64px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
 
-        .showcase-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
 
-        /* Links */
-        .link-accent {
-            color: var(--accent);
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
+    .topbar nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--text-soft);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
 
-        .link-accent:hover {
-            opacity: 0.7;
-        }
+    .topbar nav a {
+      transition: color 160ms ease;
+    }
 
-        /* Hero title */
-        .hero-title {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -2px;
-            line-height: 1.1;
-        }
+    .topbar nav a:hover {
+      color: var(--accent);
+    }
 
-        /* Log entries */
-        .log-title {
-            font-size: 28px;
-            font-weight: 700;
-        }
+    .hero {
+      color: var(--paper);
+      border-bottom: 1px solid var(--ink);
+    }
 
-        /* Portfolio Horizontal Scroll Section */
-        .portfolio-scroll-container {
-            display: flex;
-            gap: 24px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 24px 0 40px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
+    .hero-inner {
+      max-width: 1440px;
+      min-height: calc(100vh - 64px);
+      margin: 0 auto;
+      padding: 84px 32px 92px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(380px, 0.72fr);
+      gap: 64px;
+      align-items: center;
+    }
 
-        .portfolio-scroll-container::-webkit-scrollbar {
-            height: 8px;
-        }
+    .eyebrow,
+    .section-kicker {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
-        .portfolio-scroll-container::-webkit-scrollbar-track {
-            background: var(--border-light);
-            border-radius: 4px;
-        }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
 
-        .portfolio-scroll-container::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
+    h1 {
+      max-width: 900px;
+      font-size: clamp(48px, 8vw, 108px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
 
-        .portfolio-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: #e03e00;
-        }
+    .hero-subtitle {
+      margin-top: 24px;
+      color: var(--paper);
+      font-size: clamp(18px, 2vw, 28px);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
 
-        .portfolio-card {
-            flex: 0 0 420px;
-            height: 480px;
-            border: 2px solid var(--border);
-            background-color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-            scroll-snap-align: start;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-        }
+    .hero-copy {
+      max-width: 760px;
+      margin-top: 24px;
+      color: var(--text-soft);
+      font-size: 17px;
+      line-height: 1.9;
+    }
 
-        .portfolio-card:hover {
-            transform: scale(1.02) translateY(-8px);
-            box-shadow: 12px 12px 0 rgba(255, 69, 0, 0.15);
-            border-color: var(--accent);
-        }
+    .hero-actions,
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
 
-        .portfolio-card-image {
-            width: 100%;
-            height: 260px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid currentColor;
+      padding: 10px 18px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
 
-        .portfolio-card-content {
-            flex: 1;
-            padding: 24px;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
 
-        .portfolio-card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
+    .button:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
 
-        .portfolio-card-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
+    .button.primary:hover {
+      border-color: #ff6a33;
+      background: #ff6a33;
+      color: white;
+    }
 
-        .portfolio-card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+    .status-panel {
+      border: 1px solid var(--line);
+      background: rgba(26, 26, 24, 0.9);
+      padding: 24px;
+      box-shadow: 14px 14px 0 rgba(255, 69, 0, 0.12);
+    }
 
-        .portfolio-card-tag {
-            font-size: 11px;
-            color: var(--accent);
-            padding: 4px 10px;
-            border: 1px solid var(--border-light);
-            letter-spacing: 0.5px;
-        }
+    .status-panel h2 {
+      font-size: 22px;
+      line-height: 1.35;
+      margin-bottom: 18px;
+    }
 
-        .portfolio-card-hover {
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 69, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+    .signal-grid {
+      display: grid;
+      gap: 12px;
+    }
 
-        .portfolio-card:hover .portfolio-card-hover {
-            opacity: 1;
-        }
+    .signal {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+    }
 
-        .portfolio-card-hover-text {
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .signal-label {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
 
-        /* Log entries */
-        .log-title {
-            font-size: 28px;
-            font-weight: 700;
-        }
+    .signal strong {
+      display: block;
+      color: var(--paper);
+      font-size: 17px;
+      line-height: 1.35;
+    }
 
-        .log-role {
-            color: var(--accent);
-            font-size: 14px;
-        }
+    .signal p {
+      margin-top: 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.65;
+    }
 
-        /* Specs table */
-        .specs-table {
-            width: 100%;
-        }
+    .quick-links {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
 
-        .specs-row {
-            display: flex;
-            gap: 16px;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-light);
-        }
+    .quick-links a {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      color: var(--text-soft);
+      font-size: 13px;
+      transition: color 160ms ease;
+    }
 
-        .specs-row:last-child {
-            border-bottom: none;
-        }
+    .quick-links a:hover {
+      color: var(--accent);
+    }
 
-        .specs-category {
-            flex: 1;
-            color: var(--text-primary);
-        }
+    .section {
+      border-bottom: 1px solid var(--line-dark);
+    }
 
-        .specs-items {
-            flex: 2;
-            color: var(--text-secondary);
-        }
+    .section.dark {
+      background: var(--ink);
+      color: var(--paper);
+      border-bottom-color: var(--line);
+    }
 
-        /* Footer */
-        .footer-bg {
-            background-color: var(--text-primary);
-        }
+    .section-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 88px 32px;
+    }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-title {
-                font-size: 36px;
-            }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
 
-            .log-title {
-                font-size: 22px;
-            }
-        }
+    .section-title {
+      max-width: 900px;
+      margin-top: 10px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
 
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 32px;
-            }
+    .section-note {
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      white-space: nowrap;
+    }
 
-            .log-title {
-                font-size: 20px;
-            }
+    .dark .section-note,
+    .dark .section-lead {
+      color: var(--text-soft);
+    }
 
-            .nav-item {
-                font-size: 12px;
-            }
-        }
-    </style>
+    .section-lead {
+      max-width: 880px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .portfolio-rail {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 14px 0 32px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .portfolio-rail::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .portfolio-rail::-webkit-scrollbar-track {
+      background: rgba(17, 17, 17, 0.1);
+    }
+
+    .portfolio-rail::-webkit-scrollbar-thumb {
+      background: var(--accent);
+    }
+
+    .work-card {
+      flex: 0 0 min(430px, 82vw);
+      border: 1px solid var(--line-dark);
+      background: white;
+      color: var(--ink);
+      scroll-snap-align: start;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      overflow: hidden;
+    }
+
+    .dark .work-card {
+      border-color: var(--line);
+      background: var(--panel);
+      color: var(--paper);
+    }
+
+    .work-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 10px 10px 0 rgba(255, 69, 0, 0.14);
+    }
+
+    .work-image {
+      height: 250px;
+      border-bottom: 1px solid var(--line-dark);
+      background: var(--ink);
+      background-size: cover;
+      background-position: top center;
+      position: relative;
+    }
+
+    .dark .work-image {
+      border-bottom-color: var(--line);
+    }
+
+    .work-image.synthetic {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(17, 17, 17, 0.98), rgba(255, 69, 0, 0.42)),
+        linear-gradient(rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        #111;
+      background-size: auto, 32px 32px, 32px 32px;
+    }
+
+    .work-image.synthetic.alt {
+      background:
+        linear-gradient(135deg, rgba(14, 14, 24, 0.98), rgba(233, 69, 96, 0.6)),
+        linear-gradient(rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        #111;
+      background-size: auto, 32px 32px, 32px 32px;
+    }
+
+    .synthetic-label {
+      text-align: center;
+      color: var(--paper);
+      padding: 24px;
+    }
+
+    .synthetic-label strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: 0.03em;
+    }
+
+    .synthetic-label span {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-soft);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+    }
+
+    .work-body {
+      min-height: 250px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .work-title {
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .work-desc {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .dark .work-desc {
+      color: var(--text-soft);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid var(--line-dark);
+      padding: 3px 9px;
+      color: var(--accent);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .dark .tag {
+      border-color: var(--line);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 32px;
+      border-bottom: 1px solid var(--line);
+      padding: 34px 0;
+    }
+
+    .log-meta {
+      color: var(--text-soft);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .log-meta strong {
+      display: block;
+      color: var(--accent);
+      font-family: "Noto Sans SC", sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+
+    .log-content h3 {
+      font-size: 28px;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .log-content p {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .log-blocks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .log-block {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+    }
+
+    .log-block h4 {
+      color: var(--paper);
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 38px;
+    }
+
+    .spec-card {
+      min-height: 210px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .spec-card h3 {
+      font-size: 19px;
+      line-height: 1.35;
+    }
+
+    .spec-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .education {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .footer {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 64px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.45fr);
+      gap: 36px;
+      align-items: end;
+    }
+
+    .footer h2 {
+      max-width: 760px;
+      font-size: clamp(32px, 5vw, 64px);
+      line-height: 1.12;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 14px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .contact-list span {
+      display: block;
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-inner,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .spec-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        height: auto;
+        padding: 14px 20px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-inner,
+      .section-inner,
+      .footer-inner {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero-inner {
+        min-height: auto;
+        padding-top: 58px;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .section-note {
+        white-space: normal;
+      }
+
+      .log-entry,
+      .log-blocks,
+      .spec-grid,
+      .education {
+        grid-template-columns: 1fr;
+      }
+
+      .work-image {
+        height: 220px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="w-full">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-4">
-                    <span class="text-sm tracking-wider">[PRJ: HONG_XJ]</span>
-                </div>
-
-                <!-- Navigation -->
-                <nav class="hidden md:flex items-center gap-10">
-                    <a href="#profile" class="nav-item">[SEC.01: PROFILE]</a>
-                    <a href="#logs" class="nav-item">[SEC.02: LOGS]</a>
-                    <a href="#specs" class="nav-item">[SEC.03: SPECS]</a>
-                    <a href="#protocol" class="nav-item">[SEC.04: PROTOCOL]</a>
-                </nav>
-
-                <!-- Mobile menu button -->
-                <button class="md:hidden text-xl" onclick="toggleMobileMenu()">☰</button>
-            </div>
-        </div>
-
-        <!-- Header Divider -->
-        <div class="divider"></div>
-
-        <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden px-8 py-4 bg-[#F4F4F0]">
-            <nav class="flex flex-col gap-4">
-                <a href="#profile" class="nav-item">[SEC.01: PROFILE]</a>
-                <a href="#logs" class="nav-item">[SEC.02: LOGS]</a>
-                <a href="#specs" class="nav-item">[SEC.03: SPECS]</a>
-                <a href="#protocol" class="nav-item">[SEC.04: PROTOCOL]</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="profile" class="w-full py-16 lg:py-24">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-16">
-                <!-- Left: Hero Content -->
-                <div class="flex-1 max-w-[600px]">
-                    <!-- Crosshair Decoration -->
-                    <div class="mb-8">
-                        <div class="crosshair"></div>
-                    </div>
-
-                    <!-- Spec Label -->
-                    <div class="section-label mb-6">[SPEC.00: COVER_SHEET]</div>
-
-                    <!-- Title -->
-                    <h1 class="hero-title mb-4">关卡/玩法策划</h1>
-
-                    <!-- Subtitle -->
-                    <div class="text-xl tracking-widest mb-6">AI 设计工具实践 // HONG XIANGJIAN</div>
-
-                    <!-- Description -->
-                    <p class="text-[#333333] text-base leading-relaxed max-w-[480px] mb-8" style="line-height: 1.8;">
-                        具备开放世界关卡与玩法设计经验，关注如何用 AI 辅助设计工具降低文档事务负担，并减少跨职能协作中的反复沟通。
-                    </p>
-
-                    <!-- Status Line -->
-                    <div class="flex items-center gap-4">
-                        <span class="status-dot"></span>
-                        <span class="text-sm">SYS_STATUS: SEEKING_OPPORTUNITY</span>
-                    </div>
-                </div>
-
-                <!-- Right: Portfolio Showcase -->
-                <div class="w-full lg:w-[400px] flex flex-col items-center gap-4">
-                    <!-- Crosshair Decoration -->
-                    <div class="crosshair mb-4"></div>
-                    <div class="section-label">[SPEC.01: QUICK_ACCESS]</div>
-                    <!-- Showcase Links -->
-                    <div class="flex flex-col gap-2 text-center mt-4">
-                        <a href="works/level-design-deck/index.html" class="link-accent text-sm hover:underline">level-design-deck - AI 辅助关卡设计工作流</a>
-                        <a href="works/level-design-factory34/index.html" class="link-accent text-sm hover:underline">34号制造厂 - 关卡设计文档</a>
-                        <a href="works/arc-raiders-analysis/index.html" class="link-accent text-sm hover:underline">Arc Raiders 系统切片分析</a>
-                        <a href="Level_Design_Agent构思.html" class="link-accent text-sm hover:underline">关卡设计 Agent 架构方案</a>
-                        <a href="works/sandbox-director/showcase.html" class="link-accent text-sm hover:underline">开放世界沙盒任务设计——导演系统交互原型</a>
-                    </div>
-                    <!-- Hint -->
-                    <div class="text-xs text-[#666666] mt-4">[点击下方作品卡片查看详情]</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hero Divider -->
-    <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-        <div class="divider"></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="crosshair"></span>
+        <span class="mono">HONG_XJ / PORTFOLIO</span>
+      </a>
+      <nav class="mono" aria-label="页面导航">
+        <a href="#works">作品</a>
+        <a href="#logs">经历</a>
+        <a href="#specs">能力</a>
+        <a href="#education">教育</a>
+        <a href="#contact">联系</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Portfolio Showcase Section -->
-    <section class="w-full py-16 lg:py-20">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <!-- Section Header -->
-            <div class="flex justify-between items-center mb-4">
-                <div class="section-label">[SEC.01-A: PORTFOLIO_SHOWCASE]</div>
-                <div class="text-sm text-[#666666]">SCROLL_HORIZONTAL →</div>
-            </div>
-            <!-- Main Title -->
-            <h2 class="text-4xl lg:text-5xl font-bold mb-12 tracking-tight">个人作品集</h2>
-
-            <!-- Horizontal Scroll Cards -->
-            <div class="portfolio-scroll-container">
-                <!-- Card 1: level-design-deck -->
-                <a href="works/level-design-deck/index.html" class="portfolio-card">
-                    <div class="portfolio-card-image" style="background-image: url('works/level-design-deck/images/webapp-current-spec.png');">
-                        <div class="portfolio-card-hover">
-                            <span class="portfolio-card-hover-text">查看详情 →</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-card-content">
-                        <div>
-                            <div class="portfolio-card-title">level-design-deck</div>
-                            <div class="portfolio-card-desc">AI 辅助关卡设计工作流：Web UI 已接入告警、schema 表单、预览与 Chat，把设计源事实推进到可审查工作台</div>
-                        </div>
-                        <div class="portfolio-card-tags">
-                            <span class="portfolio-card-tag">AI 设计工具</span>
-                            <span class="portfolio-card-tag">设计源事实</span>
-                            <span class="portfolio-card-tag">机械检查</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 2: AI Agent架构 -->
-                <a href="Level_Design_Agent构思.html" class="portfolio-card">
-                    <div class="portfolio-card-image" style="background: linear-gradient(135deg, #111111 0%, #1f1f1f 50%, #FF4500 100%);">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="color: #F4F4F0; font-size: 16px; font-weight: 600; letter-spacing: 1px;">Level Design × AI Agent</div>
-                                <div style="color: rgba(244,244,240,0.65); font-size: 12px; margin-top: 8px;">Architecture Proposal</div>
-                            </div>
-                        </div>
-                        <div class="portfolio-card-hover">
-                            <span class="portfolio-card-hover-text">查看详情 →</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-card-content">
-                        <div>
-                            <div class="portfolio-card-title">大世界关卡设计 AI Agent 架构</div>
-                            <div class="portfolio-card-desc">Level Agent v0.45 历史版本：关于设计维度、产物与上下文治理的早期系统化方案</div>
-                        </div>
-                        <div class="portfolio-card-tags">
-                            <span class="portfolio-card-tag">历史版本</span>
-                            <span class="portfolio-card-tag">Agent 架构</span>
-                            <span class="portfolio-card-tag">LLM</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 2: Sandbox Director -->
-                <a href="works/sandbox-director/showcase.html" class="portfolio-card">
-                    <div class="portfolio-card-image" style="background: linear-gradient(135deg, #0e0e18 0%, #151525 50%, #e94560 100%);">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
-                            <div style="text-align: center; padding: 20px;">
-                                <div style="color: #d0d0e0; font-size: 16px; font-weight: 600; letter-spacing: 1px;">Anti-Plot 开放世界</div>
-                                <div style="color: rgba(208,208,224,0.65); font-size: 12px; margin-top: 8px;">Interactive Prototype</div>
-                            </div>
-                        </div>
-                        <div class="portfolio-card-hover">
-                            <span class="portfolio-card-hover-text">查看详情 →</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-card-content">
-                        <div>
-                            <div class="portfolio-card-title">沙盒开放世界任务设计</div>
-                            <div class="portfolio-card-desc">基于导演系统的沙盒任务设计原型，探索无剧本叙事与涌现式玩法的开放世界体验</div>
-                        </div>
-                        <div class="portfolio-card-tags">
-                            <span class="portfolio-card-tag">开放世界</span>
-                            <span class="portfolio-card-tag">导演系统</span>
-                            <span class="portfolio-card-tag">交互原型</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 3: 34号制造厂 -->
-                <a href="works/level-design-factory34/index.html" class="portfolio-card">
-                    <div class="portfolio-card-image" style="background-image: url('works/level-design-factory34/images/个人作品页入口展示图.png');">
-                        <div class="portfolio-card-hover">
-                            <span class="portfolio-card-hover-text">查看详情 →</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-card-content">
-                        <div>
-                            <div class="portfolio-card-title">34号制造厂</div>
-                            <div class="portfolio-card-desc">UE5白盒个人作品，异化法则：粗野主义建筑与超现实奇观结合的类怪谈体验，以"视线与移动管理"为核心的极简3C设计</div>
-                        </div>
-                        <div class="portfolio-card-tags">
-                            <span class="portfolio-card-tag">UE5</span>
-                            <span class="portfolio-card-tag">白盒关卡</span>
-                            <span class="portfolio-card-tag">新怪谭</span>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Card 4: Arc Raiders系统切片分析 -->
-                <a href="works/arc-raiders-analysis/index.html" class="portfolio-card">
-                    <div class="portfolio-card-image" style="background-image: url('works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.png');">
-                        <div class="portfolio-card-hover">
-                            <span class="portfolio-card-hover-text">查看详情 →</span>
-                        </div>
-                    </div>
-                    <div class="portfolio-card-content">
-                        <div>
-                            <div class="portfolio-card-title">Arc Raiders系统切片分析</div>
-                            <div class="portfolio-card-desc">海外局内外循环构建研究，从系统循环、大盘红利到社区反馈的深度解构，探索海外搜打撤品类的局内外循环构建逻辑</div>
-                        </div>
-                        <div class="portfolio-card-tags">
-                            <span class="portfolio-card-tag">系统分析</span>
-                            <span class="portfolio-card-tag">搜打撤</span>
-                            <span class="portfolio-card-tag">PVPVE</span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+  <main>
+    <section class="hero grid-bg" id="top">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">PORTFOLIO / 2026</div>
+          <h1>关卡/玩法策划<br>AI 设计工具实践</h1>
+          <div class="hero-subtitle mono">HONG XIANGJIAN // 洪祥健</div>
+          <p class="hero-copy">具备开放世界关卡与玩法设计经验，关注如何用 AI 辅助设计工具降低文档事务负担，并减少跨职能协作中的反复沟通。我的作品集正在从单一关卡作品展示，转向“设计实践 + 工具化思考 + 可验证流程”的组合表达。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="works/level-design-deck/index.html">查看 level-design-deck</a>
+            <a class="button" href="#works">浏览作品</a>
+          </div>
         </div>
+
+        <aside class="status-panel">
+          <div class="eyebrow">CURRENT SIGNALS</div>
+          <h2>我正在连接三件事：游戏设计经验、AI 辅助流程、产品化工具判断。</h2>
+          <div class="signal-grid">
+            <div class="signal">
+              <div class="signal-label">01 / DESIGN PRACTICE</div>
+              <strong>开放世界关卡与玩法设计</strong>
+              <p>空间节奏、叙事流程、玩家动线、玩法原型与跨职能落地沟通。</p>
+            </div>
+            <div class="signal">
+              <div class="signal-label">02 / TOOLING</div>
+              <strong>设计源事实与机械检查</strong>
+              <p>把设计意图沉淀为结构化记录，再派生文档、Deck 和检查报告。</p>
+            </div>
+            <div class="signal">
+              <div class="signal-label">03 / PRODUCT THINKING</div>
+              <strong>面向设计师的内部效率产品</strong>
+              <p>对话优先、结构化编辑、可视化检查、人工批准门与职能接口。</p>
+            </div>
+          </div>
+          <div class="quick-links">
+            <a href="works/level-design-deck/index.html"><span>level-design-deck</span><span>AI 辅助关卡设计工作流</span></a>
+            <a href="Level_Design_Agent构思.html"><span>Level Agent v0.45</span><span>历史架构方案</span></a>
+            <a href="works/sandbox-director/showcase.html"><span>Sandbox Director</span><span>交互原型</span></a>
+          </div>
+        </aside>
+      </div>
     </section>
 
-    <!-- Portfolio Divider -->
-    <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-        <div class="divider"></div>
+    <section class="section" id="works">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">WORKS</div>
+            <h2 class="section-title">作品与设计研究</h2>
+          </div>
+          <div class="section-note">SCROLL_HORIZONTAL -></div>
+        </div>
+
+        <div class="portfolio-rail">
+          <a class="work-card" href="works/level-design-deck/index.html">
+            <div class="work-image" style="background-image:url('works/level-design-deck/images/webapp-current-spec.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">level-design-deck</h3>
+                <p class="work-desc">AI 辅助关卡设计工作流：Web UI 已接入告警、schema 表单、预览与 Chat，把设计源事实推进到可审查工作台。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">AI 设计工具</span>
+                <span class="tag">设计源事实</span>
+                <span class="tag">Web UI</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="Level_Design_Agent构思.html">
+            <div class="work-image synthetic">
+              <div class="synthetic-label">
+                <strong>Level Design × AI Agent</strong>
+                <span>ARCHITECTURE PROPOSAL / v0.45</span>
+              </div>
+            </div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">大世界关卡设计 AI Agent 架构</h3>
+                <p class="work-desc">Level Agent v0.45 历史版本：关于设计维度、产物与上下文治理的早期系统化方案。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">历史版本</span>
+                <span class="tag">Agent 架构</span>
+                <span class="tag">LLM</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="works/sandbox-director/showcase.html">
+            <div class="work-image synthetic alt">
+              <div class="synthetic-label">
+                <strong>Anti-Plot 开放世界</strong>
+                <span>INTERACTIVE PROTOTYPE</span>
+              </div>
+            </div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">沙盒开放世界任务设计</h3>
+                <p class="work-desc">基于导演系统的沙盒任务设计原型，探索无剧本叙事与涌现式玩法的开放世界体验。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">开放世界</span>
+                <span class="tag">导演系统</span>
+                <span class="tag">交互原型</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="works/level-design-factory34/index.html">
+            <div class="work-image" style="background-image:url('works/level-design-factory34/images/个人作品页入口展示图.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">34号制造厂</h3>
+                <p class="work-desc">UE5 白盒个人作品，融合粗野主义建筑与超现实奇观，以视线与移动管理为核心构建类怪谈体验。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">UE5</span>
+                <span class="tag">白盒关卡</span>
+                <span class="tag">环境叙事</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="works/arc-raiders-analysis/index.html">
+            <div class="work-image" style="background-image:url('works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">Arc Raiders 系统切片分析</h3>
+                <p class="work-desc">海外局内外循环构建研究，从系统循环、大盘红利到社区反馈拆解搜打撤品类设计逻辑。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">系统分析</span>
+                <span class="tag">搜打撤</span>
+                <span class="tag">PVPVE</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="logs">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">EXPERIENCE LOGS</div>
+            <h2 class="section-title">项目经历</h2>
+          </div>
+          <div class="section-note">TTL_RECORDS: 03</div>
+        </div>
+
+        <div class="timeline">
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>01 / 友塔游戏</strong>
+              <span>城市开放世界项目</span><br>
+              <span>2025 // PRESENT</span><br>
+              <span>ROLE: 关卡策划</span>
+            </div>
+            <div class="log-content">
+              <h3>开放世界 POI、特殊交互玩法与 AI 设计工具实践</h3>
+              <p>负责 POI 深度体验设计、视觉逻辑解谜、大世界载具玩法与 AI 辅助设计工具实践。关注如何把设计源事实、派生产物和跨职能接口串成可执行流程。</p>
+              <div class="log-blocks">
+                <div class="log-block">
+                  <h4>POI 关卡：叙事化流程设计</h4>
+                  <p>结合心理学与叙事原理，提取文化符号构建情境与场景叙事，设计非线性流程与 Boss 战引入区域。</p>
+                </div>
+                <div class="log-block">
+                  <h4>AI 设计工具实践</h4>
+                  <p>与 Claude Code 协同搭建设计源事实与派生产物流程，推动气泡图、分镜、氛围 keyart 等关键产出的流程化。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>02 / 腾讯光子</strong>
+              <span>UES 开放世界（OG1/LSNJ）</span><br>
+              <span>2022 — 2025</span><br>
+              <span>ROLE: 关卡策划</span>
+            </div>
+            <div class="log-content">
+              <h3>垂直关卡切片、Metrics 标准与模块化白盒</h3>
+              <p>基于“现代通天塔”概念规划垂直关卡切片，构建随海拔变化的玩法主题，并建立 Metrics 标准与模块化白盒规范，统一关卡生产管线。</p>
+            </div>
+          </article>
+
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>03 / 腾讯光子</strong>
+              <span>金铲铲之战</span><br>
+              <span>2021 — 2022</span><br>
+              <span>ROLE: 商业化策划</span>
+            </div>
+            <div class="log-content">
+              <h3>高价值 SKU 演出设计与局外收集目标</h3>
+              <p>负责多个神话级小小英雄演出设计，协助完成高价值资产分级规范，并设计基于 SKU 关联的套装收集效果，缓解 Best-in-slot 问题。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="specs">
+      <div class="section-inner">
+        <div class="section-kicker">CAPABILITY SPECS</div>
+        <h2 class="section-title">能力规格</h2>
+        <p class="section-lead">我的能力不是单独分散在“关卡、工具、分析”里，而是围绕如何把体验意图推进到可沟通、可检查、可落地的产物。</p>
+
+        <div class="spec-grid">
+          <div class="spec-card">
+            <h3>Gameplay Integration</h3>
+            <p>体验设计与规划 / 白盒验证 / 玩法原型</p>
+          </div>
+          <div class="spec-card">
+            <h3>Analysis & Logic</h3>
+            <p>关卡脚本 / 动线设计 / 系统切片分析</p>
+          </div>
+          <div class="spec-card">
+            <h3>AI Design Tooling</h3>
+            <p>设计源事实 / 机械检查 / 派生产物 / 对话优先工作台</p>
+          </div>
+          <div class="spec-card">
+            <h3>Tools & Engine</h3>
+            <p>Figma / Claude Code / Blender / UE5 / Unity</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="education">
+      <div class="section-inner">
+        <div class="section-kicker">EDUCATION</div>
+        <h2 class="section-title">教育经历</h2>
+
+        <div class="education">
+          <div class="spec-card">
+            <h3>复旦大学</h3>
+            <p>应用心理学 硕士 | 2019 — 2021</p>
+          </div>
+          <div class="spec-card">
+            <h3>中国地质大学</h3>
+            <p>地质工程 学士 | 2013 — 2017</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <div>
+        <div class="section-kicker">COMMUNICATION PROTOCOL</div>
+        <h2>如果你想聊开放世界设计、AI 辅助设计工具，或者内部效率产品，我会很感兴趣。</h2>
+      </div>
+      <div class="contact-list">
+        <div>
+          <span>EMAIL</span>
+          hongsteve119@gmail.com
+        </div>
+        <div>
+          <span>WECHAT</span>
+          17269630119
+        </div>
+        <div>
+          <span>STATUS</span>
+          SEEKING_OPPORTUNITY
+        </div>
+      </div>
     </div>
-
-    <!-- Experience Logs Section -->
-    <section id="logs" class="w-full py-16 lg:py-20">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <!-- Section Header -->
-            <div class="flex justify-between items-center mb-12">
-                <div class="section-label">[SEC.02: EXPERIENCE_LOGS]</div>
-                <div class="text-sm text-[#666666]">TTL_RECORDS: 03</div>
-            </div>
-
-            <!-- Log Entries -->
-            <div class="flex flex-col gap-12">
-                <!-- Log 1 -->
-                <div class="log-entry">
-                    <div class="flex justify-between items-end mb-4">
-                        <h2 class="log-title">01. 友塔游戏 — 城市开放世界项目</h2>
-                        <span class="text-sm text-[#666666]">2025 // PRESENT</span>
-                    </div>
-                    <div class="log-role mb-6">ROLE: 关卡策划</div>
-                    <div class="pl-0 lg:pl-6 space-y-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">POI关卡：叙事化流程设计（日式黑帮大宅）</h3>
-                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                                • 符号提取：负责POI（黑帮大宅）的深度体验设计，结合心理学与叙事原理，提取文化符号构建情境与场景叙事<br>
-                                • 空间结构：设计极短/分支结构用于解锁Boss战的引入区域，构建「试图目击→分支探索→闭环解锁」的非线性流程
-                            </p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">冒险/协同拍摄玩法：特殊交互与解谜</h3>
-                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                                • 视觉逻辑解谜：设计基于镜头遮挡与构图的伪造玩法，在3D空间中完成特定信息的构建<br>
-                                • 类魂式环境交互：设计「环境弹幕」类谜题，鼓励玩家利用场景物理物件触发生态连锁反应
-                            </p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">大世界载具玩法</h3>
-                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                                • 基于设计框架，产出若干原子级的T3玩法并设计多个复合的T2玩法，预期实现载具玩法在大世界环境下的涌现式体验。参与了撒点触发机制的设计。
-                            </p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">AI 设计工具实践</h3>
-                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                                • 与Claude Code协同进行AI设计工具实践，参与搭建关卡设计源事实与派生产物流程，推动气泡图、分镜、关卡氛围keyart等关键产出的流程化
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Log 2 -->
-                <div class="log-entry">
-                    <div class="flex justify-between items-end mb-4">
-                        <h2 class="log-title">02. 腾讯光子 — UES开放世界（OG1/LSNJ）</h2>
-                        <span class="text-sm text-[#666666]">2022 — 2025</span>
-                    </div>
-                    <div class="log-role mb-6">ROLE: 关卡策划</div>
-                    <div class="pl-0 lg:pl-6 space-y-4">
-                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                            [切片规划] 基于「现代通天塔」概念，规划垂直关卡切片，构建随海拔变化的玩法主题（如低层追逐、高层解密），把控关卡心流节奏。
-                        </p>
-                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                            [白盒生产] 建立Metrics标准与模块化白盒规范，统一关卡生产管线。
-                        </p>
-                    </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Log 3 -->
-                <div class="log-entry">
-                    <div class="flex justify-between items-end mb-4">
-                        <h2 class="log-title">03. 腾讯光子 — 金铲铲之战</h2>
-                        <span class="text-sm text-[#666666]">2021 — 2022</span>
-                    </div>
-                    <div class="log-role mb-6">ROLE: 商业化策划</div>
-                    <div class="pl-0 lg:pl-6 space-y-4">
-                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                            SKU生产：负责多个「神话级小小英雄」的演出设计；协助完成高价值资产的分级规范。
-                        </p>
-                        <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                            图鉴追求：设计基于SKU关联的「套装收集效果」，构建局外收集目标，缓解Best-in-slot问题。
-                        </p>
-                        <div>
-                            <h3 class="text-base font-semibold mb-2">■ 高价值小小英雄提案</h3>
-                            <p class="text-[#333333] text-sm leading-relaxed" style="line-height: 1.6;">
-                                超高价值小小英雄设计案
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="divider mt-12"></div>
-        </div>
-    </section>
-
-    <!-- Tech Specs Section -->
-    <section id="specs" class="w-full py-16 lg:py-20">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <!-- Section Header -->
-            <div class="flex justify-between items-center mb-12">
-                <div class="section-label">[SEC.03: TECH_SPECS]</div>
-                <div class="text-sm text-[#666666]">REV: 2026.03</div>
-            </div>
-
-            <!-- Specs Table -->
-            <div class="specs-table">
-                <!-- Header -->
-                <div class="flex gap-4 py-4 text-sm text-[#666666]">
-                    <div class="flex-1">CATEGORY</div>
-                    <div class="flex-2">ITEMS</div>
-                </div>
-                <div class="divider mb-0"></div>
-
-                <!-- Row 1 -->
-                <div class="specs-row">
-                    <div class="specs-category text-[15px]">Gameplay Integration</div>
-                    <div class="specs-items text-[15px]">体验设计与规划 / 白盒验证</div>
-                </div>
-
-                <!-- Row 2 -->
-                <div class="specs-row">
-                    <div class="specs-category text-[15px]">Analysis & Logic</div>
-                    <div class="specs-items text-[15px]">关卡脚本 / 动线设计 / AI 设计工具实践</div>
-                </div>
-
-                <!-- Row 3 -->
-                <div class="specs-row">
-                    <div class="specs-category text-[15px]">Tools & Engine</div>
-                    <div class="specs-items text-[15px]">Figma / Claude Code / Blender / UE5 & Unity</div>
-                </div>
-
-                <!-- Row 4 -->
-                <div class="specs-row">
-                    <div class="specs-category text-[15px]">Core Skills</div>
-                    <div class="specs-items text-[15px]">空间构成 / 视觉引导 / 战斗节奏 / 环境叙事 </div>
-                </div>
-            </div>
-
-            <div class="divider mt-12"></div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section class="w-full py-16 lg:py-20">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <!-- Section Header -->
-            <div class="section-label mb-8">[SEC.03-A: EDUCATION]</div>
-
-            <!-- Education Entries -->
-            <div class="flex flex-col lg:flex-row gap-16">
-                <div>
-                    <h3 class="text-base font-semibold mb-2">复旦大学</h3>
-                    <p class="text-sm text-[#666666]">应用心理学 硕士 | 2019 — 2021</p>
-                </div>
-                <div>
-                    <h3 class="text-base font-semibold mb-2">中国地质大学</h3>
-                    <p class="text-sm text-[#666666]">地质工程 学士 | 2013 — 2017</p>
-                </div>
-            </div>
-
-            <div class="divider mt-12"></div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="protocol" class="footer-bg w-full py-16 lg:py-20">
-        <div class="max-w-[1440px] mx-auto px-8 lg:px-16">
-            <!-- Section Header -->
-            <div class="section-label mb-8">[SEC.04: COMMUNICATION_PROTOCOL]</div>
-
-            <!-- Contact Grid -->
-            <div class="flex flex-col lg:flex-row gap-16 mb-12">
-                <div>
-                    <div class="text-sm text-[#666666] mb-2">EMAIL</div>
-                    <div class="text-base text-[#F4F4F0]">hongsteve119@gmail.com</div>
-                </div>
-                <div>
-                    <div class="text-sm text-[#666666] mb-2">WECHAT</div>
-                    <div class="text-base text-[#F4F4F0]">17269630119</div>
-                </div>
-            </div>
-
-            <!-- Footer Status -->
-            <div class="flex items-center gap-4">
-                <span class="status-dot"></span>
-                <span class="text-sm text-[#666666]">SYS_STATUS: ONLINE // AWAITING_TRANSMISSION</span>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-                // Close mobile menu if open
-                document.getElementById('mobileMenu').classList.add('hidden');
-            });
-        });
-
-    </script>
+  </footer>
 </body>
 </html>

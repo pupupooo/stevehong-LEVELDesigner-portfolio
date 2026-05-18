@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arc Raiders系统切片分析 - Level Design Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #F4F4F0;
@@ -124,6 +124,168 @@
             margin: 1.5em 0;
             font-style: italic;
             color: var(--text-secondary);
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(17, 17, 17, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(17, 17, 17, 0.035) 1px, transparent 1px),
+                var(--bg-primary);
+            background-size: 48px 48px;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(17, 17, 17, 0.94);
+            color: var(--bg-primary);
+            border-bottom: 1px solid rgba(244, 244, 240, 0.2);
+            backdrop-filter: blur(18px);
+        }
+
+        header .divider {
+            display: none;
+        }
+
+        header > div:first-child {
+            max-width: 1440px !important;
+            padding-left: 32px !important;
+            padding-right: 32px !important;
+        }
+
+        header a:first-child {
+            color: var(--bg-primary);
+            font-family: "IBM Plex Mono", monospace;
+            letter-spacing: 0.08em;
+        }
+
+        header nav {
+            display: flex !important;
+            gap: 18px !important;
+            align-items: center;
+            max-width: calc(100vw - 220px);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .nav-item {
+            color: #c9c3b9;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 12px;
+            letter-spacing: 0.04em;
+        }
+
+        header button {
+            display: none !important;
+        }
+
+        #mobileMenu {
+            display: none !important;
+        }
+
+        main {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        main > div {
+            max-width: 980px !important;
+            padding: 72px 32px 88px !important;
+            background: rgba(244, 244, 240, 0.94);
+        }
+
+        main > div > .flex:first-child {
+            font-family: "IBM Plex Mono", monospace;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        main h1 {
+            max-width: 900px;
+            font-size: clamp(38px, 5vw, 68px) !important;
+            line-height: 1.1 !important;
+            letter-spacing: 0 !important;
+            margin-bottom: 42px !important;
+        }
+
+        main h2 {
+            font-size: clamp(26px, 3vw, 38px) !important;
+            line-height: 1.2 !important;
+            letter-spacing: 0 !important;
+        }
+
+        main h3 {
+            color: var(--text-primary);
+        }
+
+        main section {
+            scroll-margin-top: 96px;
+        }
+
+        .section-label {
+            color: var(--accent);
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+        }
+
+        .image-card {
+            border: 1px solid rgba(17, 17, 17, 0.2);
+            background: #111111;
+            box-shadow: 10px 10px 0 rgba(255, 69, 0, 0.12);
+        }
+
+        .image-caption {
+            border-top: 1px solid rgba(17, 17, 17, 0.16);
+            background: #ffffff;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .custom-list,
+        .nested-list,
+        main p {
+            color: var(--text-secondary);
+        }
+
+        blockquote {
+            background: rgba(255, 69, 0, 0.06);
+            padding: 16px 18px;
+            font-style: normal;
+        }
+
+        .footer-bg {
+            background:
+                linear-gradient(rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+                var(--text-primary);
+            background-size: 48px 48px;
+        }
+
+        footer > div {
+            max-width: 1440px !important;
+            padding-left: 32px !important;
+            padding-right: 32px !important;
+        }
+
+        @media (max-width: 900px) {
+            header > div:first-child {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            header nav {
+                max-width: 100%;
+                overflow-x: auto;
+                gap: 14px !important;
+            }
+
+            main > div {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
         }
     </style>
 </head>

@@ -4,11 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SANDBOX DIRECTOR // 开放世界沙盒任务设计</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F4F4F0;
   --surface: #FFFFFF;
+  --panel: #1a1a18;
+  --line: rgba(244,244,240,.2);
   --border: #111111;
   --border-light: #CCCCCC;
   --text: #111111;
@@ -18,7 +20,11 @@
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  background: var(--bg);
+  background:
+    linear-gradient(rgba(17,17,17,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17,17,17,.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: 48px 48px;
   color: var(--text);
   font-family: 'Noto Sans SC', sans-serif;
   line-height: 1.6;
@@ -63,10 +69,12 @@ body {
 /* ── HEADER ── */
 #header {
   position: fixed; top:0; left:0; right:0; height:60px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  background: rgba(17,17,17,.94);
+  color: var(--bg);
+  border-bottom: 1px solid var(--line);
   display:flex; align-items:center; justify-content:space-between;
   padding:0 24px; z-index:200;
+  backdrop-filter: blur(18px);
 }
 #header-left {
   display: flex;
@@ -75,7 +83,7 @@ body {
 }
 #header h1 {
   font-size:14px;
-  color: var(--text);
+  color: var(--bg);
   font-weight: 500;
   letter-spacing: 0.5px;
 }
@@ -88,9 +96,12 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  max-width: calc(100vw - 360px);
+  overflow-x: auto;
+  white-space: nowrap;
 }
 #header nav a {
-  color: var(--text-muted);
+  color: #c9c3b9;
   text-decoration:none;
   font-size:13px;
   letter-spacing: 0.5px;
@@ -102,9 +113,9 @@ body {
   color: var(--accent);
 }
 #header nav a.active {
-  color: var(--text);
-  border-color: var(--border);
-  background: var(--surface);
+  color: var(--bg);
+  border-color: var(--line);
+  background: rgba(244,244,240,.08);
 }
 #header nav a.external {
   color: var(--accent);
@@ -116,7 +127,7 @@ body {
 /* ── GAME SECTION ── */
 #game-section {
   position: fixed; top:60px; left:0; right:0; height:70vh;
-  background: var(--surface);
+  background: var(--panel);
   display:flex; justify-content:center; align-items:center;
   border-bottom: 1px solid var(--border);
 }
@@ -127,8 +138,9 @@ body {
 }
 #game-frame {
   width: 1260px; height: 650px;
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(244,244,240,.2);
   background: #0f0f1a;
+  box-shadow: 14px 14px 0 rgba(255,69,0,.12);
 }
 
 /* ── DOC SECTION ── */
@@ -149,9 +161,9 @@ body {
   display: flex; gap: 12px; z-index: 300;
 }
 #float-controls button {
-  background: var(--surface);
+  background: var(--text);
   border: 1px solid var(--border);
-  color: var(--text);
+  color: var(--bg);
   padding: 10px 20px;
   font-family: 'Noto Sans SC', sans-serif;
   font-size: 12px;
@@ -174,14 +186,15 @@ body {
   display: flex;
   gap: 0;
   z-index: 250;
-  background: var(--surface);
+  background: rgba(17,17,17,.94);
   border: 1px solid var(--border);
+  backdrop-filter: blur(18px);
 }
 #section-bar button {
   background: transparent;
   border: none;
   border-right: 1px solid var(--border-light);
-  color: var(--text-muted);
+  color: #c9c3b9;
   padding: 12px 24px;
   font-family: 'Noto Sans SC', sans-serif;
   font-size: 12px;
@@ -196,8 +209,8 @@ body {
   color: var(--accent);
 }
 #section-bar button.active {
-  color: var(--text);
-  background: rgba(255, 69, 0, 0.05);
+  color: var(--bg);
+  background: rgba(255, 69, 0, 0.16);
 }
 
 /* ── STATUS BAR ── */
@@ -241,8 +254,18 @@ body {
   #header {
     padding: 0 16px;
   }
+  #header-left {
+    min-width: 0;
+  }
   #header h1 {
     font-size: 12px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #header nav {
+    max-width: calc(100vw - 220px);
   }
   #header nav a {
     padding: 4px 8px;
