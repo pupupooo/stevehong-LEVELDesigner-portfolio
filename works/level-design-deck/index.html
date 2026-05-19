@@ -493,6 +493,37 @@
       gap: 16px;
     }
 
+    .demo-video {
+      margin-top: 34px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      overflow: hidden;
+    }
+
+    .demo-video video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0d0d0c;
+    }
+
+    .demo-copy {
+      padding: 18px 20px 20px;
+      border-top: 1px solid var(--line-dark);
+    }
+
+    .demo-copy h3 {
+      font-size: 22px;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+
+    .demo-copy p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
     .image-tile {
       border: 1px solid var(--line-dark);
       background: white;
@@ -865,6 +896,16 @@
           <div class="section-kicker">CURRENT PROOF</div>
           <h2 class="section-title">当前版本已经从单文件编辑器，推进到 Web UI + 本地 daemon 的工作台雏形。</h2>
           <p class="section-lead">`level-design-deck` 先跑通了 spec 真源、schema 驱动编辑、机械校验、跨模块检查和多种派生产物；今天的 WebApp 版本继续把它推进到更接近产品形态的四栏工作台：告警、表单、预览与 Chat 并存。</p>
+
+          <div class="demo-video">
+            <video controls preload="metadata" playsinline>
+              <source src="media/tutorial-video.mp4" type="video/mp4">
+            </video>
+            <div class="demo-copy">
+              <h3>WebApp 最新交互演示</h3>
+              <p>这段演示记录了当前 WebApp 的一次交互迭代：气泡图视图已经可以和结构化表单联动，点击节点后自动定位到对应字段，并支持在同一工作台里完成查看、编辑、保存与重新渲染。</p>
+            </div>
+          </div>
 
           <div class="image-grid">
             <div class="image-tile">
