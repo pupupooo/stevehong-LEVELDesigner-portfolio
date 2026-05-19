@@ -791,14 +791,14 @@
             <p class="bridge">这是我在 Level Agent v0.45 之后，对 AI 辅助关卡设计流程更具体的一次落地：先把设计源事实、机械检查和派生产物跑通，再逐步接入职能接口、项目知识与原型能力。</p>
             <div class="actions">
               <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">查看 WebApp 项目</a>
-              <a class="button" href="../../Level_Design_Agent构思.html">查看 v0.45 历史版本</a>
+              <a class="button" href="../../level-design-skill-pipeline.html">查看 v0.45 历史方案</a>
             </div>
           </div>
 
           <div class="framework" id="framework">
             <div class="control-band">
               <h2>人的设计主导覆盖全流程</h2>
-              <p>意图澄清 / 结构化编辑 / 可视化检查 / 批准门，不是最后看一眼，而是在关键节点保持设计判断权。</p>
+              <p>批准门是human-in-the-loop的设计思考，在关键节点保持设计判断权。</p>
             </div>
             <div class="flow">
               <div class="flow-node">
@@ -847,7 +847,7 @@
             </div>
             <div class="goal-block">
               <h3>降低沟通摩擦</h3>
-              <p>真正耗时的不是一次写作，而是职能之间反复确认“你到底需要我做什么”“我现在还缺什么信息”。职能接口文件可以提前暴露缺口，把模糊需求转成可追问、可审核、可交付的材料。</p>
+              <p>真正耗时的正是职能之间反复确认——“你到底需要我做什么””我现在还缺什么信息”——缺少对他人内部工作的认识。职能接口文件可以提前暴露缺口，把模糊需求转成可追问、可审核、可交付的材料。</p>
               <div class="tag-row">
                 <span class="tag">职能接口文件</span>
                 <span class="tag">缺口追问</span>
@@ -861,8 +861,8 @@
       <section class="section dark" id="handoff">
         <div class="section-inner">
           <div class="section-kicker">INTERFACE EXAMPLES</div>
-          <h2 class="section-title">接口文件不是新模板，而是让协作对象更快开始工作的契约。</h2>
-          <p class="section-lead">下面两个样例都是暂定接口边界，用来说明产品机制。成熟形态中，每个接口都应由实际使用它的职能参与校准。</p>
+          <h2 class="section-title">接口文件不仅仅是一个固定的文档模板，我希望它能成为让协作对象更高效工作的契约。</h2>
+          <p class="section-lead">下面两个样例当前并未真正实现，仅用来说明产品机制和设计目标。成熟形态中，每个接口都应由实际使用它的职能参与校准。</p>
 
           <div class="examples">
             <article class="example-panel">
@@ -884,8 +884,8 @@
 
             <article class="example-panel">
               <div class="section-kicker">EXAMPLE 02</div>
-              <h3>灯光接口文件（暂定示例）</h3>
-              <p>这个示例不是要替灯光师定义最终规范，而是说明：当关卡策划填写设计源事实时，工具可以根据“灯光开始工作需要什么信息”提前检查缺口。</p>
+              <h3>灯光接口文件</h3>
+              <p>这个示例的目的：当关卡策划填写设计源事实时，工具可以根据”灯光开始工作需要什么信息”提前检查缺口。</p>
               <div class="interface-grid">
                 <div class="interface-item">
                   <h4>已有源事实</h4>
@@ -983,7 +983,7 @@
       <section class="section dark" id="vision">
         <div class="section-inner">
           <div class="section-kicker">PRODUCT FORM</div>
-          <h2 class="section-title">最终形态不是聊天框，也不是文档编辑器，而是面向设计师的对话优先工作台。</h2>
+          <h2 class="section-title">最终形态就是面向设计师的对话优先工作台。</h2>
           <p class="section-lead">我正在参考 `nexu-io/open-design` 这类交互形式：设计师从 IM 式对话进入，工具先澄清问题、给出计划、生成可预览产物，再把关键变化放回人工批准门。今天的 WebApp 已经把 Chat 放进工作台，下一步是让 Chat 更深地写入 spec、调用检查与生成能力。</p>
 
           <div class="vision-layout">
