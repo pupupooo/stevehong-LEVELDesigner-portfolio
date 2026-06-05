@@ -360,6 +360,16 @@
       font-size: 18px;
     }
 
+    .boundary-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -558,6 +568,10 @@
       align-items: stretch;
     }
 
+    .execution-boundary {
+      margin-top: 22px;
+    }
+
     .boundary-copy {
       padding: 28px;
       border: 1px solid var(--line-strong);
@@ -709,7 +723,7 @@
         <div>
           <div class="eyebrow">PROJECT / PLAYABLE DESIGN RESEARCH PROTOTYPE</div>
           <h1>LLM Director Hitman：可控 AI 玩法体验原型</h1>
-          <p class="subtitle">一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编译进确定性规则，并通过演出表现层让玩家看见自己如何真实影响了世界。</p>
+          <p class="subtitle">一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编排成合法工具调用，并通过确定性结算与演出表现层让玩家看见自己如何真实影响了世界。</p>
           <p class="hero-claim">用三层结构构建“单一起点 -> 中段展开 -> 有限终点”的纺锤体体验线。</p>
           <div class="actions">
             <a class="button primary" href="https://github.com/huoshangou/llm-director-hitman" target="_blank" rel="noreferrer">查看 GitHub</a>
@@ -745,7 +759,7 @@
       </div>
       <div class="section-inner" style="margin-top: 28px;">
         <div class="prose">
-          <p>我更愿意从传统游戏“被迫舍弃的甜区”看 AI native：玩家早就有更复杂的游玩欲望，只是内容分支、系统复杂度和旧 AI 能力让这些欲望很难稳定落地。LLM 在这里的价值，是理解带有目标、约束和风格的自然语言计划。</p>
+          <p>从传统游戏“被迫舍弃的甜区”出发，寻找 LLM 可以补回来的体验：玩家早就有更复杂的游玩欲望，只是内容分支、系统复杂度和旧 AI 能力让这些欲望很难稳定落地。LLM 在这里的价值，是理解带有目标、约束和风格的自然语言计划，并把它编排成可执行的工具链与机会链，让有限任务产生更丰富的可信中间状态。</p>
           <p>`LLM Director Hitman` 选择暗杀沙盒作为切片，是因为这个类型天然包含机会链、风险控制、伪装、环境因果和有限终局。它更容易验证一件事：有限任务能否通过可信中间状态变得不公式化。</p>
           <p>这个原型的边界是有限任务内的开放计划。它关心玩家说出的计划如何进入规则、状态和演出：哪些部分已经发生，哪些前置条件被阻断，NPC 和世界如何响应，下一步还能怎样调整。</p>
         </div>
@@ -757,7 +771,7 @@
         <div class="section-head">
           <div class="section-kicker">CORE EXPERIENCE PROBLEM</div>
           <h2 class="section-title">开放表达、可信边界、可演出结果必须同时成立。</h2>
-          <p class="section-lead">AI 玩法原型最容易失控的地方，是把“玩家可以怎么说”和“世界实际能发生什么”混在一起。这个 demo 把两者拆开：LLM 负责编译语义，沙盒负责决定可执行边界，前端负责把世界变化演出来。</p>
+          <p class="section-lead">AI 玩法原型最容易失控的地方，是把“玩家可以怎么说”和“世界实际能发生什么”混在一起。这个原型把两者拆开：LLM 负责理解计划并编排工具链，沙盒负责校验与执行可行前沿，前端负责把世界变化演出来。</p>
         </div>
         <div class="problem-grid">
           <article class="problem-card">
@@ -784,7 +798,7 @@
         <div class="section-head">
           <div class="section-kicker">SPINDLE EXPERIENCE LINE</div>
           <h2 class="section-title">纺锤体体验线：入口收束，中段展开，终点再收束。</h2>
-          <p class="section-lead">自然语言打开中段表达，确定性规则和有限终点保留设计控制。玩家感到自己在计划，系统仍然知道什么可以发生、什么需要降级、什么必须等下一步。</p>
+          <p class="section-lead">自然语言打开中段表达，确定性规则和有限终点保留设计控制。玩家感到自己在计划，系统仍然知道什么可以发生、什么暂时受阻、下一步需要补足哪些前置条件。</p>
         </div>
         <div class="spindle">
           <article class="spindle-node">
@@ -813,7 +827,7 @@
               <li>阳台事故</li>
               <li>阳台毒酒</li>
               <li>明确失败</li>
-              <li>降级追问</li>
+              <li>受阻后的下一步引导</li>
             </ul>
           </article>
         </div>
@@ -825,27 +839,40 @@
         <div class="section-head">
           <div class="section-kicker">THREE-LAYER STRUCTURE</div>
           <h2 class="section-title">三层结构让 AI 的开放感进入可控玩法边界。</h2>
-          <p class="section-lead">对外说明采用双命名：作品集用“语义编译层 / 确定性沙盒层 / 演出表现层”，首次出现时对齐项目内工程命名。</p>
+          <p class="section-lead">三层结构把同一条玩家计划拆成三种职责：LLM 负责语义编排，规则负责世界结算，表现负责把结果演出来。</p>
         </div>
         <div class="layer-grid">
           <article class="layer-card semantic">
             <div class="node-index">Layer 01</div>
-            <h3>语义编译层</h3>
-            <p>LLM Director 把玩家自然语言解析成 `DirectorPlan`：目标、约束、角色分工、toolChain、拒绝原因与下一步提示。</p>
-            <div class="mapping">Project mapping: 决策 / 编译 · 语义层</div>
+            <h3>语义编排层</h3>
+            <p>LLM Director 理解玩家计划中的目标、约束、风险偏好和风格，在已注册 affordance 与 Tool 中选择、排序、填参数，生成 `DirectorPlan` / `toolChain`，同时给出受阻原因、替代路径与下一步提示。</p>
+            <div class="mapping">输入：自然语言计划 / 输出：DirectorPlan · toolChain</div>
           </article>
           <article class="layer-card sandbox">
             <div class="node-index">Layer 02</div>
             <h3>确定性沙盒层</h3>
-            <p>ToolResolver 只执行已注册工具，按 precondition、effect、ripple 更新 WorldState、警觉、怀疑、摄像头、电力和目标状态。</p>
-            <div class="mapping">Project mapping: 规则 / 执行 · 规则层</div>
+            <p>ToolResolver 是计划落地前的规则裁定器。它按机会链顺序检查每一步现在能不能发生；能发生就把摄像头、电力、NPC 反应、警觉等变化提交到 WorldState 并生成事件，受阻就返回缺口供队友提示和下一轮 replan。</p>
+            <div class="mapping">输入：工具请求 / 输出：WorldState · GameEvent</div>
           </article>
           <article class="layer-card presentation">
             <div class="node-index">Layer 03</div>
             <h3>演出表现层</h3>
             <p>Timeline、2.5D 地图、角色移动、气泡台词、Command Feed、Hacker Analysis、HUD 和视觉资产共同演出世界变化。</p>
-            <div class="mapping">Project mapping: 表现层</div>
+            <div class="mapping">输入：GameEvent / 输出：Timeline · HUD · 地图演出</div>
           </article>
+        </div>
+        <div class="execution-boundary boundary-panel">
+          <div class="boundary-copy">
+            <div class="section-kicker">LAYER 02 BOUNDARY</div>
+            <h2>LLM 选择并调用合法工具，固定规则结算世界。</h2>
+            <p>Layer 02 可以理解为 LLM 可调用的工具接口层。LLM Director 根据语义选择 Tool、actor、目标和参数，形成下一批工具请求；ToolResolver 对这些请求做权限、前置条件和可执行前沿裁定，只有通过的结果才写入 WorldState。</p>
+          </div>
+          <div class="note-panel">
+            <strong>Agentic tool-use 的第一阶段</strong>
+            <p><span class="boundary-label">LLM 负责</span>理解玩家的目标、约束、风格和风险偏好，挑选并组合 Layer 02 暴露的合法工具，把 actor、目标对象和意图写进 `DirectorPlan`。</p>
+            <p style="margin-top: 16px;"><span class="boundary-label">固定规则负责</span>ToolRegistry、actor 权限、前置条件、可执行前沿、WorldState 提交、GameEvent 生成和 turn 末 `tickWorld()`。摄像头、电力、NPC 反应、警觉和目标状态都由规则结算。</p>
+            <p style="margin-top: 16px;"><span class="boundary-label">验证范围</span>当前原型主要完成“一次计划生成 toolChain，规则逐步执行”的验证；下一步目标是推进 `observe -> choose tool -> execute -> observe` 的连续 agentic loop。</p>
+          </div>
         </div>
       </div>
     </section>
@@ -865,14 +892,14 @@
               <p>玩家同时给出目标、地点、风险偏好和队友分工。</p>
             </article>
             <article class="step-card">
-              <div class="node-index">Semantic Compile</div>
+              <div class="node-index">Semantic Orchestrate</div>
               <h3>DirectorPlan</h3>
-              <p>语义编译层把计划拆成意图、约束、actor、toolChain 和不可执行片段。</p>
+              <p>语义编排层把计划拆成意图、约束、actor、toolChain 和暂时受阻的步骤。</p>
             </article>
             <article class="step-card">
               <div class="node-index">Sandbox Execute</div>
               <h3>Executable Frontier</h3>
-              <p>规则层根据当前 WorldState 找到链上可执行前沿，多 actor 可以在同一 turn 推进。</p>
+              <p>规则层沿 toolChain 找到当前可执行的下一批步骤：满足条件就推进，条件不足就停在缺口处，让玩家看到为什么还差一步。</p>
             </article>
             <article class="step-card">
               <div class="node-index">Staged Result</div>
@@ -935,7 +962,7 @@
         <div class="section-head">
           <div class="section-kicker">TWO SCALES</div>
           <h2 class="section-title">同一命题的两个尺度。</h2>
-          <p class="section-lead">这页只展开 `LLM Director Hitman`。更宏观的开放世界任务方向，会回到《沙盒开放世界任务设计》继续升级。</p>
+          <p class="section-lead">`LLM Director Hitman` 验证一个小切片内的计划、工具和演出闭环；《沙盒开放世界任务设计》会把同一命题推到更宏观的任务系统尺度。</p>
         </div>
         <div class="scale-grid">
           <article class="scale-card">
@@ -963,7 +990,7 @@
         <div class="note-panel">
           <strong>Project entry</strong>
           <p><a class="accent-link" href="https://github.com/huoshangou/llm-director-hitman" target="_blank" rel="noreferrer">github.com/huoshangou/llm-director-hitman</a></p>
-          <p style="margin-top: 18px;">本页面以当前本地项目状态和项目文档作为写作基准。仓库链接作为公开入口，文章负责说明设计逻辑与原型结构。</p>
+          <p style="margin-top: 18px;">GitHub 仓库保存当前可运行原型；这里聚焦它背后的设计逻辑、结构拆解和可验证边界。</p>
         </div>
       </div>
     </section>

@@ -42,7 +42,7 @@ H1:
 
 Opening subtitle:
 
-`一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编译进确定性规则，并通过演出表现层让玩家看见自己如何真实影响了世界。`
+`一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编排成合法工具调用，并通过确定性结算与演出表现层让玩家看见自己如何真实影响了世界。`
 
 Supporting first-viewport claim:
 
@@ -120,13 +120,13 @@ Key sentence:
 
 Use dual naming.
 
-1. `语义编译层`
+1. `语义编排层`
    Project mapping: `决策 / 编译`, `语义层`
-   Role: turn the player's natural-language plan into `DirectorPlan`: intent, constraints, actor roles, `toolChain`, rejected parts, and next-step guidance.
+   Role: let LLM Director understand the player's natural-language plan, choose registered tools, fill actor / target / intent parameters, and produce `DirectorPlan`: intent, constraints, actor roles, `toolChain`, blocked parts, and next-step guidance.
 
 2. `确定性沙盒层`
    Project mapping: `规则 / 执行`, `规则层`
-   Role: execute registered tools through preconditions, effects, ripples, and `WorldState` changes. LLM output does not directly move NPCs or declare success.
+   Role: expose registered tools as callable interfaces, then validate tool requests through permissions, preconditions, executable frontier, `WorldState` submission, `GameEvent` generation, and turn-end `tickWorld()`. The current prototype validates one plan -> toolChain -> deterministic execution; the target direction is a continuous `observe -> choose tool -> execute -> observe` agentic loop.
 
 3. `演出表现层`
    Project mapping: `表现层`
@@ -143,7 +143,7 @@ Recommended example:
 Flow:
 
 1. Player intent contains target, location, risk preference, and role assumptions.
-2. Semantic compilation produces a structured `DirectorPlan`.
+2. Semantic orchestration produces a structured `DirectorPlan`.
 3. The deterministic sandbox validates current preconditions and executes the current frontier.
 4. The staged presentation layer shows movement, blocked conditions, dialogue bubbles, feed lines, and next-step prompts.
 5. The player replans from the visible world state.

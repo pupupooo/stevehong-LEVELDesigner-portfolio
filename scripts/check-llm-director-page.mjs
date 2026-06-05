@@ -38,14 +38,47 @@ if (page) {
   [
     "LLM Director Hitman：可控 AI 玩法体验原型",
     "https://github.com/huoshangou/llm-director-hitman",
-    "语义编译层",
+    "语义编排层",
     "确定性沙盒层",
     "演出表现层",
     "纺锤体体验线",
     "可信中间状态",
+    "受阻后的下一步引导",
+    "受阻原因、替代路径与下一步提示",
+    "规则裁定器",
+    "返回缺口供队友提示",
+    "下一轮 replan",
+    "LLM 选择并调用合法工具，固定规则结算世界",
+    "Agentic tool-use 的第一阶段",
+    "验证范围",
+    "输入：自然语言计划 / 输出：DirectorPlan · toolChain",
+    "输入：工具请求 / 输出：WorldState · GameEvent",
+    "observe -> choose tool -> execute -> observe",
+    "ToolRegistry、actor 权限",
     "同一命题的两个尺度",
   ].forEach((needle) => assertIncludes(page, needle, "LLM Director Hitman page"));
   assertNoAiContrastPattern(page, "LLM Director Hitman page");
+  if (page.includes("降级追问")) {
+    fail('LLM Director Hitman page should use reader-facing wording instead of "降级追问"');
+  }
+  if (page.includes("语义编译层")) {
+    fail('LLM Director Hitman page should use "语义编排层" for Layer 01');
+  }
+  if (page.includes("按 precondition、effect、ripple 更新 WorldState")) {
+    fail("LLM Director Hitman page should explain ToolResolver in reader-facing wording");
+  }
+  [
+    "对外说明采用",
+    "作品集用",
+    "首次出现时",
+    "Project mapping:",
+    "本页面以当前本地项目状态",
+    "作为写作基准",
+  ].forEach((needle) => {
+    if (page.includes(needle)) {
+      fail(`LLM Director Hitman page contains author-facing note "${needle}"`);
+    }
+  });
 }
 
 if (home) {
