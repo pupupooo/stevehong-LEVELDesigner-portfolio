@@ -80,6 +80,30 @@ _Avoid_: Finished feature claim, shipped implementation, roadmap filler
 The GitHub-facing evidence of what has already been built, tested, or made concrete in the current toolchain.
 _Avoid_: Product promise, concept demo, future direction
 
+**Semantic Compilation Layer（语义编译层）**:
+The portfolio-facing name for the LLM Director layer in **LLM Director Hitman**: it turns a player's natural-language plan into a structured, validated plan that can be checked before execution.
+_Avoid_: LLM brain, narrator, freeform AI decision
+
+**Deterministic Sandbox Layer（确定性沙盒层）**:
+The portfolio-facing name for the rule execution layer in **LLM Director Hitman**: registered tools, preconditions, effects, and world-state changes decide what can actually happen.
+_Avoid_: AI simulation, free sandbox, arbitrary world editing
+
+**Staged Presentation Layer（演出表现层）**:
+The portfolio-facing name for the visual and feedback layer in **LLM Director Hitman**: timeline playback, 2.5D map presentation, character movement, speech bubbles, HUD state, and visual assets show the player how their plan has affected the world.
+_Avoid_: log output, cosmetic layer, pure animation
+
+**Spindle Experience Line（纺锤体体验线）**:
+A bounded play-experience structure in **LLM Director Hitman**: one clear mission start, a widened middle where the player can compose multiple opportunity chains through natural language, and one or a limited number of designed endpoints. It rejects both preset-button mission flow and unbounded AI improvisation.
+_Avoid_: infinite sandbox, linear scripted route, branching tree
+
+**Credible Intermediate State（可信中间状态）**:
+The playable partial states between mission start and endpoint in **LLM Director Hitman**: partial execution, blocked preconditions, NPC reactions, changed world state, next-step hints, and visible consequences that let a finite sandbox feel less formulaic.
+_Avoid_: flavor text, fake branching, LLM-only narration
+
+**Recovered Play Sweet Spot（被重新做回来的玩法甜区）**:
+The AI-native design opportunity where LLMs make previously expensive or brittle player desires more playable, such as complex stealth plans that traditional games often compress into fixed buttons or scripted routes.
+_Avoid_: AI novelty, content generation at scale, generic immersion
+
 ## Relationships
 
 - **Document as Source of Truth** is the public-facing wording for **Design Source of Truth**.
@@ -100,6 +124,10 @@ _Avoid_: Product promise, concept demo, future direction
 - **Capability Ownership（能力层所有权）** places **项目专属蓝图 MCP** maintenance with TD/GPP, while interface needs are calibrated by the usage chain that includes GD, TD, and GPP.
 - A **GD to TD/GPP Standard Document（GD 到 TD/GPP 标准文档）** is a **Derived Artifact** generated from the **Design Source of Truth** using requirements from **项目专属蓝图 MCP** and **Discipline Interface File（职能接口文件）**.
 - A **Product Vision Surface** can describe the intended experience of **Human-in-the-Loop Design Control**, while **Implementation Proof** must stay limited to what exists in the current GitHub project.
+- **LLM Director Hitman** should be framed as a playable design research prototype: it uses a **Semantic Compilation Layer（语义编译层）**, **Deterministic Sandbox Layer（确定性沙盒层）**, and **Staged Presentation Layer（演出表现层）** to make natural-language planning feel open while keeping world changes bounded and visible.
+- **Spindle Experience Line（纺锤体体验线）** is the experience shape produced by that three-layer structure: natural-language planning opens the middle of the experience, while deterministic rules and designed endpoints preserve authored control.
+- **Credible Intermediate State（可信中间状态）** is how the widened middle of a **Spindle Experience Line（纺锤体体验线）** avoids feeling formulaic: the player sees plans partially succeed, fail for legible reasons, change NPC/world state, and create new next-step decisions.
+- **Recovered Play Sweet Spot（被重新做回来的玩法甜区）** explains why **LLM Director Hitman** exists as an AI-native experiment rather than a generic AI feature: it uses LLMs to recover complex player planning that traditional stealth/sandbox missions often flatten into preset buttons.
 
 ## Example dialogue
 

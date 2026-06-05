@@ -58,6 +58,45 @@ The old "level design agent" article should be upgraded from an agent architectu
 
 The personal homepage can present the intended mature product shape, including interaction patterns inspired by strong open-source design tooling references. The GitHub project should remain framed as implementation proof of the parts already practiced and landed.
 
+`LLM Director Hitman` is the next portfolio proof point, but it should not be framed as the same kind of artifact as `level-design-deck`.
+
+It demonstrates a playable design research prototype: natural-language planning opens the player's expression space, while a deterministic sandbox and designed endpoints keep the experience authored, testable, and visually legible.
+
+Recommended framing:
+
+> A playable design research prototype that uses a semantic compilation layer, deterministic sandbox layer, and staged presentation layer to build a spindle-shaped AI play experience.
+
+Recommended title hierarchy:
+
+- H1: `LLM Director Hitman：可控 AI 玩法体验原型`
+- First-viewport subtitle / opening claim: `一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编译进确定性规则，并通过演出表现层让玩家看见自己如何真实影响了世界。`
+- Supporting claim: the three-layer structure builds a `单一起点 -> 中段展开 -> 有限终点` **Spindle Experience Line（纺锤体体验线）**.
+
+Homepage placement:
+
+- Create a standalone page at `works/llm-director-hitman/index.html`.
+- Add a homepage work card immediately after `level-design-deck` and before `Yatzyforge`.
+- Keep `Sandbox Director` as historical or adjacent thinking, not as the stronger current proof point.
+
+Evidence baseline:
+
+- Write the page against the current completed `llm_director_hitman` project state, using the local repository and its documentation as the working source.
+- Include the public repository link: `https://github.com/huoshangou/llm-director-hitman`.
+- Do not frame the claim as "GitHub main proves X"; the repository is a project entry point, while the article itself explains the design logic and implemented prototype.
+
+Recommended "why this exists" argument:
+
+- The article should not say "I wanted to make an LLM version of Hitman." That is too shallow and too IP-dependent.
+- The real problem is that traditional stealth / assassination sandboxes often contain rich player fantasies, but production cost, content branching, system complexity, and old AI constraints force many of those fantasies into fixed buttons, scripted routes, or shallow interactions.
+- The article must not imply that this design problem belongs only to assassination games. `LLM Director Hitman` is the case study because stealth / assassination goals make intent, constraints, routes, and consequences easy to test in a small demo.
+- `Sandbox Director` / `沙盒开放世界任务设计` is adjacent work on the same design problem at a more macro open-world quest scale. After this page, that portfolio article and demo should be revisited and repositioned as the broader system-level exploration.
+- In the `LLM Director Hitman` page, do not expand `Sandbox Director` in detail. Add a late-page section titled around `同一命题的两个尺度`: `LLM Director Hitman` as the small, constrained, runnable slice; `沙盒开放世界任务设计` as the broader open-world quest / director-system exploration.
+- The prototype explores whether LLMs can cheaply create more **credible intermediate states** inside a finite authored mission: partial progress, blocked conditions, NPC/world reactions, next-step decisions, and visible consequences.
+- The intended value is not infinite freedom. It is making a finite task feel less formulaic by allowing natural-language plans to enter rules, state, and presentation.
+- Public wording can use: `开放感来自自然语言计划；可信度来自确定性沙盒；丰富度来自可演出的可信中间状态。`
+- The AI-native thinking should be compressed into a 3-5 paragraph "design judgment" section. Do not move the whole desktop essay into the portfolio page.
+- Writing style constraint: avoid repeated `不是...而是...` structures. The portfolio already avoids this AI-generated-sounding rhetorical pattern. Prefer direct positive claims, concrete design problems, and explicit boundaries.
+
 ## Homepage Direction
 
 The homepage should become broader and less role-narrow.
