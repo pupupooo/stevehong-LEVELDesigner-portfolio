@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Director Hitman：可控 AI 玩法体验原型</title>
+  <style>
+    :root {
+      --bg: #0d0d0b;
+      --panel: #151511;
+      --panel-2: #1d1c16;
+      --line: rgba(235, 214, 156, 0.18);
+      --line-strong: rgba(235, 214, 156, 0.34);
+      --text: #f3efe4;
+      --muted: #a9a18c;
+      --muted-2: #746f60;
+      --accent: #d7a84a;
+      --accent-2: #66d9d0;
+      --danger: #d96c55;
+      --green: #88b06a;
+      --max: 1180px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("../../assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("../../assets/fonts/ibm-plex-mono-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(rgba(215, 168, 74, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(215, 168, 74, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 85% 0%, rgba(102, 217, 208, 0.08), transparent 28%),
+        var(--bg);
+      background-size: 48px 48px, 48px 48px, auto, auto;
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .mono {
+      font-family: var(--mono);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(13, 13, 11, 0.88);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .crosshair {
+      width: 18px;
+      height: 18px;
+      border: 1px solid currentColor;
+      position: relative;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: currentColor;
+    }
+
+    .crosshair::before {
+      width: 28px;
+      height: 1px;
+      left: -6px;
+      top: 8px;
+    }
+
+    .crosshair::after {
+      width: 1px;
+      height: 28px;
+      left: 8px;
+      top: -6px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    main {
+      overflow: hidden;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-start;
+      padding: 58px 0 44px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(480px, 1.14fr);
+      gap: 42px;
+      align-items: center;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .node-index,
+    .figure-label {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 16px;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: 0;
+      max-width: 720px;
+    }
+
+    .subtitle {
+      margin-top: 24px;
+      max-width: 680px;
+      color: #d6cfbb;
+      font-size: 20px;
+      line-height: 1.85;
+    }
+
+    .hero-claim {
+      margin-top: 22px;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .actions,
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .actions {
+      margin-top: 30px;
+    }
+
+    .button,
+    .tag {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line-strong);
+      background: rgba(235, 214, 156, 0.06);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .button {
+      padding: 0 16px;
+    }
+
+    .button.primary {
+      border-color: rgba(215, 168, 74, 0.72);
+      background: rgba(215, 168, 74, 0.18);
+      color: #ffe3a1;
+    }
+
+    .button:hover {
+      border-color: var(--accent);
+      color: #ffe3a1;
+    }
+
+    .tag {
+      min-height: 30px;
+      padding: 0 10px;
+      color: var(--muted);
+    }
+
+    .hero-visual {
+      border: 1px solid var(--line-strong);
+      background: #050504;
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .hero-visual img {
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: left center;
+    }
+
+    .visual-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section {
+      padding: 86px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.alt {
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .section-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      max-width: 860px;
+      margin-bottom: 34px;
+    }
+
+    .section-title {
+      margin-top: 10px;
+      font-size: 46px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      margin-top: 18px;
+      max-width: 820px;
+      color: #d4cdbb;
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .text-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.52fr);
+      gap: 38px;
+      align-items: start;
+    }
+
+    .prose {
+      display: grid;
+      gap: 18px;
+      color: #cec6b3;
+      font-size: 16px;
+    }
+
+    .quote-panel,
+    .note-panel,
+    .layer-card,
+    .status-card,
+    .scale-card,
+    .step-card {
+      border: 1px solid var(--line);
+      background: rgba(21, 21, 17, 0.78);
+    }
+
+    .quote-panel {
+      padding: 22px;
+      border-left: 3px solid var(--accent);
+      color: #f4e8c7;
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    .note-panel {
+      padding: 20px;
+      color: var(--muted);
+    }
+
+    .note-panel strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .problem-card {
+      min-height: 230px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: rgba(15, 15, 12, 0.72);
+    }
+
+    .problem-card h3,
+    .layer-card h3,
+    .status-card h3,
+    .scale-card h3,
+    .step-card h3 {
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 21px;
+      line-height: 1.35;
+    }
+
+    .problem-card p,
+    .layer-card p,
+    .status-card p,
+    .scale-card p,
+    .step-card p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .spindle {
+      display: grid;
+      grid-template-columns: 0.9fr 1.35fr 0.9fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .spindle-node {
+      min-height: 260px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: rgba(14, 14, 12, 0.76);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .spindle-node.middle {
+      min-height: 330px;
+      border-color: rgba(215, 168, 74, 0.52);
+      background: linear-gradient(180deg, rgba(215, 168, 74, 0.13), rgba(20, 20, 16, 0.74));
+    }
+
+    .spindle-node h3 {
+      color: var(--text);
+      font-size: 24px;
+    }
+
+    .spindle-node ul,
+    .status-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+    }
+
+    .spindle-node li,
+    .status-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-top: 10px;
+    }
+
+    .spindle-node li::before,
+    .status-list li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      position: absolute;
+      left: 0;
+      top: 12px;
+      border: 1px solid var(--accent);
+    }
+
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .layer-card {
+      min-height: 330px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .layer-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .layer-card.sandbox::before {
+      background: var(--green);
+    }
+
+    .layer-card.presentation::before {
+      background: var(--accent-2);
+    }
+
+    .mapping {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted-2);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .route-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.74fr) minmax(420px, 1.26fr);
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .step-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step-card {
+      padding: 18px;
+    }
+
+    .step-card h3 {
+      font-size: 18px;
+    }
+
+    .route-figure,
+    .evidence-figure {
+      border: 1px solid var(--line);
+      background: rgba(5, 5, 4, 0.86);
+      overflow: hidden;
+    }
+
+    .route-figure img {
+      height: 100%;
+      min-height: 470px;
+      object-fit: cover;
+      object-position: left center;
+    }
+
+    .figure-label {
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .status-grid,
+    .scale-grid,
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .status-card,
+    .scale-card {
+      padding: 22px;
+      min-height: 250px;
+    }
+
+    .evidence-grid {
+      margin-top: 28px;
+    }
+
+    .evidence-figure img {
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: left center;
+    }
+
+    .boundary-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.56fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .boundary-copy {
+      padding: 28px;
+      border: 1px solid var(--line-strong);
+      background: rgba(215, 168, 74, 0.08);
+    }
+
+    .boundary-copy h2 {
+      font-size: 42px;
+      line-height: 1.2;
+    }
+
+    .boundary-copy p {
+      margin-top: 16px;
+      color: #d5ccb4;
+    }
+
+    footer {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .accent-link {
+      color: var(--accent);
+    }
+
+    @media (max-width: 980px) {
+      nav {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      h1 {
+        font-size: 52px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+      }
+
+      .section-title,
+      .boundary-copy h2 {
+        font-size: 38px;
+      }
+
+      .hero-inner,
+      .text-grid,
+      .route-layout,
+      .boundary-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual img,
+      .route-figure img {
+        min-height: 0;
+      }
+
+      .problem-grid,
+      .spindle,
+      .layer-grid,
+      .status-grid,
+      .scale-grid,
+      .evidence-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .spindle-node,
+      .spindle-node.middle,
+      .layer-card,
+      .status-card,
+      .scale-card,
+      .problem-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-inner,
+      .hero-inner,
+      .section-inner,
+      footer {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .hero {
+        padding: 42px 0 36px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+      }
+
+      .section-title,
+      .boundary-copy h2 {
+        font-size: 30px;
+      }
+
+      .section {
+        padding: 62px 0;
+      }
+
+      .visual-caption,
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../index.html">
+        <span class="crosshair"></span>
+        <span class="mono">HONG_XJ / LLM DIRECTOR HITMAN</span>
+      </a>
+      <nav class="mono" aria-label="页面导航">
+        <a href="#why">为什么做</a>
+        <a href="#spindle">体验线</a>
+        <a href="#layers">三层结构</a>
+        <a href="#prototype">原型状态</a>
+        <a href="https://github.com/huoshangou/llm-director-hitman" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">PROJECT / PLAYABLE DESIGN RESEARCH PROTOTYPE</div>
+          <h1>LLM Director Hitman：可控 AI 玩法体验原型</h1>
+          <p class="subtitle">一个 LLM 驱动的类《杀手》沙盒原型设计：玩家用自然语言提出暗杀计划，系统把开放表达编译进确定性规则，并通过演出表现层让玩家看见自己如何真实影响了世界。</p>
+          <p class="hero-claim">用三层结构构建“单一起点 -> 中段展开 -> 有限终点”的纺锤体体验线。</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/huoshangou/llm-director-hitman" target="_blank" rel="noreferrer">查看 GitHub</a>
+            <a class="button" href="#layers">查看三层结构</a>
+          </div>
+          <div class="tag-row" style="margin-top: 18px;">
+            <span class="tag">AI Play Prototype</span>
+            <span class="tag">Natural Language Planning</span>
+            <span class="tag">Deterministic Sandbox</span>
+            <span class="tag">2.5D Presentation</span>
+          </div>
+        </div>
+        <figure class="hero-visual">
+          <img src="images/poison_intent.png" alt="LLM Director Hitman 玩家操作台与画廊地图截图">
+          <figcaption class="visual-caption">
+            <span>PLAY SLICE / THE BALCONY JOB</span>
+            <span>Hacker console + 2.5D map + validation feedback</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="why">
+      <div class="section-inner text-grid">
+        <div class="section-head">
+          <div class="section-kicker">WHY THIS EXISTS</div>
+          <h2 class="section-title">把传统沙盒里被压扁的计划感重新做回来。</h2>
+          <p class="section-lead">潜入、暗杀、开放世界任务里，玩家经常会在脑内形成复杂计划：目标、约束、风险、风格、优先级同时存在。传统任务系统为了控制成本和稳定性，常把这些计划压缩成固定按钮、脚本路线或很浅的互动反馈。</p>
+        </div>
+        <div class="quote-panel">
+          开放感来自自然语言计划；可信度来自确定性沙盒；丰富度来自可演出的可信中间状态。
+        </div>
+      </div>
+      <div class="section-inner" style="margin-top: 28px;">
+        <div class="prose">
+          <p>我更愿意从传统游戏“被迫舍弃的甜区”看 AI native：玩家早就有更复杂的游玩欲望，只是内容分支、系统复杂度和旧 AI 能力让这些欲望很难稳定落地。LLM 在这里的价值，是理解带有目标、约束和风格的自然语言计划。</p>
+          <p>`LLM Director Hitman` 选择暗杀沙盒作为切片，是因为这个类型天然包含机会链、风险控制、伪装、环境因果和有限终局。它更容易验证一件事：有限任务能否通过可信中间状态变得不公式化。</p>
+          <p>这个原型的边界是有限任务内的开放计划。它关心玩家说出的计划如何进入规则、状态和演出：哪些部分已经发生，哪些前置条件被阻断，NPC 和世界如何响应，下一步还能怎样调整。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">CORE EXPERIENCE PROBLEM</div>
+          <h2 class="section-title">开放表达、可信边界、可演出结果必须同时成立。</h2>
+          <p class="section-lead">AI 玩法原型最容易失控的地方，是把“玩家可以怎么说”和“世界实际能发生什么”混在一起。这个 demo 把两者拆开：LLM 负责编译语义，沙盒负责决定可执行边界，前端负责把世界变化演出来。</p>
+        </div>
+        <div class="problem-grid">
+          <article class="problem-card">
+            <div class="node-index">Constraint 01</div>
+            <h3>玩家意图不止一个按钮</h3>
+            <p>“像意外”“别惊动安保”“先让目标去阳台”包含目标、风格和风险偏好。自然语言入口能承接这种复合计划。</p>
+          </article>
+          <article class="problem-card">
+            <div class="node-index">Constraint 02</div>
+            <h3>世界变化需要确定性</h3>
+            <p>NPC 位置、摄像头状态、毒酒、警觉和成功判定都必须经过已注册工具与前置条件，保证结果可信。</p>
+          </article>
+          <article class="problem-card">
+            <div class="node-index">Constraint 03</div>
+            <h3>中间状态需要被看见</h3>
+            <p>计划推进、局部失败、队友追问、NPC 反应和下一步窗口，都要通过地图、气泡、Feed、HUD 和视觉资产形成反馈。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="spindle">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">SPINDLE EXPERIENCE LINE</div>
+          <h2 class="section-title">纺锤体体验线：入口收束，中段展开，终点再收束。</h2>
+          <p class="section-lead">自然语言打开中段表达，确定性规则和有限终点保留设计控制。玩家感到自己在计划，系统仍然知道什么可以发生、什么需要降级、什么必须等下一步。</p>
+        </div>
+        <div class="spindle">
+          <article class="spindle-node">
+            <div class="node-index">Start</div>
+            <h3>单一起点</h3>
+            <ul>
+              <li>私人画廊酒会</li>
+              <li>玩家是幕后 Hacker</li>
+              <li>目标是 Victor 的阳台终局</li>
+            </ul>
+          </article>
+          <article class="spindle-node middle">
+            <div class="node-index">Middle</div>
+            <h3>中段多机会链展开</h3>
+            <ul>
+              <li>伪造邀约、篡改宾客记录、关闭摄像头</li>
+              <li>Runner 处理配电、备毒酒、移动清洁车</li>
+              <li>Face 接触目标、引开保安、递交阳台毒酒</li>
+              <li>每一步都要经过 affordance、precondition 和 WorldState</li>
+            </ul>
+          </article>
+          <article class="spindle-node">
+            <div class="node-index">Endpoint</div>
+            <h3>有限终点</h3>
+            <ul>
+              <li>阳台事故</li>
+              <li>阳台毒酒</li>
+              <li>明确失败</li>
+              <li>降级追问</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="layers">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">THREE-LAYER STRUCTURE</div>
+          <h2 class="section-title">三层结构让 AI 的开放感进入可控玩法边界。</h2>
+          <p class="section-lead">对外说明采用双命名：作品集用“语义编译层 / 确定性沙盒层 / 演出表现层”，首次出现时对齐项目内工程命名。</p>
+        </div>
+        <div class="layer-grid">
+          <article class="layer-card semantic">
+            <div class="node-index">Layer 01</div>
+            <h3>语义编译层</h3>
+            <p>LLM Director 把玩家自然语言解析成 `DirectorPlan`：目标、约束、角色分工、toolChain、拒绝原因与下一步提示。</p>
+            <div class="mapping">Project mapping: 决策 / 编译 · 语义层</div>
+          </article>
+          <article class="layer-card sandbox">
+            <div class="node-index">Layer 02</div>
+            <h3>确定性沙盒层</h3>
+            <p>ToolResolver 只执行已注册工具，按 precondition、effect、ripple 更新 WorldState、警觉、怀疑、摄像头、电力和目标状态。</p>
+            <div class="mapping">Project mapping: 规则 / 执行 · 规则层</div>
+          </article>
+          <article class="layer-card presentation">
+            <div class="node-index">Layer 03</div>
+            <h3>演出表现层</h3>
+            <p>Timeline、2.5D 地图、角色移动、气泡台词、Command Feed、Hacker Analysis、HUD 和视觉资产共同演出世界变化。</p>
+            <div class="mapping">Project mapping: 表现层</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">ONE PLAN THROUGH THE SYSTEM</div>
+          <h2 class="section-title">一条自然语言计划如何穿过三层。</h2>
+          <p class="section-lead">玩家输入的是带风格和约束的计划，系统内部处理的是结构化链条。这个转换过程决定了“开放表达”能否落到可信的世界变化上。</p>
+        </div>
+        <div class="route-layout">
+          <div class="step-stack">
+            <article class="step-card">
+              <div class="node-index">Player Plan</div>
+              <h3>“让 Victor 去阳台，别像安保事故。Runner 先处理配电，Face 找机会接触他。”</h3>
+              <p>玩家同时给出目标、地点、风险偏好和队友分工。</p>
+            </article>
+            <article class="step-card">
+              <div class="node-index">Semantic Compile</div>
+              <h3>DirectorPlan</h3>
+              <p>语义编译层把计划拆成意图、约束、actor、toolChain 和不可执行片段。</p>
+            </article>
+            <article class="step-card">
+              <div class="node-index">Sandbox Execute</div>
+              <h3>Executable Frontier</h3>
+              <p>规则层根据当前 WorldState 找到链上可执行前沿，多 actor 可以在同一 turn 推进。</p>
+            </article>
+            <article class="step-card">
+              <div class="node-index">Staged Result</div>
+              <h3>可信中间状态</h3>
+              <p>演出表现层展示移动、阻断、队友反馈、NEXT 提示和新的机会窗口，玩家基于可见状态继续 replan。</p>
+            </article>
+          </div>
+          <figure class="route-figure">
+            <img src="images/combo_power_infiltrate.png" alt="Runner 配电与 Face 混入画廊的复合计划截图">
+            <figcaption class="figure-label">COMPOUND PLAN / POWER DISRUPTION + FACE INFILTRATION</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="prototype">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">CURRENT PROTOTYPE STATE</div>
+          <h2 class="section-title">The Balcony Job 已经形成可运行切片。</h2>
+          <p class="section-lead">原型围绕私人画廊酒会展开：玩家在远程操作台扮演 Hacker，指挥 Face 与 Runner，通过自然语言计划推动 Victor 的阳台终局。</p>
+        </div>
+        <div class="status-grid">
+          <article class="status-card">
+            <div class="node-index">Runtime</div>
+            <h3>玩法循环</h3>
+            <ul class="status-list">
+              <li>自然语言指令输入</li>
+              <li>LLM Director 与 stub fallback</li>
+              <li>注册 Tool、precondition、ripple、tickWorld</li>
+              <li>Hacker / Face / Runner 分工</li>
+            </ul>
+          </article>
+          <article class="status-card">
+            <div class="node-index">Presentation</div>
+            <h3>演出与反馈</h3>
+            <ul class="status-list">
+              <li>2.5D 画廊地图</li>
+              <li>角色与物件 sprites</li>
+              <li>地图气泡、Command Feed、Hacker Analysis</li>
+              <li>结果弹窗与下一步提示</li>
+            </ul>
+          </article>
+        </div>
+        <div class="evidence-grid">
+          <figure class="evidence-figure">
+            <img src="images/spoof_lure.png" alt="伪造短信与引诱目标去阳台的路线截图">
+            <figcaption class="figure-label">ROUTE / SPOOF MESSAGE + PRIVATE MEETING</figcaption>
+          </figure>
+          <figure class="evidence-figure">
+            <img src="images/gallery_event_map_v2.png" alt="The Balcony Job 画廊 2.5D 地图">
+            <figcaption class="figure-label">MAP / GALLERY EVENT SLICE</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div class="section-kicker">TWO SCALES</div>
+          <h2 class="section-title">同一命题的两个尺度。</h2>
+          <p class="section-lead">这页只展开 `LLM Director Hitman`。更宏观的开放世界任务方向，会回到《沙盒开放世界任务设计》继续升级。</p>
+        </div>
+        <div class="scale-grid">
+          <article class="scale-card">
+            <div class="node-index">Small Slice</div>
+            <h3>LLM Director Hitman</h3>
+            <p>小切片、强约束、可运行。验证自然语言计划如何进入规则、状态和演出，让一个有限任务通过可信中间状态变得不公式化。</p>
+          </article>
+          <article class="scale-card">
+            <div class="node-index">Macro System</div>
+            <h3>沙盒开放世界任务设计</h3>
+            <p>更宏观的开放世界任务探索。关注有限世界内容如何通过导演调度、随机时空触发和反公式化任务结构，减少清单式体验。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner boundary-panel">
+        <div class="boundary-copy">
+          <div class="section-kicker">BOUNDARY / NEXT</div>
+          <h2>当前目标是验证可控 AI 玩法体验。</h2>
+          <p>这个切片聚焦一个任务、一个场景和有限终点。它的价值在于证明自然语言计划可以进入规则、状态与演出，形成可观察的世界反馈。</p>
+          <p>下一步会回到《沙盒开放世界任务设计》，把同一套语言推到更宏观的开放世界任务尺度。</p>
+        </div>
+        <div class="note-panel">
+          <strong>Project entry</strong>
+          <p><a class="accent-link" href="https://github.com/huoshangou/llm-director-hitman" target="_blank" rel="noreferrer">github.com/huoshangou/llm-director-hitman</a></p>
+          <p style="margin-top: 18px;">本页面以当前本地项目状态和项目文档作为写作基准。仓库链接作为公开入口，文章负责说明设计逻辑与原型结构。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="mono">
+    <span>HONG_XJ / PLAYABLE DESIGN RESEARCH</span>
+    <a class="accent-link" href="../../index.html">BACK_TO_INDEX</a>
+  </footer>
+</body>
+</html>
