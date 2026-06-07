@@ -318,6 +318,7 @@
 
     .section {
       border-bottom: 1px solid var(--line-dark);
+      scroll-margin-top: 76px;
     }
 
     .section.dark {
@@ -628,22 +629,13 @@
     .footer-inner {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 64px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.45fr);
-      gap: 36px;
-      align-items: end;
-    }
-
-    .footer h2 {
-      max-width: 760px;
-      font-size: clamp(32px, 5vw, 64px);
-      line-height: 1.12;
+      padding: 46px 32px;
     }
 
     .contact-list {
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 28px;
       color: var(--text-soft);
       font-size: 14px;
     }
@@ -669,6 +661,10 @@
     }
 
     @media (max-width: 760px) {
+      .section {
+        scroll-margin-top: 112px;
+      }
+
       .topbar-inner {
         height: auto;
         padding: 14px 20px;
@@ -706,7 +702,8 @@
       .log-entry,
       .log-blocks,
       .spec-grid,
-      .education {
+      .education,
+      .contact-list {
         grid-template-columns: 1fr;
       }
 
@@ -738,40 +735,38 @@
       <div class="hero-inner">
         <div>
           <div class="eyebrow">PORTFOLIO / 2026</div>
-          <h1>关卡/玩法策划<br>AI 设计工具实践</h1>
+          <h1>大世界关卡/玩法策划<br>AI 设计工具实践</h1>
           <div class="hero-subtitle mono">HONG XIANGJIAN // 洪祥健</div>
-          <p class="hero-copy">具备开放世界关卡与玩法设计经验，关注如何用 AI 辅助设计工具降低文档事务负担，并减少跨职能协作中的反复沟通。我的作品集正在从单一关卡作品展示，转向“设计实践 + 工具化思考 + 可验证流程”的组合表达。</p>
+          <p class="hero-copy">城市开放世界关卡/玩法策划，关注 POI 深度体验、载具玩法体系与事件导演系统，并通过可玩原型和 AI 辅助工具验证设计判断。</p>
           <div class="hero-actions">
-            <a class="button primary" href="works/level-design-deck/index.html">查看 level-design-deck</a>
             <a class="button" href="#works">浏览作品</a>
           </div>
         </div>
 
         <aside class="status-panel">
           <div class="eyebrow">CURRENT SIGNALS</div>
-          <h2>我正在连接三件事：游戏设计经验、AI 辅助流程、产品化工具判断。</h2>
+          <h2>近期聚焦：开放世界玩法设计、可玩原型验证、AI 辅助设计工具。</h2>
           <div class="signal-grid">
             <div class="signal">
               <div class="signal-label">01 / DESIGN PRACTICE</div>
               <strong>开放世界关卡与玩法设计</strong>
-              <p>空间节奏、叙事流程、玩家动线、玩法原型与跨职能落地沟通。</p>
+              <p>城市 POI、载具玩法体系、空间节奏、玩家动线与跨职能落地沟通。</p>
             </div>
             <div class="signal">
               <div class="signal-label">02 / TOOLING</div>
-              <strong>设计源事实与机械检查</strong>
-              <p>把设计意图沉淀为结构化记录，再派生文档、Deck 和检查报告。</p>
+              <strong>事件导演系统</strong>
+              <p>根据玩家位置、车辆身份和近期行为，决定事件何时出现、何时保持安静。</p>
             </div>
             <div class="signal">
               <div class="signal-label">03 / PRODUCT THINKING</div>
-              <strong>面向设计师的内部效率产品</strong>
-              <p>对话优先、结构化编辑、可视化检查、人工批准门与职能接口。</p>
+              <strong>面向设计师的 AI 工作流</strong>
+              <p>用 Claude Code 构建标准文档、分镜/storyboard、可复用产物与验证工具。</p>
             </div>
           </div>
           <div class="quick-links">
+            <a href="works/llm-director-hitman/index.html"><span>LLM Director Hitman</span><span>AI 玩法原型</span></a>
+            <a href="works/vehicle-deck-director/index.html"><span>Vehicle Deck Director</span><span>载具玩法导演系统</span></a>
             <a href="works/level-design-deck/index.html"><span>level-design-deck</span><span>AI 辅助关卡设计工作流</span></a>
-            <a href="works/yatzyforge/index.html"><span>Yatzyforge</span><span>AI 全流程 Godot 游戏</span></a>
-            <a href="level-design-skill-pipeline.html"><span>Skill Pipeline v0.45</span><span>历史架构方案</span></a>
-            <a href="works/sandbox-director/showcase.html"><span>Sandbox Director</span><span>交互原型</span></a>
           </div>
         </aside>
       </div>
@@ -788,21 +783,6 @@
         </div>
 
         <div class="portfolio-rail">
-          <a class="work-card" href="works/level-design-deck/index.html">
-            <div class="work-image" style="background-image:url('works/level-design-deck/images/webapp-current-spec.webp')"></div>
-            <div class="work-body">
-              <div>
-                <h3 class="work-title">level-design-deck</h3>
-                <p class="work-desc">AI 辅助关卡设计工作流：Web UI 已接入告警、schema 表单、预览与 Chat，把设计源事实推进到可审查工作台。</p>
-              </div>
-              <div class="tag-row">
-                <span class="tag">AI 设计工具</span>
-                <span class="tag">设计源事实</span>
-                <span class="tag">Web UI</span>
-              </div>
-            </div>
-          </a>
-
           <a class="work-card" href="works/llm-director-hitman/index.html">
             <div class="work-image" style="background-image:url('works/llm-director-hitman/images/poison_intent.png')"></div>
             <div class="work-body">
@@ -818,62 +798,32 @@
             </div>
           </a>
 
-          <a class="work-card" href="works/yatzyforge/index.html">
-            <div class="work-image synthetic dice">
-              <div class="synthetic-label">
-                <strong>Yatzyforge</strong>
-                <span>CODEX × CLAUDE CODE × GODOT</span>
-              </div>
-            </div>
+          <a class="work-card" href="works/vehicle-deck-director/index.html">
+            <div class="work-image" style="background-image:url('works/vehicle-deck-director/images/director-lab-preview.png')"></div>
             <div class="work-body">
               <div>
-                <h3 class="work-title">Yatzyforge</h3>
-                <p class="work-desc">用 Codex 和 Claude Code 全流程协作，在 Godot 中制作的快艇骰子肉鸽原型，已发布 Windows / macOS 可试玩版本。</p>
+                <h3 class="work-title">大世界载具玩法设计与事件导演系统设计</h3>
+                <p class="work-desc">围绕城市驾驶体验，展示 T3/T2/T1 载具玩法体系规划，并用 2D MVP 与 Director Lab 验证事件导演系统。</p>
               </div>
               <div class="tag-row">
-                <span class="tag">Godot</span>
-                <span class="tag">AI 辅助开发</span>
-                <span class="tag">Dice Roguelite</span>
-              </div>
-            </div>
-          </a>
-
-          <a class="work-card" href="level-design-skill-pipeline.html">
-            <div class="work-image synthetic">
-              <div class="synthetic-label">
-                <strong>Level Design × AI Skill Pipeline</strong>
-                <span>ARCHITECTURE PROPOSAL / v0.45</span>
-              </div>
-            </div>
-            <div class="work-body">
-              <div>
-                <h3 class="work-title">大世界关卡设计 Skill Pipeline</h3>
-                <p class="work-desc">Skill Pipeline v0.45 历史版本：关于设计维度、产物与上下文治理的早期系统化方案。</p>
-              </div>
-              <div class="tag-row">
-                <span class="tag">历史版本</span>
-                <span class="tag">Skill Pipeline</span>
-                <span class="tag">LLM</span>
-              </div>
-            </div>
-          </a>
-
-          <a class="work-card" href="works/sandbox-director/showcase.html">
-            <div class="work-image synthetic alt">
-              <div class="synthetic-label">
-                <strong>Anti-Plot 开放世界</strong>
-                <span>INTERACTIVE PROTOTYPE</span>
-              </div>
-            </div>
-            <div class="work-body">
-              <div>
-                <h3 class="work-title">沙盒开放世界任务设计</h3>
-                <p class="work-desc">基于导演系统的沙盒任务设计原型，探索无剧本叙事与涌现式玩法的开放世界体验。</p>
-              </div>
-              <div class="tag-row">
-                <span class="tag">开放世界</span>
+                <span class="tag">开放世界载具</span>
                 <span class="tag">导演系统</span>
-                <span class="tag">交互原型</span>
+                <span class="tag">玩家中心事件</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="works/level-design-deck/index.html">
+            <div class="work-image" style="background-image:url('works/level-design-deck/images/webapp-current-spec.webp')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">level-design-deck</h3>
+                <p class="work-desc">AI 辅助关卡设计工作流：Web UI 已接入告警、schema 表单、预览与 Chat，把设计源事实推进到可审查工作台。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">AI 设计工具</span>
+                <span class="tag">设计源事实</span>
+                <span class="tag">Web UI</span>
               </div>
             </div>
           </a>
@@ -930,16 +880,20 @@
               <span>ROLE: 关卡策划</span>
             </div>
             <div class="log-content">
-              <h3>开放世界 POI、特殊交互玩法与 AI 设计工具实践</h3>
-              <p>负责 POI 深度体验设计、视觉逻辑解谜、大世界载具玩法与 AI 辅助设计工具实践。关注如何把设计源事实、派生产物和跨职能接口串成可执行流程。</p>
+              <h3>开放世界 POI、载具玩法体系与 AI 设计工具实践</h3>
+              <p>负责城市开放世界 POI 深度体验设计、大世界载具玩法体系设计与 AI 辅助设计工具实践。关注玩家如何在城市中移动、发现事件，并让世界在任务与驾驶行为后继续产生回应。</p>
               <div class="log-blocks">
                 <div class="log-block">
                   <h4>POI 关卡：叙事化流程设计</h4>
                   <p>结合心理学与叙事原理，提取文化符号构建情境与场景叙事，设计非线性流程与 Boss 战引入区域。</p>
                 </div>
                 <div class="log-block">
+                  <h4>载具玩法：事件导演系统验证</h4>
+                  <p>围绕 T3/T2/T1 载具玩法体系，探索从静态触发器转向事件导演式分发；体系规划来自项目生产语境，原型用于验证 LLM 参与位置。</p>
+                </div>
+                <div class="log-block">
                   <h4>AI 设计工具实践</h4>
-                  <p>与 Claude Code 协同搭建设计源事实与派生产物流程，推动气泡图、分镜、氛围 keyart 等关键产出的流程化。</p>
+                  <p>使用 Claude Code 构建个人 AI 工作流，将设计意图转化为标准文档、分镜/storyboard 与可复用产物。</p>
                 </div>
               </div>
             </div>
@@ -978,23 +932,23 @@
       <div class="section-inner">
         <div class="section-kicker">CAPABILITY SPECS</div>
         <h2 class="section-title">能力规格</h2>
-        <p class="section-lead">从白盒设计、工具流规划到体验分析，我的能力围绕着如何把合理的设计意图推进到可沟通、可检验和可落地的产物。</p>
+        <p class="section-lead">能力重心围绕大世界玩法设计、系统化拆解、原型验证和 AI 辅助设计工具实践，目标是把设计意图推进到可沟通、可检验和可落地的产物。</p>
 
         <div class="spec-grid">
           <div class="spec-card">
-            <h3>Gameplay Integration</h3>
-            <p>体验设计与规划 / 白盒验证 / 玩法原型</p>
+            <h3>大世界玩法设计</h3>
+            <p>POI 体验与空间动线 / 载具玩法体系 / 事件导演系统</p>
           </div>
           <div class="spec-card">
-            <h3>Analysis & Logic</h3>
-            <p>关卡脚本 / 动线设计 / 系统切片分析</p>
+            <h3>系统化设计</h3>
+            <p>Metrics 与白盒规范 / 模块化流程拆解 / 事件节奏控制</p>
           </div>
           <div class="spec-card">
-            <h3>AI Design Tooling</h3>
-            <p>设计源事实 / 机械检查 / 派生产物 / 对话优先工作台</p>
+            <h3>AI 辅助设计工具</h3>
+            <p>Claude Code 工作流 / 标准文档 / 分镜 storyboard / 可复用产物</p>
           </div>
           <div class="spec-card">
-            <h3>Tools & Engine</h3>
+            <h3>工具与引擎</h3>
             <p>Figma / Claude Code / Blender / UE5 / Unity</p>
           </div>
         </div>
@@ -1022,10 +976,6 @@
 
   <footer class="footer" id="contact">
     <div class="footer-inner">
-      <div>
-        <div class="section-kicker">COMMUNICATION PROTOCOL</div>
-        <h2>期待有机会交流开放世界设计、AI 辅助设计工作流、AI 效率管线与 AI 游戏制作相关的话题。</h2>
-      </div>
       <div class="contact-list">
         <div>
           <span>EMAIL</span>

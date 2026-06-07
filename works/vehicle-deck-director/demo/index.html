@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>载具Deck分发系统 — MVP Demo</title>
+<link rel="stylesheet" href="css/style.css?v=20260607-marker-guidance">
+</head>
+<body>
+
+<nav id="demo-nav" aria-label="Demo 页面导航">
+  <a href="../index.html">CASE</a>
+  <a href="../director-lab.html">DIRECTOR LAB</a>
+  <a href="../design.html">DESIGN</a>
+  <a href="../../../index.html">PORTFOLIO</a>
+</nav>
+
+<!-- 演示说明 -->
+<div id="demo-brief">
+  <div class="brief-card">
+    <div class="brief-kicker">PORTFOLIO DEMO / VEHICLE DECK DIRECTOR</div>
+    <h1>大世界载具玩法与事件导演 Demo</h1>
+    <p>
+      在涩谷-代官山启发的城市白盒中驾驶，观察事件如何根据车辆、地点和玩家行为出现。
+      本 demo 重点展示 T2 载具玩法分发、事件接入提示，以及抢车后的世界响应如何影响导演调度。
+    </p>
+    <div class="brief-steps">
+      <span>驾驶一段距离或时间后抽牌</span>
+      <span>出现可接入事件提示</span>
+      <span>按 E 接入 / Esc 忽略</span>
+      <span>车辆、地点、热度影响推荐</span>
+    </div>
+    <button id="brief-start" type="button">开始演示</button>
+  </div>
+</div>
+
+<!-- 游戏区 -->
+<div id="game-area">
+  <canvas id="game-canvas"></canvas>
+</div>
+
+<!-- 调试面板 -->
+<div id="debug-panel">
+  <div class="debug-header">导演透视面板</div>
+  <div id="debug-content">
+    <!-- 由 debug.js 动态填充 -->
+  </div>
+  <div class="debug-section">
+    <h3>事件日志</h3>
+  </div>
+  <div id="event-log">
+    <!-- 由 debug.js 动态填充 -->
+  </div>
+</div>
+
+<!-- 按顺序加载脚本 -->
+<script src="js/config.js?v=20260607-marker-guidance"></script>
+<script src="js/layout.js?v=20260607-marker-guidance"></script>
+<script src="data/district-layout.embedded.js?v=20260607-file-fallback"></script>
+<script src="js/world.js?v=20260607-marker-guidance"></script>
+<script src="js/renderer.js?v=20260607-marker-guidance"></script>
+<script src="js/deck.js?v=20260607-marker-guidance"></script>
+<script src="js/trigger.js?v=20260607-marker-guidance"></script>
+<script src="js/director.js?v=20260607-marker-guidance"></script>
+<script src="js/encounters.js?v=20260607-marker-guidance"></script>
+<script src="js/debug.js?v=20260607-marker-guidance"></script>
+<script src="js/main.js?v=20260607-marker-guidance"></script>
+
+</body>
+</html>

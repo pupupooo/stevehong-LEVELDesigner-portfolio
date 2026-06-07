@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Director Lab - Vehicle Deck Director</title>
+  <style>
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('../../assets/fonts/ibm-plex-mono-400.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('../../assets/fonts/ibm-plex-mono-600.woff2') format('woff2');
+    }
+
+    :root {
+      --ink: #101014;
+      --panel: #17171e;
+      --panel-2: #20202a;
+      --paper: #f4f4f0;
+      --muted: #9ca3af;
+      --line: rgba(244, 244, 240, 0.16);
+      --accent: #ff4500;
+      --cyan: #38bdf8;
+      --green: #44cc66;
+      --yellow: #ffaa22;
+      --purple: #aa66ff;
+      --danger: #ff5f6d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(16, 16, 20, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar-inner {
+      max-width: 1500px;
+      min-height: 58px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 16px;
+      white-space: nowrap;
+    }
+
+    .topbar a:hover {
+      color: var(--accent);
+    }
+
+    .shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 28px 24px 44px;
+    }
+
+    .lab-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.34fr);
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .kicker {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-size: clamp(34px, 5vw, 70px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .head-note {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 460px;
+      border-left: 2px solid var(--cyan);
+      padding-left: 14px;
+    }
+
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .panel-head {
+      min-height: 48px;
+      border-bottom: 1px solid var(--line);
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-head h2 {
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .panel-head span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    .scenario-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .scenario {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      color: var(--paper);
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .scenario.active,
+    .scenario:hover {
+      border-color: var(--accent);
+      background: rgba(255, 69, 0, 0.14);
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .field-value {
+      color: var(--paper);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: #101014;
+      color: var(--paper);
+      padding: 7px 10px;
+      border-radius: 0;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .switch-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .toggle {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .toggle.active {
+      border-color: var(--cyan);
+      color: var(--paper);
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .snapshot-item {
+      min-height: 74px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      padding: 12px;
+    }
+
+    .snapshot-item span {
+      display: block;
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .snapshot-item strong {
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    .decision {
+      display: grid;
+      gap: 12px;
+    }
+
+    .decision-main {
+      border: 1px solid rgba(255, 69, 0, 0.45);
+      background:
+        linear-gradient(135deg, rgba(255, 69, 0, 0.18), transparent 58%),
+        var(--panel-2);
+      padding: 18px;
+    }
+
+    .decision-main h2 {
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1.1;
+      margin: 7px 0 8px;
+    }
+
+    .decision-main p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge-row,
+    .rule-list,
+    .llm-grid,
+    .contract-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid var(--line);
+      padding: 4px 9px;
+      color: var(--cyan);
+      font-size: 12px;
+    }
+
+    .badge.score {
+      color: var(--accent);
+    }
+
+    .rule {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rule.pass {
+      color: var(--green);
+      border-color: rgba(68, 204, 102, 0.32);
+    }
+
+    .rule.fail {
+      color: var(--danger);
+      border-color: rgba(255, 95, 109, 0.34);
+    }
+
+    .candidate-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .candidate {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .candidate.final {
+      border-color: var(--accent);
+      background: rgba(255, 69, 0, 0.1);
+    }
+
+    .candidate.selected {
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .candidate.blocked {
+      opacity: 0.58;
+    }
+
+    .candidate-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .candidate h3 {
+      font-size: 17px;
+    }
+
+    .scorebar {
+      height: 8px;
+      background: rgba(244, 244, 240, 0.1);
+      overflow: hidden;
+    }
+
+    .scorebar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    }
+
+    .reason-list {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .contract-grid {
+      margin-top: 12px;
+    }
+
+    .contract-block {
+      flex: 1 1 240px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .contract-block span {
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+    }
+
+    .contract-block strong {
+      font-size: 15px;
+    }
+
+    .contract-block p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .llm-panel {
+      margin-top: 18px;
+    }
+
+    .llm-grid {
+      align-items: stretch;
+    }
+
+    .llm-col {
+      flex: 1 1 260px;
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.04);
+      padding: 14px;
+    }
+
+    .llm-col h3 {
+      color: var(--paper);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .llm-col ul {
+      display: grid;
+      gap: 5px;
+      list-style: none;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .llm-col li::before {
+      content: ">";
+      color: var(--accent);
+      margin-right: 6px;
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    @media (max-width: 1120px) {
+      .lab-head,
+      .lab-grid,
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .topbar-inner,
+      .topbar nav,
+      .switch-row,
+      .snapshot-grid {
+        grid-template-columns: 1fr;
+        flex-wrap: wrap;
+      }
+
+      .shell {
+        padding: 20px 14px 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner mono">
+      <a href="index.html">VEHICLE_DECK_DIRECTOR / DIRECTOR_LAB</a>
+      <nav aria-label="页面导航">
+        <a href="index.html">CASE</a>
+        <a href="demo/index.html">DEMO</a>
+        <a href="design.html">DESIGN</a>
+        <a href="../../index.html">PORTFOLIO</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="lab-head">
+      <div>
+        <div class="kicker">DIRECTOR DECISION STACK</div>
+        <h1>有边界的导演调度。</h1>
+      </div>
+      <p class="head-note">LLM 先判断当前场景适合哪类 Vehicle Beat；Director 用规则压制越界推荐；最后只在被选中的事件池里实例化具体玩法。2D Demo 未接 LLM，所以用纯 Deck 抽取模拟分发。</p>
+    </section>
+
+    <section class="lab-grid">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2>输入场景</h2>
+          <span class="mono">WORLD SNAPSHOT</span>
+        </div>
+        <div class="panel-body">
+          <div class="scenario-grid" id="scenario-list"></div>
+
+          <div class="field">
+            <label for="speed">速度 <span class="field-value" id="speed-value"></span></label>
+            <input id="speed" type="range" min="0" max="140" step="1">
+          </div>
+
+          <div class="field">
+            <label for="heat">世界热度 <span class="field-value" id="heat-value"></span></label>
+            <input id="heat" type="range" min="0" max="100" step="1">
+          </div>
+
+          <div class="field">
+            <label for="vehicle">车辆身份</label>
+            <select id="vehicle">
+              <option value="standard">标准车</option>
+              <option value="sport">跑车</option>
+              <option value="heavy">重型车</option>
+              <option value="police">警车</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="poi">附近 POI</label>
+            <select id="poi">
+              <option value="night_market">夜生活街</option>
+              <option value="commercial_plaza">商业广场</option>
+              <option value="bank_depot">金融押运区</option>
+              <option value="police_precinct">警局外围</option>
+              <option value="cafe">咖啡店街区</option>
+              <option value="garage">改装车库</option>
+              <option value="gang_block">帮派街区</option>
+            </select>
+          </div>
+
+          <div class="switch-row">
+            <button class="toggle" id="road-toggle" type="button">道路内</button>
+            <button class="toggle" id="recent-toggle" type="button">近期事件密集</button>
+          </div>
+        </div>
+      </aside>
+
+      <div class="output-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>输入快照</h2>
+            <span class="mono">NORMALIZED CONTEXT</span>
+          </div>
+          <div class="panel-body">
+            <div class="snapshot-grid" id="snapshot-grid"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>最终调度</h2>
+            <span class="mono">FINAL DISPATCH</span>
+          </div>
+          <div class="panel-body decision" id="decision"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>LLM 推荐 Beat</h2>
+            <span class="mono">SEMANTIC FIT</span>
+          </div>
+          <div class="panel-body">
+            <div class="candidate-list" id="semantic-list"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>导演规则裁决</h2>
+            <span class="mono">POLICY GATE</span>
+          </div>
+          <div class="panel-body">
+            <div class="candidate-list" id="policy-list"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>事件池实例化</h2>
+            <span class="mono">EVENT CONTRACT</span>
+          </div>
+          <div class="panel-body">
+            <div class="candidate-list" id="event-list"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>LLM 边界</h2>
+            <span class="mono">ADVISORY ONLY</span>
+          </div>
+          <div class="panel-body">
+            <div class="llm-grid" id="llm-grid"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="demo/js/config.js?v=20260607-semantic-beat-lab"></script>
+  <script src="demo/js/director-advisor.js?v=20260607-semantic-beat-lab"></script>
+  <script>
+    const poiDefs = {
+      night_market: { id: 'night_market', name: '夜生活街', region: 'nightlife' },
+      commercial_plaza: { id: 'commercial_plaza', name: '商业广场', region: 'commercial' },
+      bank_depot: { id: 'bank_depot', name: '金融押运区', region: 'finance' },
+      police_precinct: { id: 'police_precinct', name: '警局外围', region: 'civic' },
+      cafe: { id: 'cafe', name: '咖啡店街区', region: 'commercial' },
+      garage: { id: 'garage', name: '改装车库', region: 'service' },
+      gang_block: { id: 'gang_block', name: '帮派街区', region: 'gang' },
+    };
+
+    const scenarios = [
+      {
+        id: 'fast_sport',
+        label: '高速跑车 / 夜生活街',
+        data: { speed: 112, heat: 18, vehicle: 'sport', poi: 'night_market', isOffroad: false, recentDense: false },
+      },
+      {
+        id: 'finance_pressure',
+        label: '高热度警车 / 金融区',
+        data: { speed: 54, heat: 76, vehicle: 'police', poi: 'bank_depot', isOffroad: false, recentDense: false },
+      },
+      {
+        id: 'offroad_fast',
+        label: '离路高速 / 商业广场',
+        data: { speed: 104, heat: 12, vehicle: 'sport', poi: 'commercial_plaza', isOffroad: true, recentDense: false },
+      },
+      {
+        id: 'quiet_cruise',
+        label: '低热度巡航 / 咖啡店',
+        data: { speed: 32, heat: 8, vehicle: 'standard', poi: 'cafe', isOffroad: false, recentDense: true },
+      },
+    ];
+
+    let current = Object.assign({}, scenarios[0].data);
+    let activeScenario = scenarios[0].id;
+
+    const $ = (id) => document.getElementById(id);
+
+    function applyStateToControls() {
+      $('speed').value = current.speed;
+      $('heat').value = current.heat;
+      $('vehicle').value = current.vehicle;
+      $('poi').value = current.poi;
+      $('road-toggle').classList.toggle('active', !current.isOffroad);
+      $('road-toggle').textContent = current.isOffroad ? '离路状态' : '道路内';
+      $('recent-toggle').classList.toggle('active', current.recentDense);
+      $('speed-value').textContent = current.speed + ' km/h';
+      $('heat-value').textContent = current.heat + ' / 100';
+    }
+
+    function buildSnapshot() {
+      const vehicle = DS.Config.vehicleArchetypes[current.vehicle];
+      const poi = poiDefs[current.poi];
+      return {
+        speed: current.speed,
+        speedState: current.speed > DS.Config.speedGate.threshold ? 'fast' : 'cruise',
+        heat: current.heat,
+        vehicleArchetypeId: current.vehicle,
+        vehicleName: vehicle.name,
+        regionTag: poi.region,
+        nearbyPoi: poi,
+        deckState: {
+          remainingByType: {
+            midnight_race: 2,
+            intimidation_ride: 2,
+            armored_heist: 1,
+            copilot_command: 2,
+            blank: 4,
+          },
+        },
+        recentBeats: current.recentDense ? ['street_challenge', 'escort_command'] : [],
+        isOffroad: current.isOffroad,
+      };
+    }
+
+    function renderScenarios() {
+      $('scenario-list').innerHTML = scenarios.map((scenario) =>
+        '<button type="button" class="scenario ' + (scenario.id === activeScenario ? 'active' : '') + '" data-id="' + scenario.id + '">' +
+          '<strong>' + scenario.label + '</strong>' +
+        '</button>'
+      ).join('');
+
+      for (const button of document.querySelectorAll('.scenario')) {
+        button.addEventListener('click', () => {
+          const scenario = scenarios.find(item => item.id === button.dataset.id);
+          activeScenario = scenario.id;
+          current = Object.assign({}, scenario.data);
+          render();
+        });
+      }
+    }
+
+    function renderSnapshot(summary) {
+      $('snapshot-grid').innerHTML = summary.map((item) =>
+        '<div class="snapshot-item">' +
+          '<span>' + item.label + '</span>' +
+          '<strong>' + item.value + '</strong>' +
+        '</div>'
+      ).join('');
+    }
+
+    function renderDecision(result) {
+      const final = result.final;
+      $('decision').innerHTML =
+        '<div class="decision-main">' +
+          '<div class="kicker">' + final.beatLabel + ' -> ' + final.name + '</div>' +
+          '<h2>' + final.name + '</h2>' +
+          '<p>' + final.gameplayContract + '</p>' +
+        '</div>' +
+        '<div class="badge-row">' +
+          '<span class="badge score">Score ' + final.score + '</span>' +
+          '<span class="badge">' + final.accessLabel + '</span>' +
+          '<span class="badge">' + final.accessSignal + '</span>' +
+        '</div>' +
+        '<div class="contract-grid">' +
+          '<div class="contract-block">' +
+            '<span>LLM 推荐</span>' +
+            '<strong>' + result.llmRecommendation.recommendedBeatLabel + '</strong>' +
+            '<p>' + result.llmRecommendation.reason + '</p>' +
+          '</div>' +
+          '<div class="contract-block">' +
+            '<span>Director 裁决</span>' +
+            '<strong>' + result.beatSelection.cnLabel + '</strong>' +
+            '<p>' + (result.beatSelection.policyReasons.join('；') || '规则放行，进入该 Beat 的事件池。') + '</p>' +
+          '</div>' +
+          '<div class="contract-block">' +
+            '<span>玩法契约</span>' +
+            '<strong>' + final.accessSignal + '</strong>' +
+            '<p>' + final.reason + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="rule-list">' + final.ruleChecks.map((check) =>
+          '<span class="rule ' + (check.pass ? 'pass' : 'fail') + '">' + (check.pass ? 'PASS ' : 'FAIL ') + check.label + '</span>'
+        ).join('') + '</div>';
+    }
+
+    function renderSemanticFit(result) {
+      $('semantic-list').innerHTML = result.semanticFit.map((beat) => {
+        const isRecommended = beat.type === result.llmRecommendation.recommendedBeatType;
+        return '<article class="candidate ' + (isRecommended ? 'final ' : '') + '">' +
+          '<div class="candidate-top">' +
+            '<h3>' + beat.cnLabel + '</h3>' +
+            '<span class="badge score">' + beat.score + '</span>' +
+          '</div>' +
+          '<div class="scorebar"><span style="width:' + beat.score + '%"></span></div>' +
+          '<div class="badge-row">' +
+            '<span class="badge">' + beat.familyLabel + '</span>' +
+            '<span class="badge">' + beat.accessLabel + '</span>' +
+            '<span class="badge">' + (isRecommended ? 'LLM 推荐' : '候选') + '</span>' +
+          '</div>' +
+          '<div class="reason-list">' + beat.reasons.slice(0, 4).map(reason => '<div>' + reason + '</div>').join('') + '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    function renderPolicy(result) {
+      $('policy-list').innerHTML = result.policy.adjusted.map((beat) => {
+        const isSelected = beat.type === result.beatSelection.type;
+        const reasons = beat.policyReasons.length ? beat.policyReasons : ['规则放行，保留该 Beat 的调度资格'];
+        return '<article class="candidate ' + (isSelected ? 'selected ' : '') + (beat.status === 'blocked' ? 'blocked' : '') + '">' +
+          '<div class="candidate-top">' +
+            '<h3>' + beat.cnLabel + '</h3>' +
+            '<span class="badge score">' + beat.policyScore + '</span>' +
+          '</div>' +
+          '<div class="scorebar"><span style="width:' + beat.policyScore + '%"></span></div>' +
+          '<div class="badge-row">' +
+            '<span class="badge">' + beat.status + '</span>' +
+            '<span class="badge">' + (isSelected ? 'Director 选中' : '未选中') + '</span>' +
+          '</div>' +
+          '<div class="reason-list">' + reasons.map(reason => '<div>' + reason + '</div>').join('') + '</div>' +
+          '<div class="rule-list">' + beat.ruleChecks.map((check) =>
+            '<span class="rule ' + (check.pass ? 'pass' : 'fail') + '">' + (check.pass ? 'PASS ' : 'FAIL ') + check.label + '</span>'
+          ).join('') + '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    function renderEvents(result) {
+      $('event-list').innerHTML = result.eventPool.map((event) => {
+        const isSelected = event.type === result.eventSelection.type;
+        return '<article class="candidate ' + (isSelected ? 'final ' : '') + (event.status === 'blocked' ? 'blocked' : '') + '">' +
+          '<div class="candidate-top">' +
+            '<h3>' + event.name + '</h3>' +
+            '<span class="badge score">' + event.score + '</span>' +
+          '</div>' +
+          '<div class="scorebar"><span style="width:' + event.score + '%"></span></div>' +
+          '<div class="badge-row">' +
+            '<span class="badge">' + event.accessSignal + '</span>' +
+            '<span class="badge">' + event.status + '</span>' +
+            '<span class="badge">' + (isSelected ? '实例化' : '事件池候选') + '</span>' +
+          '</div>' +
+          '<div class="reason-list">' + event.reasons.slice(0, 4).map(reason => '<div>' + reason + '</div>').join('') + '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    function renderLlm(result) {
+      const final = result.final;
+      $('llm-grid').innerHTML =
+        '<div class="llm-col">' +
+          '<h3>本轮边界</h3>' +
+          '<ul>' +
+            '<li>' + result.llmRecommendation.boundary + '</li>' +
+            '<li>被选中的 Beat 才能进入事件池，事件池再产出具体玩法契约。</li>' +
+          '</ul>' +
+        '</div>' +
+        '<div class="llm-col">' +
+          '<h3>允许输出</h3>' +
+          '<ul>' + final.llmOutput.allowed.map(item => '<li>' + item + '</li>').join('') + '</ul>' +
+        '</div>' +
+        '<div class="llm-col">' +
+          '<h3>禁止越界</h3>' +
+          '<ul>' + final.llmOutput.forbidden.map(item => '<li>' + item + '</li>').join('') + '</ul>' +
+        '</div>' +
+        '<div class="llm-col">' +
+          '<h3>建议文本</h3>' +
+          '<ul><li>' + final.llmOutput.advisoryText + '</li></ul>' +
+        '</div>';
+    }
+
+    function render() {
+      applyStateToControls();
+      renderScenarios();
+      const result = DS.DirectorAdvisor.evaluate(buildSnapshot());
+      renderSnapshot(result.inputSummary);
+      renderDecision(result);
+      renderSemanticFit(result);
+      renderPolicy(result);
+      renderEvents(result);
+      renderLlm(result);
+    }
+
+    $('speed').addEventListener('input', (event) => {
+      current.speed = Number(event.target.value);
+      activeScenario = '';
+      render();
+    });
+    $('heat').addEventListener('input', (event) => {
+      current.heat = Number(event.target.value);
+      activeScenario = '';
+      render();
+    });
+    $('vehicle').addEventListener('change', (event) => {
+      current.vehicle = event.target.value;
+      activeScenario = '';
+      render();
+    });
+    $('poi').addEventListener('change', (event) => {
+      current.poi = event.target.value;
+      activeScenario = '';
+      render();
+    });
+    $('road-toggle').addEventListener('click', () => {
+      current.isOffroad = !current.isOffroad;
+      activeScenario = '';
+      render();
+    });
+    $('recent-toggle').addEventListener('click', () => {
+      current.recentDense = !current.recentDense;
+      activeScenario = '';
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>载具Deck分发系统 — 早期设计草稿</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F4F4F0;
+  --surface: #FFFFFF;
+  --surface2: #FAFAFA;
+  --border: #111111;
+  --border-light: #CCCCCC;
+  --text: #111111;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --accent: #FF4500;
+  --accent2: #333333;
+  --green: #2E7D32;
+  --blue: #1565C0;
+  --purple: #6A1B9A;
+  --yellow: #E65100;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans SC', sans-serif;
+  line-height: 1.7;
+  font-size: 15px;
+}
+::selection { background: rgba(255,69,0,.15); }
+
+/* ── CROSSHAIR ── */
+.crosshair {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-bottom: 12px;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background-color: var(--accent);
+}
+.crosshair::before {
+  width: 16px;
+  height: 1px;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+}
+.crosshair::after {
+  width: 1px;
+  height: 16px;
+  left: 50%; top: 0;
+  transform: translateX(-50%);
+}
+
+/* ── NAV ── */
+#nav {
+  position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  padding: 28px 24px;
+  overflow-y: auto;
+  z-index: 100;
+}
+#nav::-webkit-scrollbar { width: 4px; }
+#nav::-webkit-scrollbar-thumb { background: var(--border-light); }
+
+#nav-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+#nav .section-label {
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+#nav h2 {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+#nav .subtitle {
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.case-links {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+}
+#nav .case-links a {
+  border: 1px solid var(--border-light);
+  padding: 7px 10px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+#nav .case-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#nav a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 0;
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  transition: all .15s;
+}
+#nav a:hover {
+  color: var(--accent);
+}
+#nav a.active {
+  color: var(--text);
+  border-left-color: var(--accent);
+}
+#nav .nav-section {
+  color: var(--accent);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 20px;
+  margin-bottom: 6px;
+  padding-left: 12px;
+}
+
+/* ── MAIN ── */
+main {
+  margin-left: 280px;
+  max-width: 900px;
+  padding: 60px 50px 120px;
+}
+h1 {
+  font-size: 32px;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 48px;
+  line-height: 1.8;
+}
+h2 {
+  font-size: 22px;
+  color: var(--text);
+  margin-top: 56px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+h2 .num {
+  color: var(--accent);
+  margin-right: 10px;
+  font-weight: 700;
+}
+h3 {
+  font-size: 16px;
+  color: var(--text);
+  margin-top: 32px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+h4 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 24px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+p { margin-bottom: 14px; }
+strong { color: var(--text); font-weight: 600; }
+em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+/* ── COMPONENTS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.card-accent { border-left: 3px solid var(--accent); }
+.card-green  { border-left: 3px solid var(--green); }
+.card-blue   { border-left: 3px solid var(--blue); }
+.card-purple { border-left: 3px solid var(--purple); }
+.card-yellow { border-left: 3px solid var(--yellow); }
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+}
+.tag-red    { border-color: var(--accent); color: var(--accent); }
+.tag-green  { border-color: var(--green);  color: var(--green); }
+.tag-blue   { border-color: var(--blue);   color: var(--blue); }
+.tag-yellow { border-color: var(--yellow); color: var(--yellow); }
+.tag-purple { border-color: var(--purple); color: var(--purple); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+th {
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(0,0,0,.02); }
+
+code {
+  background: var(--surface2);
+  padding: 2px 7px;
+  font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+  font-size: 13px;
+  color: var(--green);
+  border: 1px solid var(--border-light);
+}
+
+ul, ol { margin: 10px 0 14px 24px; }
+li { margin-bottom: 6px; }
+
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+
+.flow-arrow {
+  text-align: center;
+  color: var(--accent);
+  font-size: 20px;
+  margin: 8px 0;
+  letter-spacing: 4px;
+}
+
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  margin: 20px 0;
+  font-family: "Cascadia Code", monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text-muted);
+}
+.diagram .hl  { color: var(--accent);  font-weight: 600; }
+.diagram .hl2 { color: var(--blue);    font-weight: 600; }
+.diagram .hl3 { color: var(--green);   font-weight: 600; }
+.diagram .hl4 { color: var(--purple);  font-weight: 600; }
+
+/* ── TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+  margin: 20px 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border-light);
+}
+.timeline .step {
+  position: relative;
+  margin-bottom: 24px;
+}
+.timeline .step::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+.timeline .step.done::before    { background: var(--green); }
+.timeline .step.current::before {
+  background: var(--yellow);
+  box-shadow: 0 0 0 2px rgba(230,81,0,.2);
+}
+.timeline .step-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.timeline .step-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ── FOOTER ── */
+.doc-footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.doc-footer .status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  display: inline-block;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  #nav { width: 240px; }
+  main { margin-left: 240px; padding: 40px 30px 80px; }
+}
+@media (max-width: 768px) {
+  #nav {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  main { margin-left: 0; padding: 30px 20px 60px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 18px; }
+  .cols { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav id="nav">
+  <div id="nav-header">
+    <div class="crosshair"></div>
+    <div class="section-label">[DOC: VEHICLE_DECK]</div>
+    <h2>载具Deck分发系统</h2>
+    <span class="subtitle">早期设计草稿 v1.0</span>
+    <div class="case-links">
+      <a href="index.html">Case Overview</a>
+      <a href="demo/index.html">MVP Demo</a>
+      <a href="director-lab.html">Director Lab</a>
+      <a href="../../index.html">Portfolio</a>
+    </div>
+  </div>
+
+  <div class="nav-section">愿景</div>
+  <a href="#problem">问题陈述</a>
+
+  <div class="nav-section">核心架构</div>
+  <a href="#architecture">三层分发模型</a>
+
+  <div class="nav-section">T2 Deck 早期设计</div>
+  <a href="#trigger">抽牌触发机制</a>
+  <a href="#speed-gate">速度门控（早期）</a>
+  <a href="#deck-composition">牌组构成</a>
+  <a href="#narrative">叙事接入方式</a>
+
+  <div class="nav-section">修饰器</div>
+  <a href="#consequence">后果修饰器</a>
+  <a href="#zone">区域修饰器</a>
+
+  <div class="nav-section">体验走查</div>
+  <a href="#walkthrough">10分钟驾驶体验</a>
+
+  <div class="nav-section">落地</div>
+  <a href="#dependencies">实现依赖</a>
+  <a href="#risks">风险与兜底</a>
+  <a href="#roadmap">迭代路线图</a>
+
+  <div class="nav-section">参考</div>
+  <a href="#reference">对马岛之魂</a>
+</nav>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main>
+
+<!-- ────────── HERO ────────── -->
+<h1>载具Deck分发系统 — 早期设计草稿</h1>
+<p class="hero-sub">
+  记录从纯 Deck 思路出发的早期推演。<br>
+  版本 v1.0 &nbsp;|&nbsp; 2026-03-30 &nbsp;|&nbsp; 归档草稿
+</p>
+
+<div class="card card-blue">
+  <h4 style="margin-top:0;">版本说明：早期推演记录</h4>
+  <p>这份文档保留早期“载具 Deck 分发”推演，用来呈现设计思路如何从纯抽牌系统演化到语义门控 Beat 导演系统。主 case 与 Director Lab 展示的是后续收敛版本：LLM 推荐合适的 Vehicle Beat，Director Policy 做节奏和边界裁决，最后从被放行的事件池实例化具体玩法。</p>
+  <p style="margin-bottom:0;">文档中关于“速度门控冻结计数器”“Deck 直接决定事件”的表述，属于早期假设，不作为 2D MVP 和完整系统设想的最终规则。</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="problem"><span class="num">01</span>问题陈述</h2>
+
+<p>当前载具玩法存在根本性的体验天花板，需要在框架层面解决。</p>
+
+<div class="cols">
+  <div class="card">
+    <span class="tag">现状问题</span>
+    <p style="margin-top:12px;">载具玩法目前是<strong>静态预置 + 触发器驱动</strong>的模型。本质上是"罐头体验"——关卡设计师摆好，玩家触发，剧情走完。每次遭遇都是精确重复的。</p>
+  </div>
+  <div class="card">
+    <span class="tag tag-red">体验衰减</span>
+    <p style="margin-top:12px;">玩家<strong>多次游玩后会发现遭遇是固定的</strong>。开车路过某个路口，"这里会出现警察"、"这里有人拦路"……新鲜感迅速流失，世界失去活性。</p>
+  </div>
+</div>
+
+<div class="cols">
+  <div class="card card-accent">
+    <span class="tag tag-red">目标</span>
+    <p style="margin-top:12px;">需要一个<strong>分发框架</strong>，让载具遭遇感觉是从世界规则中<em>自然涌现的</em>，而不是设计师预埋的脚本在等待玩家触发。</p>
+  </div>
+  <div class="card">
+    <span class="tag">核心命题</span>
+    <p style="margin-top:12px;">玩家应该感觉到：<strong>是这个城市在对他们做出反应</strong>，而不是他们在推进一条预设的遭遇轨道。</p>
+  </div>
+</div>
+
+<div class="card card-blue">
+  <h4 style="margin-top:0;">参考验证</h4>
+  <p style="margin-bottom:0;">对马岛之魂（Ghost of Tsushima）的 Dynamic Encounters Deck System 已在商业产品中证明，这套卡牌隐喻的遭遇分发框架能有效制造"世界活着"的感知——这条路径是有据可查的。</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="architecture"><span class="num">02</span>核心架构：三层分发模型</h2>
+
+<p>三个层级各司其职，密度从高到低，叙事权重从轻到重，共同构成驾驶体验的完整节奏。</p>
+
+<!-- T3 -->
+<div class="card card-green">
+  <h4 style="margin-top:0;color:var(--green);">T3 &mdash; 感官回响 &nbsp;<span class="tag tag-green">环境底噪层</span></h4>
+  <p>原子级交互，瞬间物理破坏与环境交互。由关卡设计师手动放置，高度依赖城市环境语义。作为路段环境属性始终存在，不参与抽牌逻辑，是驾驶体验的质感基底。</p>
+  <div>
+    <span class="tag tag-green">触发间隔：每 10–15 秒</span>
+    <span class="tag tag-green">密度：20–30 个/km²</span>
+    <span class="tag tag-green">不走 Deck，固定布设</span>
+  </div>
+  <p style="margin-top:14px;margin-bottom:6px;font-size:13px;color:var(--text-muted);">玩法清单：</p>
+  <ul style="margin-top:0;">
+    <li>连续节奏破坏 combo</li>
+    <li>街头恶作剧</li>
+    <li>爽快大破坏</li>
+    <li>暴力抄近道</li>
+    <li>驾驶意境感</li>
+  </ul>
+</div>
+
+<!-- T2 -->
+<div class="card card-accent">
+  <h4 style="margin-top:0;color:var(--accent);">T2 &mdash; 动态扮演 &nbsp;<span class="tag tag-red">Deck 抽牌层，本方案核心</span></h4>
+  <p>复合级任务，包含叙事连接与交互。早期方案通过距离 + 时间混合驱动触发抽牌，带速度门控、牌组管理、弃牌重洗逻辑；当前方案进一步把它拆成 LLM 语义 Beat 推荐、Director Policy 裁决和事件池实例化。</p>
+  <div>
+    <span class="tag tag-red">触发间隔：每 3–5 分钟</span>
+    <span class="tag tag-red">密度：0.5–1 个/km²</span>
+    <span class="tag tag-red">正式 Deck 抽牌逻辑</span>
+  </div>
+  <p style="margin-top:14px;margin-bottom:6px;font-size:13px;color:var(--text-muted);">玩法清单：</p>
+  <ul style="margin-top:0;">
+    <li>午夜竞速</li>
+    <li>恐吓专车</li>
+    <li>拦截运钞车</li>
+    <li>副驾指挥</li>
+    <li>街头接管</li>
+  </ul>
+</div>
+
+<!-- T1 -->
+<div class="card card-purple">
+  <h4 style="margin-top:0;color:var(--purple);">T1 &mdash; 系统级挑战 &nbsp;<span class="tag tag-purple">叙事注入层，极稀缺</span></h4>
+  <p>T2 × T3 的乘法涌现，由世界叙事系统通过注入队列（Inject Queue）直接推送。极度稀缺是设计意图——它的价值来自于它的不可预测性。T3 交互在 T1 中获得叙事功能（"规则即武器"）。</p>
+  <div>
+    <span class="tag tag-purple">触发频率：跨越整个大区 1 次</span>
+    <span class="tag tag-purple">体验时长：5–10 分钟</span>
+    <span class="tag tag-purple">叙事注入队列直推</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="trigger"><span class="num">03</span>T2 Deck 系统 — 详细设计</h2>
+
+<h3>3.1 &nbsp;抽牌触发：混合驱动模型</h3>
+
+<p>距离驱动和时间驱动取先到者，共享同一个冷却锁。任意一个条件满足即触发，触发后两个计数器同时归零重新计数。</p>
+
+<div class="cols">
+  <div class="card card-accent">
+    <h4 style="margin-top:0;">距离驱动</h4>
+    <p style="font-size:28px;font-weight:700;color:var(--accent);margin-bottom:4px;">800–1200m</p>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:0;">净位移（displacement），非路程。防止<em>原地漂移虚假触发</em>。</p>
+  </div>
+  <div class="card">
+    <h4 style="margin-top:0;">时间驱动（兜底）</h4>
+    <p style="font-size:28px;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">60–90s</p>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:0;">保证低速/停留场景下遭遇密度不断档。</p>
+  </div>
+</div>
+
+<div class="flow-arrow">OR</div>
+
+<div class="diagram"><span class="hl">触发场景表</span>
+
+驾驶场景          触发机制      实际间隔    备注
+──────────────────────────────────────────────────────────────
+<span class="hl2">高速巡航 120km/h</span>  距离先到      ~30s      速度门控 >80 后暂停，计数器冻结
+<span class="hl3">中速闲逛 40km/h</span>  距离先到      ~60s      正常流转，遭遇频率适中
+<span class="hl">堵车 / 停留</span>      时间兜底      ~60–90s   净位移趋近零，时间接管
+<span class="hl4">原地漂移</span>         时间兜底      ~60–90s   净位移过滤排除路程积累</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="speed-gate"><span class="num" style="color:var(--text-muted);font-size:16px;">3.2</span>速度门控（早期设想）</h2>
+
+<div class="card card-yellow">
+  <p style="margin-bottom:0;font-size:13px;"><strong>当前修正：</strong>2D MVP 已移除“高速冻结计数器”的做法。高速更适合作为竞速、挑衅、追逐类 Vehicle Beat 的权重输入，而不是让分发系统长期停摆。</p>
+</div>
+
+<div class="cols">
+  <div class="card card-accent">
+    <h4 style="margin-top:0;color:var(--accent);">高速驾驶 &gt; 80 km/h</h4>
+    <p>导演暂停，计数器冻结。高速本身就是体验——T3底噪与驾驶挑战自给自足，不应被T2打断。</p>
+    <span class="tag tag-red">抽牌暂停</span>
+    <span class="tag tag-red">计数器冻结</span>
+  </div>
+  <div class="card card-green">
+    <h4 style="margin-top:0;color:var(--green);">正常驾驶 &le; 80 km/h</h4>
+    <p>计数器正常运行或从冻结点解冻继续，T2抽牌逻辑正常流转。</p>
+    <span class="tag tag-green">抽牌正常</span>
+    <span class="tag tag-green">计数器运行</span>
+  </div>
+</div>
+
+<div class="card">
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);"><strong>注：</strong>玩法进行中导演停止抽牌，计数器冻结直到玩法结束——避免在任务过程中又触发新的任务。80km/h 阈值可配置，通过 playtest 校准。</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="deck-composition"><span class="num" style="color:var(--text-muted);font-size:16px;">3.3</span>牌组构成（15 张 / 副）</h2>
+
+<table>
+  <thead>
+    <tr><th>玩法名称</th><th>张数</th><th>稀缺度</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>午夜竞速</strong></td>
+      <td>×2</td>
+      <td><span class="tag tag-green">普通</span></td>
+      <td>NPC改装车挑衅，竞速玩法</td>
+    </tr>
+    <tr>
+      <td><strong>恐吓专车</strong></td>
+      <td>×2</td>
+      <td><span class="tag tag-green">普通</span></td>
+      <td>中间人派单，运送特殊乘客</td>
+    </tr>
+    <tr>
+      <td><strong>拦截运钞车</strong></td>
+      <td>×1</td>
+      <td><span class="tag tag-yellow">稀缺</span></td>
+      <td>线人通报情报，高风险高回报</td>
+    </tr>
+    <tr>
+      <td><strong>副驾指挥</strong></td>
+      <td>×2</td>
+      <td><span class="tag tag-green">普通</span></td>
+      <td>NPC拦车上车，给出驾驶指令</td>
+    </tr>
+    <tr>
+      <td><strong>街头接管</strong></td>
+      <td>×2</td>
+      <td><span class="tag tag-green">普通</span></td>
+      <td>路过空旷场地，加入漂移表演</td>
+    </tr>
+    <tr>
+      <td><strong>空牌 — 呼吸节奏</strong></td>
+      <td>×6</td>
+      <td><span class="tag">40% 占比</span></td>
+      <td>玩家零感知，给世界呼吸的空间</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="card">
+  <h4 style="margin-top:0;">牌组机制说明</h4>
+  <ul style="margin-top:0;">
+    <li><strong>弃牌重洗：</strong>抽出后进弃牌堆，打完整副后原样洗回——保证多样性，消灭连续重复</li>
+    <li><strong>消耗周期：</strong>一副牌约 7–15 分钟消耗完，节奏取决于驾驶风格</li>
+    <li><strong>区域配置：</strong>参数可按大区配置——闹市区缩短触发阈值（更密），郊区拉长（更稀）</li>
+    <li><strong>空牌设计意图：</strong>避免每次开车都塞满事件，保留安静驾驶的留白</li>
+  </ul>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="narrative"><span class="num" style="color:var(--text-muted);font-size:16px;">3.4</span>叙事接入方式</h2>
+
+<p>每张牌绑定固定的叙事接入方式（初版单一，后期迭代多变体）。玩家可以无视或拒绝任何接入。</p>
+
+<table>
+  <thead>
+    <tr><th>玩法</th><th>接入触发</th><th>超时处理</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>午夜竞速</strong></td>
+      <td>NPC 改装车闪灯、逼近挑衅</td>
+      <td rowspan="5" style="text-align:center;vertical-align:middle;color:var(--text-muted);">3–5 分钟未触发<br>↓<br>静默作废<br>进弃牌堆</td>
+    </tr>
+    <tr>
+      <td><strong>恐吓专车</strong></td>
+      <td>中间人来电派单</td>
+    </tr>
+    <tr>
+      <td><strong>拦截运钞车</strong></td>
+      <td>线人来电通报情报</td>
+    </tr>
+    <tr>
+      <td><strong>副驾指挥</strong></td>
+      <td>NPC 跑出来拦车，请求上车</td>
+    </tr>
+    <tr>
+      <td><strong>街头接管</strong></td>
+      <td>路过空旷场地，看到有人在漂移</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="card card-yellow">
+  <p style="margin-bottom:0;font-size:13px;"><strong>待触发状态：</strong>抽牌后进入"待触发"等待状态，系统寻找合适的时机与位置呈现接入。玩家可以直接无视——世界不会等他。</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="consequence"><span class="num">04</span>修饰器系统</h2>
+
+<p>修饰器在抽牌逻辑之上叠加，让同一张牌在不同情境下产生不同结果——是多样性的乘法器。</p>
+
+<h3>后果修饰器（玩法完成后触发）</h3>
+
+<p>每张 T2 牌附带 1–2 个预设后果模板，按条件 / 概率触发。本质是：<strong>你的行为有后果，惩罚来自世界规则本身。</strong></p>
+
+<div class="timeline">
+  <div class="step">
+    <div class="step-title">拦截运钞车 完成</div>
+    <div class="step-desc">后果触发：警方追缉升级 / 第三方势力截胡</div>
+  </div>
+  <div class="step">
+    <div class="step-title">午夜竞速 获胜</div>
+    <div class="step-desc">后果触发：对手带人来找场子报复</div>
+  </div>
+  <div class="step">
+    <div class="step-title">恐吓专车 完成</div>
+    <div class="step-desc">后果触发：乘客报警 / 乘客是某势力的人</div>
+  </div>
+  <div class="step">
+    <div class="step-title">街头接管 高 combo</div>
+    <div class="step-desc">后果触发：围观人群情绪失控，演变为冲突</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="zone"><span class="num" style="color:var(--text-muted);font-size:16px;">4.2</span>区域修饰器（抽牌时叠加）</h2>
+
+<p>全城 5–8 个大区，每个大区挂载互斥标签。抽牌时系统读取当前大区标签，影响遭遇规则的表现参数。</p>
+
+<table>
+  <thead>
+    <tr><th>标签</th><th>区域类型</th><th>影响规则</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="tag tag-red">law_heavy</span></td>
+      <td>执法密集区</td>
+      <td>警方响应快、巡逻密、通缉升级快</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-yellow">gang_turf</span></td>
+      <td>帮派地盘</td>
+      <td>NPC 势力可能主动介入玩法</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-blue">commercial</span></td>
+      <td>商业区</td>
+      <td>平民密度高、目击报警概率高、交通拥堵</td>
+    </tr>
+    <tr>
+      <td><span class="tag">industrial</span></td>
+      <td>工业区</td>
+      <td>人少目击低、道路封闭易被堵</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-purple">highway</span></td>
+      <td>高速 / 主干道</td>
+      <td>追逐空间大但无掩体，速度门控频繁触发</td>
+    </tr>
+    <tr>
+      <td><span class="tag tag-green">residential</span></td>
+      <td>居民区</td>
+      <td>无修饰基准区，各项参数默认值</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="walkthrough"><span class="num">05</span>10 分钟驾驶体验 — 走查</h2>
+
+<p>以下是一个具体场景，说明这套系统跑起来实际是什么感觉。路线：<em>residential → commercial → gang_turf</em>。</p>
+
+<div class="timeline">
+  <div class="step">
+    <div class="step-title">00:00 &nbsp;<span class="tag">出发</span> <span class="tag">residential 区</span></div>
+    <div class="step-desc">从公寓停车场驶出，夜晚的居民区路灯昏黄。<strong>Deck 计数器开始计时。</strong>此刻导演层静默，只有城市本底音效。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">00:45 &nbsp;<span class="tag tag-green">T3</span> 环境底噪</div>
+    <div class="step-desc">路边施工区的雪糕筒排成一列。方向盘一压，连续碾过五个，<strong>combo×5</strong>。物理碎片飞溅，短促的爽快感。Deck 计数器没有受影响，继续走。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">01:30 &nbsp;<span class="tag tag-red">速度门控</span> 导演暂停</div>
+    <div class="step-desc">上了高架，油门踩到底。<strong>车速越过 80km/h，Deck 计数器冻结。</strong>高架路段没有 T2 打扰——只有风声、引擎嘶吼、和快速后退的路灯。纯粹的驾驶时刻。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">03:10 &nbsp;<span class="tag">下高架</span> 导演恢复</div>
+    <div class="step-desc">下匝道减速，车速降到 60km/h。<strong>计数器从冻结点解冻，继续计数。</strong>进入 commercial 区，街道变得嘈杂，行人密度升高。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">04:00 &nbsp;<span class="tag">空牌</span> 玩家无感知</div>
+    <div class="step-desc">计数器触发，<strong>后台抽出一张空牌。</strong>什么都没有发生。玩家只是继续开着车穿过夜市，感受着这个城市存在着的重量。世界不需要每一秒都塞满事件。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">05:30 &nbsp;<span class="tag tag-red">T2</span> 抽出「恐吓专车」</div>
+    <div class="step-desc"><strong>手机震动，屏幕亮起。</strong>一个失真的电子音传来："有个活儿，老规矩，专车接单。"任务提示低调出现在 HUD 角落。玩家可以接也可以无视——系统给出 3 分钟窗口。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">06:00 &nbsp;<span class="tag tag-red">T2</span> 玩法进行中，计数器冻结</div>
+    <div class="step-desc">玩家接单，前往指定地点接到目标乘客。<strong>任务开始，Deck 计数器冻结。</strong>乘客坐上车，开始絮叨，偶尔用低沉的语气"提示"玩家该怎么开。玩法持续约 2 分钟。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">08:10 &nbsp;<span class="tag tag-yellow">后果</span> 修饰器触发</div>
+    <div class="step-desc">送达完成，乘客下车。<strong>30 秒后，警方无线电频道传来噪音——乘客报警了。</strong>commercial 区的 law_heavy 叠加修饰：响应时间比平时短了一半，巡逻车已经在附近。世界的反应是自然的，不是脚本的。</div>
+  </div>
+  <div class="step">
+    <div class="step-title">09:20 &nbsp;<span class="tag tag-green">区域切换</span> gang_turf</div>
+    <div class="step-desc">为了甩掉追踪，玩家钻进一条后巷。<strong>不知不觉越界进入 gang_turf 区。</strong>区域修饰器切换——下一张 T2 牌抽到时，帮派 NPC 有概率主动介入。Deck 计数器已解冻，重新走起来。</div>
+  </div>
+</div>
+
+<div class="card card-accent">
+  <p style="margin-bottom:0;">整个 10 分钟里，玩家<strong>没有看到任何"遭遇随机化"的系统提示</strong>。他们只是感受到这个城市在对自己做出反应——这正是 Deck 系统的核心价值。</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="dependencies"><span class="num">06</span>实现依赖 — 沟通项</h2>
+
+<p>以下系统为 Deck 框架的前置依赖，需确认可用性或排期。</p>
+
+<div class="card">
+  <h4 style="margin-top:0;">电话 / 通讯系统 &nbsp;<span class="tag tag-yellow">待沟通</span></h4>
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);">T2 接入的主要渠道（来电派单、线人通报）</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-top:0;">NPC 动态生成系统 &nbsp;<span class="tag tag-yellow">待沟通</span></h4>
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);">T2 接入需要 NPC 在合适位置出现（拦车、挑衅、上车）</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-top:0;">区域标签系统 &nbsp;<span class="tag tag-yellow">待沟通</span></h4>
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);">地图大区划分 + 标签管理（law_heavy / gang_turf 等）</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-top:0;">世界叙事 / 注入队列 &nbsp;<span class="tag tag-yellow">待沟通</span></h4>
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);">T1 事件的推送通道（Inject Queue）</p>
+</div>
+
+<div class="card">
+  <h4 style="margin-top:0;">T3 物件布设工具 &nbsp;<span class="tag tag-yellow">待沟通</span></h4>
+  <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);">关卡设计师放置环境交互物件的编辑器支持</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="risks"><span class="num">07</span>风险与兜底</h2>
+
+<div class="cols">
+  <div>
+    <div class="card card-accent">
+      <h4 style="margin-top:0;color:var(--accent);">风险</h4>
+      <p style="margin-bottom:0;font-size:13px;">节奏太密或太稀，体验失衡</p>
+    </div>
+    <div class="card card-accent">
+      <h4 style="margin-top:0;color:var(--accent);">风险</h4>
+      <p style="margin-bottom:0;font-size:13px;">某类玩法不受玩家欢迎</p>
+    </div>
+    <div class="card card-accent">
+      <h4 style="margin-top:0;color:var(--accent);">风险</h4>
+      <p style="margin-bottom:0;font-size:13px;">后果修饰器感觉太突兀或太频繁</p>
+    </div>
+    <div class="card card-accent">
+      <h4 style="margin-top:0;color:var(--accent);">风险</h4>
+      <p style="margin-bottom:0;font-size:13px;">早期 80km/h 速度门控会让分发停摆</p>
+    </div>
+    <div class="card card-accent">
+      <h4 style="margin-top:0;color:var(--accent);">风险</h4>
+      <p style="margin-bottom:0;font-size:13px;">待触发超时导致遭遇感觉消失</p>
+    </div>
+  </div>
+  <div>
+    <div class="card card-green">
+      <h4 style="margin-top:0;color:var(--green);">兜底</h4>
+      <p style="margin-bottom:0;font-size:13px;">距离阈值（800–1200m）和时间阈值（60–90s）均为可配置参数，可以热调，无需重新发版</p>
+    </div>
+    <div class="card card-green">
+      <h4 style="margin-top:0;color:var(--green);">兜底</h4>
+      <p style="margin-bottom:0;font-size:13px;">牌组构成可调整，增减特定玩法牌的数量，甚至可以按区域做差异化配置</p>
+    </div>
+    <div class="card card-green">
+      <h4 style="margin-top:0;color:var(--green);">兜底</h4>
+      <p style="margin-bottom:0;font-size:13px;">后果修饰器有独立的概率控制，可以向下调整触发率，不影响主玩法逻辑</p>
+    </div>
+    <div class="card card-green">
+      <h4 style="margin-top:0;color:var(--green);">兜底</h4>
+      <p style="margin-bottom:0;font-size:13px;">当前改为速度状态权重输入，不再用固定阈值冻结分发</p>
+    </div>
+    <div class="card card-green">
+      <h4 style="margin-top:0;color:var(--green);">兜底</h4>
+      <p style="margin-bottom:0;font-size:13px;">超时时间可调（3–5 分钟窗口），也可以按牌类型差异化设置，稀缺牌给更长窗口</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="roadmap"><span class="num">08</span>迭代路线图</h2>
+
+<div class="timeline">
+  <div class="step current">
+    <div class="step-title">Phase 1 — 核心 Deck 框架 &nbsp;<span class="tag tag-yellow">早期方案</span></div>
+    <div class="step-desc">
+      核心 Deck 抽牌逻辑 / 5 种 T2 玩法接入 / 空牌呼吸机制 / 距离 + 时间混合触发 / 弃牌重洗；速度门控冻结已在后续 MVP 中修正为速度状态权重输入
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-title">Phase 2 — 修饰器与区域化</div>
+    <div class="step-desc">
+      后果修饰器系统 / 区域标签系统 / 大区差异化参数配置
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-title">Phase 3 — 牌组高级特性</div>
+    <div class="step-desc">
+      洗牌变异 / 加权抽取 / 玩法历史感知
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-title">远期 — 系统深度扩展</div>
+    <div class="step-desc">
+      速度专属卡池 / T3 路段模板随机化 / T2 多种接入变体 / 大世界状态修饰系统
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<h2 id="reference"><span class="num">09</span>参考案例</h2>
+
+<div class="card card-blue">
+  <h4 style="margin-top:0;color:var(--blue);">Ghost of Tsushima — Dynamic Encounters Deck System</h4>
+  <p>对马岛之魂使用卡牌隐喻管理骑马旅途中的遭遇分发，已在商业产品中验证有效。其核心设计与本方案高度同源，是最直接的参考案例。</p>
+  <ul style="margin-bottom:0;">
+    <li>卡牌隐喻管理旅途遭遇分发，逻辑清晰可控</li>
+    <li>骑马移动时按距离 / 时间触发抽牌，与本方案机制相同</li>
+    <li>空牌保证呼吸节奏，避免事件轰炸</li>
+    <li>弃牌堆机制保证多样性，消灭重复感</li>
+    <li>注入队列允许世界事件（主线 / 叙事）插入 Deck</li>
+    <li>已在 AAA 商业产品中成功落地并获得正向玩家反馈</li>
+  </ul>
+</div>
+
+<!-- ────────── FOOTER ────────── -->
+<div class="doc-footer">
+  <div class="status">
+    <span class="status-dot"></span>
+    <span>ACTIVE — 方案状态</span>
+  </div>
+  <div>2026-03-30</div>
+</div>
+
+</main>
+
+<script>
+const navLinks = document.querySelectorAll('#nav a');
+const sections = [];
+navLinks.forEach(a => {
+  const id = a.getAttribute('href')?.slice(1);
+  if (id) sections.push({ id, el: document.getElementById(id), link: a });
+});
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY + 120;
+  let current = sections[0];
+  for (const s of sections) {
+    if (s.el && s.el.offsetTop <= scrollY) current = s;
+  }
+  navLinks.forEach(a => a.classList.remove('active'));
+  if (current) current.link.classList.add('active');
+});
+</script>
+
+</body>
+</html>

@@ -104,6 +104,66 @@ _Avoid_: flavor text, fake branching, LLM-only narration
 The AI-native design opportunity where LLMs make previously expensive or brittle player desires more playable, such as complex stealth plans that traditional games often compress into fixed buttons or scripted routes.
 _Avoid_: AI novelty, content generation at scale, generic immersion
 
+**Formulaic Open World Problem（公式化大世界问题）**:
+The portfolio-facing problem behind **Vehicle Deck Director**: authored open-world content can feel like repeated static triggers when event timing, location, context, and consequences do not respond to the player's current behavior.
+_Avoid_: lack of content, random mission spawning, generic immersion problem
+
+**Vehicle Beat（载具 Beat）**:
+A structured T2 vehicle-play event contract in **Vehicle Deck Director**: a playable event grammar with required context, entry signal, modifiers, acceptance/ignore handling, active encounter logic, and result feedback. In the broader system, a **Vehicle Beat（载具 Beat）** is selected after semantic suitability analysis and Director policy filtering, not by blind random draw alone.
+_Avoid_: instant mission trigger, raw card draw, LLM-generated quest, concrete task name as the whole design unit
+
+**T2 Vehicle Beat Layer（T2 载具 Beat 层）**:
+The main showcase layer for **Vehicle Deck Director** because it has the structure needed for distribution: trigger conditions, entry signal, player choice, gameplay objective, active feedback, and success/failure/ignore outcomes. Concrete events such as midnight race, intimidation ride, armored heist, and copilot command should be examples inside event pools, not the whole point of the case.
+_Avoid_: isolated mission list, generic side quest, flat gameplay case catalog, T3-style sensory interaction
+
+**Semantic-Gated Beat Director（语义门控 Beat 导演系统）**:
+The intended broader structure for **Vehicle Deck Director**: structured world tags and player state are first analyzed for Beat suitability; Director policy then applies cooldown, repetition, intensity, blank-beat, and pacing constraints; only then does the system select from qualified Beat and event pools.
+_Avoid_: pure random encounter deck, LLM-only mission generation, always-pick-best semantic matching
+
+**Pure Deck Simulation MVP（纯 Deck 模拟 MVP）**:
+The current 2D demo mode for **Vehicle Deck Director** when no real LLM Director is connected. It uses Deck draw, rules, and mock recommendations to approximate the distribution loop, but it should not be presented as the final LLM-enabled system architecture.
+_Avoid_: final architecture, proof that random draw is the core value, pretending LLM is already driving selection
+
+**Vehicle Production Scope（载具项目生产范围）**:
+The truthful production-facing scope behind the portfolio case: planning the open-world vehicle gameplay hierarchy across T3/T2/T1 and pushing selected vehicle gameplay cases forward in an actual project context. It should not imply that the full semantic Deck/Director distribution system has already been implemented in production.
+_Avoid_: claiming production implementation of the LLM Director, presenting personal prototypes as shipped project systems, vague "I built the whole system"
+
+**Personal Distribution Prototype（个人分发验证原型）**:
+The personal prototype scope behind **Vehicle Deck Director**: using a 2D MVP, Director Lab, and LLM-assisted reasoning to test player-centered vehicle event distribution, semantic Beat selection, and rule-bounded orchestration. It extends thinking from production vehicle gameplay planning but remains a validation prototype.
+_Avoid_: production feature, shipped AI system, purely speculative design without prototype evidence
+
+**LLM Orchestration Advisory Layer（LLM 编排建议层）**:
+The LLM-facing layer in the intended **Vehicle Deck Director** system: it reads structured player/world context and recommends suitable **Vehicle Beat（载具 Beat）** categories and orchestration reasons. Director policy decides whether to accept the recommendation, while the concrete event remains selected or instantiated inside approved event pools and deterministic rule boundaries.
+_Avoid_: autonomous world editing, freeform quest generation, LLM as final authority
+
+**Connected District MVP（连通城区 MVP）**:
+The map boundary for the current **Vehicle Deck Director** MVP: a bounded but meaningfully drivable city district built around connected road loops, clear city edges, wide readable roads, POIs, alleys, traffic lanes, and presentation anchors for **Vehicle Beat（载具 Beat）** signals. It should support continuous cruising without frequent dead ends or empty off-map driving.
+_Avoid_: tiny intersection demo, infinite procedural city proof, decorative map, generic driving arena, POI-only semantic map
+
+**Vehicle Beat Families（载具 Beat 事件族）**:
+The four T2 event families used by **Vehicle Deck Director**: discovery opportunity, request entry, confrontation pressure, and escort/delivery. They adapt the older sandbox quest Beat approach to vehicle-centered open-world play.
+_Avoid_: unrelated minigame list, flat random card pool, one-off mission types
+
+**T1 Systemic Vehicle Challenge（T1 系统级载具挑战）**:
+The rare top-tier vehicle-play chapter in **Vehicle Deck Director**. It calls on T3 physical interactions and T2 gameplay modules to organize a complete high-pressure experience arc, but it is not a normal random card in the distribution pool and should not be framed as simply "a bigger T2 event."
+_Avoid_: frequent random event, upgraded T2 card, accidental emergent mission, ordinary task chain
+
+**T3 Vehicle Sensory Layer（T3 载具感官层）**:
+The atomic physical interaction layer in **Vehicle Deck Director**: low-friction, 1-10 second driving feedback such as rhythmic destruction, mischief, shortcuts, impact, and environmental response. T3 should not enter the event deck as a task; it can be read as environmental/physical semantics that modify or support T2/T1 play.
+_Avoid_: mission card, pushed quest, standalone objective loop, LLM-generated event
+
+**Vehicle Beat Access Modes（载具 Beat 接入模式）**:
+The two entry patterns for T2 vehicle events in **Vehicle Deck Director**: player-initiated beats that the player accepts from a contact, POI, or pickup point before gameplay starts, and world-initiated beats that appear in the world first and pressure, chase, challenge, or interrupt the player without requiring the same initial accept step.
+_Avoid_: one universal press-E signal, all events as pop-up missions, hidden random start
+
+**District Traversal Boundary（城区通行边界）**:
+The movement boundary for **Connected District MVP（连通城区 MVP）**: leaving a road is allowed and can remain part of vehicle play, but leaving the authored district boundary is not allowed. Off-road state should influence which **Vehicle Beat（载具 Beat）** is suitable, rather than shutting down the Director entirely.
+_Avoid_: empty off-map driving, universal off-road lockout, road-only driving simulation
+
+**District Layout Source of Truth（城区布局源事实）**:
+The single authored data file for the **Vehicle Deck Director** MVP map. Roads, blocked buildings, POIs, player spawn, NPC spawn lanes, and event anchors must come from this layout data instead of being hard-coded separately in rendering, collision, director logic, or traffic spawning.
+_Avoid_: visual-only map editor, duplicated map constants, hard-coded semanticDistrictDef
+
 ## Relationships
 
 - **Document as Source of Truth** is the public-facing wording for **Design Source of Truth**.
@@ -128,6 +188,20 @@ _Avoid_: AI novelty, content generation at scale, generic immersion
 - **Spindle Experience Line（纺锤体体验线）** is the experience shape produced by that three-layer structure: natural-language planning opens the middle of the experience, while deterministic rules and designed endpoints preserve authored control.
 - **Credible Intermediate State（可信中间状态）** is how the widened middle of a **Spindle Experience Line（纺锤体体验线）** avoids feeling formulaic: the player sees plans partially succeed, fail for legible reasons, change NPC/world state, and create new next-step decisions.
 - **Recovered Play Sweet Spot（被重新做回来的玩法甜区）** explains why **LLM Director Hitman** exists as an AI-native experiment rather than a generic AI feature: it uses LLMs to recover complex player planning that traditional stealth/sandbox missions often flatten into preset buttons.
+- **Vehicle Deck Director** addresses the **Formulaic Open World Problem（公式化大世界问题）** by combining structured content (**Vehicle Beat（载具 Beat）**), pacing/distribution control (Deck and Director), and semantic prioritization (**LLM Orchestration Advisory Layer（LLM 编排建议层）**).
+- **Vehicle Production Scope（载具项目生产范围）** and **Personal Distribution Prototype（个人分发验证原型）** must remain distinct in the portfolio: production work covers the vehicle gameplay hierarchy and selected case advancement; the player-centered Deck/LLM distribution system is an ongoing personal validation prototype.
+- **Semantic-Gated Beat Director（语义门控 Beat 导演系统）** is the preferred explanation for why the design still uses Deck/Beat thinking in an LLM-enabled context: the project learns the controlled-distribution principle behind encounter decks, not the blind random draw form.
+- In the intended system, **LLM Orchestration Advisory Layer（LLM 编排建议层）** recommends suitable Beat categories; Director policy handles cooldown, repetition, intensity, and blank-beat pacing; concrete events are selected or instantiated within approved event pools and rule boundaries.
+- In the current 2D **Pure Deck Simulation MVP（纯 Deck 模拟 MVP）**, Deck draw and mock recommendations stand in for the missing LLM Director so the distribution loop remains testable without claiming final architecture parity.
+- The broader **Vehicle Deck Director** case may discuss deeper LLM participation as a system direction, as long as authored design boundaries and deterministic execution remain explicit.
+- **Connected District MVP（连通城区 MVP）** makes **Vehicle Beat（载具 Beat）** signals legible by giving events concrete POI, road, vehicle, and region context while also providing enough connected driving space for cruising, pursuit, and route choice.
+- **Vehicle Beat Families（载具 Beat 事件族）** keeps the T2 layer expandable: existing cards such as midnight race, intimidation ride, armored heist, and copilot command should map into discovery, request, confrontation, or escort/delivery rather than remaining isolated minigames.
+- **T2 Vehicle Beat Layer（T2 载具 Beat 层）** is the main showcase scope because it is structured enough to be selected, filtered, accepted, ignored, executed, and resolved; individual T2 events should serve as examples of the layer rather than the case's primary claim.
+- **T1 Systemic Vehicle Challenge（T1 系统级载具挑战）** sits above the T2 distribution layer: it can use T3 interactions and T2 modules, but its design purpose is a complete rare challenge arc rather than routine event distribution.
+- **T3 Vehicle Sensory Layer（T3 载具感官层）** sits below the T2 distribution layer: it should be authored into roads, POIs, and physical affordances rather than pushed as a mission, while still providing semantic context and possible solutions for T2/T1.
+- **Vehicle Beat Access Modes（载具 Beat 接入模式）** prevents every T2 event from feeling like the same pop-up. Delivery, pickup, and intimidation rides are player-initiated; street races, police interception, gang retaliation, and similar pressure events are world-initiated.
+- **District Traversal Boundary（城区通行边界）** means the Director can continue while the player is off-road inside the authored district, but Beat suitability must account for road state; a street race may be inappropriate off-road, while recovery, pursuit pressure, or opportunistic encounters may still be valid.
+- **District Layout Source of Truth（城区布局源事实）** is required before improving the next playable MVP, because roads, buildings, NPC traffic, POI queries, and event anchors must agree on what space is actually drivable and meaningful.
 
 ## Example dialogue
 

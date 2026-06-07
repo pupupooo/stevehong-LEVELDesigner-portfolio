@@ -871,7 +871,7 @@
             <strong>Agentic tool-use 的第一阶段</strong>
             <p><span class="boundary-label">LLM 负责</span>理解玩家的目标、约束、风格和风险偏好，挑选并组合 Layer 02 暴露的合法工具，把 actor、目标对象和意图写进 `DirectorPlan`。</p>
             <p style="margin-top: 16px;"><span class="boundary-label">固定规则负责</span>ToolRegistry、actor 权限、前置条件、可执行前沿、WorldState 提交、GameEvent 生成和 turn 末 `tickWorld()`。摄像头、电力、NPC 反应、警觉和目标状态都由规则结算。</p>
-            <p style="margin-top: 16px;"><span class="boundary-label">验证范围</span>当前原型主要完成“一次计划生成 toolChain，规则逐步执行”的验证；下一步目标是推进 `observe -> choose tool -> execute -> observe` 的连续 agentic loop。</p>
+            <p style="margin-top: 16px;"><span class="boundary-label">验证范围</span>当前原型完成“一次计划生成 toolChain，规则逐步执行”的验证；连续 `observe -> choose tool -> execute -> observe` 属于扩展方向。</p>
           </div>
         </div>
       </div>
@@ -962,7 +962,7 @@
         <div class="section-head">
           <div class="section-kicker">TWO SCALES</div>
           <h2 class="section-title">同一命题的两个尺度。</h2>
-          <p class="section-lead">`LLM Director Hitman` 验证一个小切片内的计划、工具和演出闭环；《沙盒开放世界任务设计》会把同一命题推到更宏观的任务系统尺度。</p>
+          <p class="section-lead">`LLM Director Hitman` 验证一个小切片内的计划、工具和演出闭环；《大世界载具玩法设计与事件导演系统设计》承接同一命题，放到城市开放世界的事件分发尺度。</p>
         </div>
         <div class="scale-grid">
           <article class="scale-card">
@@ -971,9 +971,9 @@
             <p>小切片、强约束、可运行。验证自然语言计划如何进入规则、状态和演出，让一个有限任务通过可信中间状态变得不公式化。</p>
           </article>
           <article class="scale-card">
-            <div class="node-index">Macro System</div>
-            <h3>沙盒开放世界任务设计</h3>
-            <p>更宏观的开放世界任务探索。关注有限世界内容如何通过导演调度、随机时空触发和反公式化任务结构，减少清单式体验。</p>
+            <div class="node-index">Open World Scale</div>
+            <h3>大世界载具玩法设计与事件导演系统设计</h3>
+            <p>更宏观的开放世界事件分发探索。关注有限玩法内容如何通过清晰玩法边界、导演规则、语义推荐和世界响应，减少公式化撒点体验。</p>
           </article>
         </div>
       </div>
@@ -982,10 +982,10 @@
     <section class="section alt">
       <div class="section-inner boundary-panel">
         <div class="boundary-copy">
-          <div class="section-kicker">BOUNDARY / NEXT</div>
-          <h2>当前目标是验证可控 AI 玩法体验。</h2>
+          <div class="section-kicker">BOUNDARY</div>
+          <h2>验证范围：有限任务内的可控 AI 玩法体验。</h2>
           <p>这个切片聚焦一个任务、一个场景和有限终点。它的价值在于证明自然语言计划可以进入规则、状态与演出，形成可观察的世界反馈。</p>
-          <p>下一步会回到《沙盒开放世界任务设计》，把同一套语言推到更宏观的开放世界任务尺度。</p>
+          <p>《大世界载具玩法设计与事件导演系统设计》承接同一套“LLM 提建议、规则层执行”的语言，讨论更宏观的城市驾驶与事件分发尺度。</p>
         </div>
         <div class="note-panel">
           <strong>Project entry</strong>
