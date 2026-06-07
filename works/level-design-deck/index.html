@@ -563,6 +563,86 @@
       line-height: 1.55;
     }
 
+    .storyboard-proof {
+      margin-top: 56px;
+      padding-top: 34px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .storyboard-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .storyboard-head h3 {
+      max-width: 680px;
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .storyboard-head p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+
+    .storyboard-flow {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .storyboard-step {
+      border-top: 3px solid var(--accent);
+      padding-top: 16px;
+    }
+
+    .storyboard-step .step-num {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+
+    .storyboard-step h4 {
+      margin-top: 10px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .storyboard-step p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.72;
+    }
+
+    .quality-notes {
+      margin-top: 34px;
+      padding-top: 26px;
+      border-top: 1px solid var(--line-dark);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .quality-note h4 {
+      font-size: 18px;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .quality-note p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
     .status-grid {
       margin-top: 44px;
       display: grid;
@@ -717,6 +797,12 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .storyboard-head,
+      .storyboard-flow,
+      .quality-notes {
+        grid-template-columns: 1fr;
+      }
+
       .image-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -787,17 +873,17 @@
           <div>
             <div class="eyebrow">PROJECT / AI ASSISTED DESIGN TOOLING</div>
             <h1>level-design-deck：AI 辅助关卡设计工作流</h1>
-            <p class="subtitle">从设计源事实出发，把设计意图转化为可检查、可派生、可展示的结构化产物。</p>
-            <p class="bridge">Level Agent v0.45 之后的一次更具体落地：先跑通设计源事实、机械检查和派生产物，再逐步接入职能接口、项目知识与原型能力。</p>
+            <p class="subtitle">把剧本、关卡流程、空间布局和职能需求整理成结构化设计记录，再生成可检查、可展示、可交付的产物。</p>
+            <p class="bridge">一个面向关卡策划的 AI 工作台：把脚本、关卡关键节点、空间布局和职能需求整理成结构化设计文件，再生成标准文档、分镜、Deck 与检查报告。</p>
             <div class="actions">
-              <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">查看 WebApp 项目</a>
+              <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">查看项目代码</a>
             </div>
           </div>
 
           <div class="framework" id="framework">
             <div class="control-band">
-              <h2>人的设计主导覆盖全流程</h2>
-              <p>批准门是human-in-the-loop的设计思考，在关键节点保持设计判断权。</p>
+              <h2>关键判断仍由设计师确认</h2>
+              <p>AI 负责整理、检查和生成初稿；体验判断、职能边界和最终交付由设计师确认。</p>
             </div>
             <div class="flow">
               <div class="flow-node">
@@ -807,8 +893,8 @@
               </div>
               <div class="flow-node">
                 <span class="node-index">02</span>
-                <div class="node-title">设计源事实</div>
-                <div class="node-desc">用结构化 spec 保存意图、关系、字段和跨模块引用。</div>
+                <div class="node-title">结构化记录</div>
+                <div class="node-desc">用结构化设计文件保存意图、关系、字段和跨模块引用。</div>
               </div>
               <div class="flow-node">
                 <span class="node-index">03</span>
@@ -817,13 +903,13 @@
               </div>
               <div class="flow-node">
                 <span class="node-index">04</span>
-                <div class="node-title">派生产物</div>
+                <div class="node-title">输出产物</div>
                 <div class="node-desc">长文档、Deck、检查报告和后续职能接口材料。</div>
               </div>
             </div>
             <div class="hero-shot">
               <img src="images/webapp-current-spec.webp" alt="level-design-deck Web UI 四栏工作台截图">
-              <div class="caption mono">CURRENT PROOF / warning panel + schema form + preview + chat</div>
+              <div class="caption mono">CURRENT PROOF / 告警栏 + 结构化表单 + 预览 + 对话侧栏</div>
             </div>
           </div>
         </div>
@@ -837,10 +923,10 @@
           <div class="two-goals">
             <div class="goal-block">
               <h3>降低文档事务负担</h3>
-              <p>设计师不应该把大量时间消耗在重复整理格式、拆分汇报材料、复制字段、维护多份文档一致性上。设计源事实稳定后，文档和 Deck 应该从同一份结构化记录派生出来。</p>
+              <p>设计师不应该把大量时间消耗在重复整理格式、拆分汇报材料、复制字段、维护多份文档一致性上。结构化记录稳定后，文档和 Deck 应该从同一份内容生成。</p>
               <div class="tag-row">
-                <span class="tag">spec.json 真源</span>
-                <span class="tag">schema-driven 编辑</span>
+                <span class="tag">结构化设计文件</span>
+                <span class="tag">表单化编辑</span>
                 <span class="tag">自动渲染</span>
               </div>
             </div>
@@ -866,17 +952,17 @@
           <div class="examples">
             <article class="example-panel">
               <div class="section-kicker">EXAMPLE 01</div>
-              <h3>玩法原型接口：GD 到 TD/GPP 标准文档</h3>
-              <p>当前流程通常是 GD 写玩法需求，TD 根据需求实现玩法原型组件，GD 再组装调试；原型过审后再转正式需求，由 GPP 开发正式功能。每一层都可能发生重新解释和反复沟通。</p>
+              <h3>玩法原型接口：从玩法需求到实现说明</h3>
+              <p>当前流程通常是策划写玩法需求，原型实现同事根据需求制作组件，策划再组装调试；原型过审后还要转成正式开发说明。每一层都可能发生重新解释和反复沟通。</p>
               <div class="process-list">
-                <div class="process-step">TD/GPP 共同维护长期更新的项目专属蓝图 MCP，沉淀可复用蓝图组件、实现模式、项目约束和接口要求。</div>
-                <div class="process-step">GD 在 design deck 中完成玩法设计后，工具根据蓝图 MCP 的接口要求生成 GD 到 TD/GPP 标准文档。</div>
-                <div class="process-step">实现同事不再从宽泛设计文档中反推需求，而是审核标准文档，监管 AI Agent 调用项目专属蓝图 MCP，并在关键节点确认实现逻辑。</div>
-                <div class="process-step">纯原型阶段可以进一步压缩链路：GD 调用经过验证的蓝图能力完成可审查原型，再由接口层转译为 GPP 需要的正式开发信息。</div>
+                <div class="process-step">由实现同事维护项目专属蓝图能力库，沉淀可复用组件、实现模式、项目约束和接口要求。</div>
+                <div class="process-step">策划在工作台中完成玩法设计后，工具根据蓝图能力库的接口要求生成标准实现说明。</div>
+                <div class="process-step">实现同事不再从宽泛设计文档中反推需求，而是审核标准说明，并在关键节点确认实现逻辑。</div>
+                <div class="process-step">纯原型阶段可以进一步压缩链路：策划调用经过验证的蓝图能力完成可审查原型，再由接口层转译为正式开发信息。</div>
               </div>
               <div class="tag-row">
-                <span class="tag">项目专属蓝图 MCP</span>
-                <span class="tag">GD -> TD/GPP</span>
+                <span class="tag">项目蓝图能力库</span>
+                <span class="tag">玩法需求 -> 实现说明</span>
                 <span class="tag">关键逻辑审核</span>
               </div>
             </article>
@@ -884,10 +970,10 @@
             <article class="example-panel">
               <div class="section-kicker">EXAMPLE 02</div>
               <h3>灯光接口文件</h3>
-              <p>这个示例的目的：当关卡策划填写设计源事实时，工具可以根据”灯光开始工作需要什么信息”提前检查缺口。</p>
+              <p>这个示例的目的：当关卡策划填写结构化设计记录时，工具可以根据”灯光开始工作需要什么信息”提前检查缺口。</p>
               <div class="interface-grid">
                 <div class="interface-item">
-                  <h4>已有源事实</h4>
+                  <h4>已有信息</h4>
                   <p>区域功能、情绪曲线、时间段、关键视线、危险/安全区域、重点事件节点。</p>
                 </div>
                 <div class="interface-item">
@@ -911,35 +997,83 @@
       <section class="section" id="proof">
         <div class="section-inner">
           <div class="section-kicker">CURRENT PROOF</div>
-          <h2 class="section-title">当前版本已经从单文件编辑器，推进到 Web UI + 本地 daemon 的工作台雏形。</h2>
-          <p class="section-lead">`level-design-deck` 先跑通了 spec 真源、schema 驱动编辑、机械校验、跨模块检查和多种派生产物；当前的 WebApp 版本继续把它推进到更接近产品形态的四栏工作台：告警、表单、预览与 Chat 并存。</p>
+          <h2 class="section-title">当前版本已经从单文件编辑器，推进到网页版工作台雏形。</h2>
+          <p class="section-lead">`level-design-deck` 已经能把关卡设计拆成结构化设计文件，提供表单编辑、机械校验、跨模块检查，并生成文档、Deck、分镜和检查报告；当前网页版工作台把告警、表单、预览和对话侧栏放在同一页面里。</p>
 
           <div class="demo-video">
             <video controls preload="metadata" playsinline>
               <source src="media/tutorial-video.mp4" type="video/mp4">
             </video>
             <div class="demo-copy">
-              <h3>WebApp 最新交互演示</h3>
-              <p>这段演示记录了当前 WebApp 的一次交互迭代：气泡图视图已经可以和结构化表单联动，点击节点后自动定位到对应字段，并支持在同一工作台里完成查看、编辑、保存与重新渲染。</p>
+              <h3>网页版工作台交互演示</h3>
+              <p>这段演示记录了当前工作台的一次交互迭代：流程图视图已经可以和结构化表单联动，点击节点后自动定位到对应字段，并支持在同一工作台里完成查看、编辑、保存与重新渲染。</p>
             </div>
           </div>
 
           <div class="image-grid">
             <div class="image-tile">
-              <img src="images/webapp-current-spec.webp" alt="WebApp 四栏工作台截图">
-              <div>Web UI 把告警栏、schema 表单、HTML 预览和 Chat 放到同一工作台里，设计师不必在命令行、编辑器和浏览器之间来回切换。</div>
+              <img src="images/webapp-current-spec.webp" alt="网页版四栏工作台截图">
+              <div>网页版工作台把告警栏、结构化表单、HTML 预览和对话侧栏放到同一页面里，设计师不必在命令行、编辑器和浏览器之间来回切换。</div>
             </div>
             <div class="image-tile">
-              <img src="images/img_editor_form.webp" alt="schema-driven 表单编辑截图">
-              <div>表单由 schema 驱动生成，字段存在与否回到结构定义，而不是在 HTML 里自由发挥。</div>
+              <img src="images/img_editor_form.webp" alt="结构化表单编辑截图">
+              <div>表单由结构定义生成，字段存在与否回到设计文件本身，而不是在 HTML 里自由发挥。</div>
             </div>
             <div class="image-tile">
               <img src="images/img_check_pass.webp" alt="机械检查通过截图">
               <div>机械检查优先发现占位、断链、类型越界和跨模块引用问题，AI 自信不能替代硬约束。</div>
             </div>
             <div class="image-tile">
-              <img src="images/img_deck.webp" alt="派生 Deck 截图">
-              <div>同一份设计源事实可以派生为汇报 Deck、长文档和后续接口材料。</div>
+              <img src="images/img_deck.webp" alt="Deck 输出截图">
+              <div>同一份结构化设计记录可以生成汇报 Deck、长文档和后续接口材料。</div>
+            </div>
+          </div>
+
+          <div class="storyboard-proof">
+            <div class="storyboard-head">
+              <div>
+                <div class="section-kicker">STORYBOARD PIPELINE</div>
+                <h3>从故事脚本到可用分镜的 AI 工作流。</h3>
+              </div>
+              <p>这条能力服务于剧本转分镜：把故事脚本、剧情大纲、关卡关键节点、角色参考和场景锚定整理成分镜结构文件，再生成分镜面板、图像生成提示词、反向提示词和关卡调整建议。公开页面只说明机制，不展示真实项目文本。</p>
+            </div>
+
+            <div class="storyboard-flow">
+              <div class="storyboard-step">
+                <div class="step-num">01 / SCRIPT</div>
+                <h4>脚本素材导入</h4>
+                <p>粘贴故事脚本或剧情大纲，保留原始素材供设计师随时回看，避免分镜设计脱离剧本语境。</p>
+              </div>
+              <div class="storyboard-step">
+                <div class="step-num">02 / BEAT MAP</div>
+                <h4>关卡节点映射</h4>
+                <p>从 bubble_diagram 读取节点，把需要视觉化的关键 Beat 生成 panel 骨架，保证分镜仍然服务关卡流程。</p>
+              </div>
+              <div class="storyboard-step">
+                <div class="step-num">03 / ANCHOR</div>
+                <h4>角色与场景锚定</h4>
+                <p>用 characters、scene_anchors、camera_position 和 char_layout 固定角色外观、场景关系、镜头位置与人物站位。</p>
+              </div>
+              <div class="storyboard-step">
+                <div class="step-num">04 / OUTPUT</div>
+                <h4>提示词与建议导出</h4>
+                <p>批量生成图像提示词和反向提示词，导出关卡调整建议，并把 image-2 生成图回填到对应分镜帧。</p>
+              </div>
+            </div>
+
+            <div class="quality-notes">
+              <div class="quality-note">
+                <h4>Schema 限制先行</h4>
+                <p>镜头景别、构图、镜头手法、镜头物理位置、角色空间布局和逐帧反向提示都进入结构定义，字段存在和含义先被固定。</p>
+              </div>
+              <div class="quality-note">
+                <h4>提示词机械质检</h4>
+                <p>生成过程中遇到过“看屏幕”“两人对峙”等场景的透视错误，因此加入视线关系、角色空间关系、场景矛盾和提示词过长检查。</p>
+              </div>
+              <div class="quality-note">
+                <h4>人工确认门</h4>
+                <p>设计师标记待生成、已完成或需重做，必要时回到字段层调整镜头、站位、场景锚点或反向提示，减少盲目堆提示词。</p>
+              </div>
             </div>
           </div>
 
@@ -947,31 +1081,35 @@
             <article class="status-card">
               <h3><span class="status-dot"></span>当前已落地</h3>
               <ul>
-                <li>`spec.json` 作为设计源事实</li>
-                <li>React/Vite Web UI + FastAPI 本地 daemon</li>
-                <li>四栏工作台：告警、schema 表单、预览、Chat</li>
-                <li>多种派生产物</li>
+                <li>用结构化设计文件保存关卡设计记录</li>
+                <li>React/Vite 网页界面 + FastAPI 本地后端服务</li>
+                <li>四栏工作台：告警、表单、预览、对话侧栏</li>
+                <li>标准文档、Deck、分镜和检查报告</li>
                 <li>机械检查和跨模块一致性检查</li>
-                <li>长文档、单 spec HTML 和 Deck 渲染</li>
-                <li>本地 cc session / WebSocket Chat 雏形</li>
+                <li>分镜模块：素材导入、节点映射、角色/场景锚定和批量提示词导出</li>
+                <li>提示词检查：检查透视、视线、场景矛盾和过长提示词</li>
+                <li>长文档、单页 HTML 和 Deck 渲染</li>
+                <li>本地 Claude Code 对话雏形</li>
               </ul>
             </article>
             <article class="status-card">
               <h3><span class="status-dot"></span>当前缺口</h3>
               <ul>
                 <li>职能接口文件仍是暂定示例，尚未成为生产契约</li>
-                <li>项目专属蓝图 MCP 尚未接入</li>
-                <li>Chat 当前主要用于讨论和读文件，还没有完全接管写 spec / 跑命令</li>
+                <li>项目专属蓝图能力库尚未接入</li>
+                <li>对话侧栏当前主要用于讨论和读文件，还没有完全接管写设计文件 / 跑命令</li>
+                <li>图像生成 API 尚未直连，当前以手动 image-2 生成和图片回填为主</li>
                 <li>项目目标对齐层还未完整落地</li>
-                <li>团队局域网部署、多用户隔离和远程 AgentRunner 仍属于扩展方向</li>
+                <li>团队局域网部署、多用户隔离和远程执行服务仍属于扩展方向</li>
               </ul>
             </article>
             <article class="status-card">
               <h3><span class="status-dot"></span>扩展方向</h3>
               <ul>
                 <li>从结构化文档/Deck 生成，推进到可交付给团队的内部效率产品</li>
-                <li>对话澄清 -> 设计源事实 -> 职能接口检查 -> 写入 spec</li>
-                <li>原型/文档派生 -> 人工批准门 -> 团队部署</li>
+                <li>脚本和剧本先整理为分镜结构文件，再进入分镜提示词、机械质检和人工确认流程</li>
+                <li>对话澄清 -> 结构化设计记录 -> 职能接口检查 -> 写入设计文件</li>
+                <li>原型和文档生成 -> 设计师确认 -> 团队部署</li>
                 <li>接入项目知识、蓝图能力和更多职能接口校准</li>
               </ul>
             </article>
@@ -983,7 +1121,7 @@
         <div class="section-inner">
           <div class="section-kicker">PRODUCT FORM</div>
           <h2 class="section-title">产品形态：面向设计师的对话优先工作台。</h2>
-          <p class="section-lead">交互形式参考 `CodeBanana` 这类对话入口：设计师从 IM 式对话进入，工具先澄清问题、给出计划、生成可预览产物，再把关键变化放回人工批准门。当前 WebApp 已把 Chat 放进工作台，扩展方向是让 Chat 更深地写入 spec、调用检查与生成能力。</p>
+          <p class="section-lead">理想形态中，设计师可以先用对话说明需求；工具负责追问缺失信息、给出执行计划、生成可预览产物，并把关键变化交回设计师确认。当前工作台已接入对话侧栏，扩展方向是让对话更深地写入设计文件、调用检查与生成能力。</p>
 
           <div class="vision-layout">
             <div class="conversation-ui">
@@ -996,7 +1134,7 @@
                 <div class="message">已识别：核心体验、流程节点、空间区域、机制依赖仍不完整。需要确认灯光状态切换、敌人警戒条件和蓝图组件边界。</div>
                 <div class="agent-plan">
                   <h4 class="mono">LIVE PLAN</h4>
-                  <p>1. 追问缺失设计意图<br>2. 写入设计源事实<br>3. 运行职能接口检查<br>4. 生成 GD 到 TD/GPP 标准文档<br>5. 等待关键节点批准</p>
+                  <p>1. 追问缺失设计意图<br>2. 写入结构化设计记录<br>3. 运行职能接口检查<br>4. 生成玩法需求到实现说明<br>5. 等待设计师确认</p>
                 </div>
                 <div class="message user">先按纯原型处理，使用已有电力恢复和巡逻状态组件，但撤离事件需要我确认。</div>
               </div>
@@ -1004,17 +1142,17 @@
 
             <div class="vision-card">
               <h3>产品形态展望</h3>
-              <p>对话只是入口，真正的产品能力在于把对话里的意图转成可维护的源事实，并用项目知识、职能接口和机械检查不断约束它。</p>
+              <p>对话只是入口，真正的产品能力在于把对话里的意图转成可维护的结构化设计记录，并用项目知识、职能接口和机械检查不断约束它。</p>
               <ul>
                 <li>对话优先交互：用追问和计划降低设计师进入成本。</li>
-                <li>结构化编辑：关键字段回到 schema 和源事实，而不是散落在长文本里。</li>
-                <li>可视化检查：把区域关系、流程节点、派生产物和缺口报告放在可审查界面中。</li>
-                <li>人工批准门：体验判断、关键逻辑和跨职能接口变更必须由人确认。</li>
-                <li>项目目标对齐层：注入项目目标、约束、模式和参考案例，让新设计不从空白 prompt 开始。</li>
-                <li>项目专属蓝图 MCP：让经过维护的实现能力进入原型链路，同时保留 TD/GPP 的维护和审核权。</li>
+                <li>结构化编辑：关键字段回到结构定义和设计记录，而不是散落在长文本里。</li>
+                <li>可视化检查：把区域关系、流程节点、输出产物和缺口报告放在可审查界面中。</li>
+                <li>设计师确认：体验判断、关键逻辑和跨职能接口变更必须由人确认。</li>
+                <li>项目目标对齐层：注入项目目标、约束、模式和参考案例，让新设计不从空白提示词开始。</li>
+                <li>项目专属蓝图能力库：让经过维护的实现能力进入原型链路，同时保留实现同事的维护和审核权。</li>
               </ul>
               <div class="actions">
-                <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">打开 WebApp 目录</a>
+                <a class="button primary" href="https://github.com/huoshangou/level-design-deck/tree/main/webapp" target="_blank" rel="noreferrer">打开项目代码</a>
                 <a class="button" href="https://github.com/nexu-io/open-design" target="_blank" rel="noreferrer">查看交互参考</a>
               </div>
             </div>
