@@ -871,6 +871,7 @@
             <strong>Agentic tool-use 的第一阶段</strong>
             <p><span class="boundary-label">LLM 负责</span>理解玩家的目标、约束、风格和风险偏好，挑选并组合 Layer 02 暴露的合法工具，把 actor、目标对象和意图写进 `DirectorPlan`。</p>
             <p style="margin-top: 16px;"><span class="boundary-label">固定规则负责</span>ToolRegistry、actor 权限、前置条件、可执行前沿、WorldState 提交、GameEvent 生成和 turn 末 `tickWorld()`。摄像头、电力、NPC 反应、警觉和目标状态都由规则结算。</p>
+            <p style="margin-top: 16px;"><span class="boundary-label">可持续状态</span>最新迭代把伪装、目标路线、毒酒、证据和 NPC 怀疑沉淀成 rule-facing tags。状态不只服务展示，也会继续影响通行、怀疑、录像证据、安保调查和结算风险。</p>
             <p style="margin-top: 16px;"><span class="boundary-label">验证范围</span>当前原型完成“一次计划生成 toolChain，规则逐步执行”的验证；连续 `observe -> choose tool -> execute -> observe` 属于扩展方向。</p>
           </div>
         </div>
@@ -930,6 +931,7 @@
               <li>自然语言指令输入</li>
               <li>LLM Director 与 stub fallback</li>
               <li>注册 Tool、precondition、ripple、tickWorld</li>
+              <li>伪装、毒酒、证据、怀疑等可持续状态</li>
               <li>Hacker / Face / Runner 分工</li>
             </ul>
           </article>

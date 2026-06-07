@@ -31,6 +31,12 @@ function assertNoAiContrastPattern(html, label) {
   }
 }
 
+function assertForbiddenAbsent(haystack, forbidden, label) {
+  if (haystack.includes(forbidden)) {
+    fail(`${label} must not mention "${forbidden}"`);
+  }
+}
+
 const page = readRequired(pagePath, "LLM Director Hitman page");
 const home = readRequired(homePath, "homepage");
 
@@ -56,7 +62,15 @@ if (page) {
     "observe -> choose tool -> execute -> observe",
     "ToolRegistry、actor 权限",
     "同一命题的两个尺度",
+    "可持续状态",
+    "rule-facing tags",
+    "伪装、目标路线、毒酒、证据和 NPC 怀疑",
   ].forEach((needle) => assertIncludes(page, needle, "LLM Director Hitman page"));
+  [
+    "Triangle Agency",
+    "三角机构",
+    "TRPG《Triangle Agency",
+  ].forEach((forbidden) => assertForbiddenAbsent(page, forbidden, "LLM Director Hitman page"));
   assertNoAiContrastPattern(page, "LLM Director Hitman page");
   if (page.includes("降级追问")) {
     fail('LLM Director Hitman page should use reader-facing wording instead of "降级追问"');
@@ -84,6 +98,10 @@ if (page) {
 if (home) {
   assertIncludes(home, "works/llm-director-hitman/index.html", "homepage");
   assertIncludes(home, "LLM Director Hitman", "homepage");
+  [
+    "Triangle Agency",
+    "三角机构",
+  ].forEach((forbidden) => assertForbiddenAbsent(home, forbidden, "homepage"));
 
   const railStart = home.indexOf('<div class="portfolio-rail">');
   const railEnd = home.indexOf("</div>\n      </div>\n    </section>", railStart);
@@ -93,14 +111,14 @@ if (home) {
     fail("homepage portfolio rail not found");
   }
 
-  const levelIndex = rail.indexOf("works/level-design-deck/index.html");
   const hitmanIndex = rail.indexOf("works/llm-director-hitman/index.html");
-  const yatzyIndex = rail.indexOf("works/yatzyforge/index.html");
+  const vehicleIndex = rail.indexOf("works/vehicle-deck-director/index.html");
+  const levelIndex = rail.indexOf("works/level-design-deck/index.html");
 
-  if (!(levelIndex !== -1 && hitmanIndex !== -1 && yatzyIndex !== -1)) {
+  if (!(hitmanIndex !== -1 && vehicleIndex !== -1 && levelIndex !== -1)) {
     fail("homepage missing one of the required work-card links");
-  } else if (!(levelIndex < hitmanIndex && hitmanIndex < yatzyIndex)) {
-    fail("homepage work-card order should be level-design-deck -> LLM Director Hitman -> Yatzyforge");
+  } else if (!(hitmanIndex < vehicleIndex && vehicleIndex < levelIndex)) {
+    fail("homepage work-card order should be LLM Director Hitman -> Vehicle Deck Director -> level-design-deck");
   }
   assertNoAiContrastPattern(home, "homepage");
 }
