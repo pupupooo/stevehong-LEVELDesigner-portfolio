@@ -12,6 +12,8 @@ Email: hongsteve119@gmail.com
 
 WeChat: 17269630119
 
+在线 CV: https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/
+
 ## 一句话定位
 
 过去项目经验集中在开放世界关卡、POI 体验设计、系统玩法体系和商业化设计。近期尝试通过 AI Agent 制作流程推进 roguelike demo、接入 LLM 的玩法原型和 AI 辅助生产的设计工具，关注 AI 如何重塑行业的生产端和娱乐消费体验，并尝试搭建原型验证。
