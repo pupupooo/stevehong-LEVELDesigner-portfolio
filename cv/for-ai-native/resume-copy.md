@@ -126,7 +126,7 @@ WeChat: 17269630119
 
 体验端：LLM 如何进入玩家体验，把自然语言意图转成可裁决工具链和世界状态，让玩家获得更高自由度，同时让系统反馈保持稳定。
 
-在线 CV: https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/
+在线 CV: 个人作品集详情（点击查看） -> https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/
 
 ## 工具
 
