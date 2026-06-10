@@ -12,8 +12,6 @@ Email: hongsteve119@gmail.com
 
 WeChat: 17269630119
 
-在线 CV: https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/
-
 ## 一句话定位
 
 过去项目经验集中在开放世界关卡、POI 体验设计、系统玩法体系和商业化设计。近期尝试通过 AI Agent 制作流程推进 roguelike demo、接入 LLM 的玩法原型和 AI 辅助生产的设计工具，关注 AI 如何重塑行业的生产端和娱乐消费体验，并尝试搭建原型验证。
@@ -127,6 +125,8 @@ WeChat: 17269630119
 生产端：AI Agent 如何进入策划生产，把资料整理、规则拆解、文档派生和检查报告连成可复用流程，同时保留设计判断和边界控制。
 
 体验端：LLM 如何进入玩家体验，把自然语言意图转成可裁决工具链和世界状态，让玩家获得更高自由度，同时让系统反馈保持稳定。
+
+在线 CV: https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/
 
 ## 工具
 

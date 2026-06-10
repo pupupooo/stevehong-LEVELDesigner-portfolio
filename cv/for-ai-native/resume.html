@@ -135,14 +135,6 @@
       margin-top: 4px;
     }
 
-    .contact a {
-      color: #fffaf0;
-      overflow-wrap: anywhere;
-      text-decoration: underline;
-      text-decoration-thickness: 0.6px;
-      text-underline-offset: 2px;
-    }
-
     .tag-list {
       display: flex;
       flex-wrap: wrap;
@@ -334,6 +326,32 @@
       line-height: 1.56;
     }
 
+    .online-cv {
+      margin-top: 12px;
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+    }
+
+    .online-cv p {
+      margin: 0;
+      color: #3f403b;
+      font-size: 8.2pt;
+      line-height: 1.5;
+    }
+
+    .online-cv strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .online-cv a {
+      color: var(--accent);
+      overflow-wrap: anywhere;
+      text-decoration: underline;
+      text-decoration-thickness: 0.6px;
+      text-underline-offset: 2px;
+    }
+
     @media print {
       html,
       body {
@@ -405,9 +423,8 @@
 
       <section class="rail-section contact" aria-label="联系方式">
         <h2>联系方式</h2>
-        <p><a href="mailto:hongsteve119@gmail.com">hongsteve119@gmail.com</a></p>
+        <p>hongsteve119@gmail.com</p>
         <p>WeChat 17269630119</p>
-        <p><a href="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/">在线 CV：pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/</a></p>
       </section>
 
       <section class="rail-section" aria-label="能力方向">
@@ -526,6 +543,10 @@
             <p>LLM 如何进入玩家体验：把自然语言意图转成可裁决工具链和世界状态，让玩家获得更高自由度，同时让系统反馈保持稳定。</p>
           </article>
         </div>
+      </section>
+
+      <section class="online-cv" aria-label="在线 CV">
+        <p><strong>在线 CV：</strong><a href="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/">https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/cv/for-ai-native/</a></p>
       </section>
     </main>
   </article>
