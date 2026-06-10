@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="data:,">
+  <title>Flip or Flop：正在推进中的 roguelike demo</title>
+  <style>
+    @font-face {
+      font-family: "IBM Plex Mono";
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("../../assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
+    }
+
+    @font-face {
+      font-family: "IBM Plex Mono";
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url("../../assets/fonts/ibm-plex-mono-600.woff2") format("woff2");
+    }
+
+    :root {
+      --ink: #111111;
+      --paper: #f4f1e8;
+      --paper-2: #e8dfce;
+      --panel: #1a1712;
+      --muted: #6f6657;
+      --line: rgba(17, 17, 17, 0.16);
+      --line-dark: rgba(244, 241, 232, 0.22);
+      --accent: #ff4d18;
+      --green: #2f7d5b;
+      --blue: #2b6f9f;
+      --gold: #a66a16;
+      --max: 1200px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(17, 17, 17, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 17, 17, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 46px 46px;
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .mono,
+    .kicker,
+    .tag,
+    .stat-label,
+    .step-index,
+    .caption {
+      font-family: var(--mono);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line-dark);
+      background: rgba(17, 17, 17, 0.94);
+      color: var(--paper);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 62px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      color: var(--paper);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: #cfc6b5;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      color: var(--paper);
+      background:
+        linear-gradient(rgba(244, 241, 232, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 241, 232, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 74% 18%, rgba(255, 77, 24, 0.17), transparent 28%),
+        var(--ink);
+      background-size: 46px 46px, 46px 46px, auto, auto;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .hero-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 66px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.96fr) minmax(390px, 0.74fr);
+      gap: 44px;
+      align-items: center;
+    }
+
+    .kicker {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-top: 16px;
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin-top: 22px;
+      color: #d8d0bf;
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.9;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid currentColor;
+      padding: 4px 9px;
+      color: #d8d0bf;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-figure {
+      border: 1px solid var(--line-dark);
+      background: rgba(244, 241, 232, 0.04);
+      padding: 12px;
+      box-shadow: 14px 14px 0 rgba(255, 77, 24, 0.14);
+    }
+
+    .hero-figure img {
+      border: 1px solid rgba(244, 241, 232, 0.16);
+    }
+
+    .caption {
+      margin-top: 10px;
+      color: #aaa08e;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+
+    .section {
+      padding: 74px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section.dark {
+      background: var(--panel);
+      color: var(--paper);
+      border-bottom: 0;
+    }
+
+    .section-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(260px, 0.42fr);
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .dark .lead,
+    .dark p {
+      color: #cfc6b5;
+    }
+
+    .question {
+      border-left: 4px solid var(--accent);
+      padding-left: 18px;
+      color: #d8d0bf;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.62fr) minmax(360px, 0.38fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    .article {
+      display: grid;
+      gap: 34px;
+    }
+
+    .article-block {
+      display: grid;
+      gap: 12px;
+    }
+
+    .article-block h3 {
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .article-block p {
+      color: #37312a;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .quote {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.38);
+      padding: 18px;
+      color: #3b352d;
+      font-size: 17px;
+      line-height: 1.85;
+    }
+
+    .side-panel {
+      position: sticky;
+      top: 88px;
+      display: grid;
+      gap: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.42);
+      padding: 20px;
+    }
+
+    .stat-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stat {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .stat-label {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .loop {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .loop-step,
+    .principle,
+    .status-row {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.42);
+      padding: 18px;
+    }
+
+    .step-index {
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .loop-step strong,
+    .principle strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .loop-step p,
+    .principle p,
+    .status-row p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .dark .status-row {
+      border-color: rgba(244, 241, 232, 0.34);
+      background: var(--paper);
+    }
+
+    .dark .status-row h3 {
+      color: var(--accent);
+    }
+
+    .dark .status-row p {
+      color: #2d271f;
+    }
+
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .principle:nth-child(1) {
+      border-top: 4px solid var(--accent);
+    }
+
+    .principle:nth-child(2) {
+      border-top: 4px solid var(--green);
+    }
+
+    .principle:nth-child(3) {
+      border-top: 4px solid var(--blue);
+    }
+
+    .principle:nth-child(4) {
+      border-top: 4px solid var(--gold);
+    }
+
+    .diagram {
+      display: grid;
+      gap: 12px;
+    }
+
+    .diagram-row {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .diagram-cell {
+      border: 1px solid var(--line-dark);
+      padding: 15px;
+      background: rgba(244, 241, 232, 0.055);
+    }
+
+    .diagram-cell strong {
+      display: block;
+      color: var(--paper);
+      font-size: 17px;
+      line-height: 1.4;
+    }
+
+    .diagram-cell p {
+      margin-top: 7px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .image-grid figure {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.42);
+      padding: 12px;
+    }
+
+    .image-grid figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .status {
+      display: grid;
+      gap: 14px;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .status-row h3 {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .status-row p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .footer {
+      padding: 42px 0;
+      background: var(--ink);
+      color: #cfc6b5;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner,
+      .section-head,
+      .article-grid,
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: static;
+      }
+
+      .loop {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 0;
+      }
+
+      nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-inner {
+        padding: 56px 0 54px;
+      }
+
+      .section {
+        padding: 56px 0;
+      }
+
+      .loop,
+      .principles,
+      .diagram-row,
+      .status-row {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand mono" href="#top">Flip or Flop / System Design</a>
+      <nav class="mono" aria-label="页面导航">
+        <a href="#loop">循环</a>
+        <a href="#principles">理念</a>
+        <a href="#power-budget">Power Budget</a>
+        <a href="#variant">Variant</a>
+        <a href="#status">状态</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div>
+          <div class="kicker">IN-PROGRESS ROGUELIKE DEMO</div>
+          <h1>Flip or Flop：正在推进中的 roguelike demo</h1>
+          <p class="subtitle">这篇记录的是一个正在推进的系统设计样本：如何把卡组构筑、4x4 翻牌探索、撤离节奏、宝石镶嵌、怪物变体和数值框架放进同一个可玩的 demo 里。</p>
+          <div class="hero-meta">
+            <span class="tag">4x4 draw-pile dungeon</span>
+            <span class="tag">Power Budget</span>
+            <span class="tag">VariantPool</span>
+            <span class="tag">Cluster + Character</span>
+          </div>
+        </div>
+        <figure class="hero-figure">
+          <img src="images/power-budget-departure-preview.png" alt="Flip or Flop Power Budget 出发预览界面">
+          <figcaption class="caption">Power Budget 出发预览：loadoutPower 推导本局 stake，并在进入 dungeon 前锁定。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section dark">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">DESIGN QUESTION</div>
+            <h2>这个 demo 主要围绕一个问题展开</h2>
+          </div>
+          <p class="question">玩家能不能亲手把危险、奖励、出口、怪物变体和自己的 build 倾向构筑进地下城，并在局内继续围绕这些选择做判断？</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="loop">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">CORE LOOP</div>
+            <h2>核心循环很短，但每一步都在服务风险收益</h2>
+          </div>
+          <p class="lead">Flip or Flop 的基础体验来自 Card Hog 式的相邻格处理，但它把地下城内容交给玩家自己的卡组、宝石和角色选择来塑形。</p>
+        </div>
+
+        <div class="loop">
+          <article class="loop-step">
+            <div class="step-index">01</div>
+            <strong>组卡</strong>
+            <p>局外决定带什么卡、宝石和角色入场，形成这一局的 loadout。</p>
+          </article>
+          <article class="loop-step">
+            <div class="step-index">02</div>
+            <strong>翻牌</strong>
+            <p>固定 4x4 棋盘从 draw pile 抽牌补入，未知来自初始背面和后续变体揭晓。</p>
+          </article>
+          <article class="loop-step">
+            <div class="step-index">03</div>
+            <strong>处理</strong>
+            <p>战斗、宝箱、血瓶、陷阱和事件都以相邻格选择的方式进入同一个行动节奏。</p>
+          </article>
+          <article class="loop-step">
+            <div class="step-index">04</div>
+            <strong>撤离</strong>
+            <p>找到出口后决定带资源离开，还是继续把 HP 预算花在更高收益上。</p>
+          </article>
+          <article class="loop-step">
+            <div class="step-index">05</div>
+            <strong>养成</strong>
+            <p>资源回到酒馆，继续买卡、开包、镶嵌、升级，再把新的风险带回 dungeon。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="principles">
+      <div class="section-inner article-grid">
+        <article class="article">
+          <div class="article-block">
+            <div class="kicker">SYSTEM PRINCIPLES</div>
+            <h2>几个已经进入 demo 的系统设计理念</h2>
+          </div>
+
+          <div class="principles">
+            <article class="principle">
+              <div class="step-index">HP AS CURRENCY</div>
+              <strong>HP 是货币。</strong>
+              <p>HP 在这里首先是一笔可支配预算。打怪、开危险宝箱、追高收益变体，本质都是在问这笔 HP 兑换值不值。</p>
+            </article>
+            <article class="principle">
+              <div class="step-index">INPUT RANDOMNESS</div>
+              <strong>随机尽量提前变成信息。</strong>
+              <p>战斗不做暴击，变体进 dungeon 时锁定，reveal 时展示结果。危险来自未知和取舍，不来自决策后的暗骰。</p>
+            </article>
+            <article class="principle">
+              <div class="step-index">VARIANCE CONVERGENCE</div>
+              <strong>build 不只让均值变大，也要让方差收敛。</strong>
+              <p>角色、starter relic 和扭曲宝石提供过滤、加权、三选一等工具，让玩家逐渐把混沌捏成自己想要的那种确定性。</p>
+            </article>
+            <article class="principle">
+              <div class="step-index">VISIBLE DECISION</div>
+              <strong>关键收益和代价要在决策前可读。</strong>
+              <p>Power Budget、stake、reward multiplier、variant 来源和 combo 升格都要在 card face、hover/detail 或 debug/dev 层有各自的位置。</p>
+            </article>
+          </div>
+
+          <div class="quote">
+            这个 demo 的价值不在于堆很多公式，而在于把数值判断放回具体玩法结构里：玩家在哪个时刻读到信息，在哪个时刻承担风险，哪个系统负责给 build 一个长期方向。
+          </div>
+        </article>
+
+        <aside class="side-panel">
+          <div class="kicker">CURRENT SHAPE</div>
+          <div class="stat-list">
+            <div class="stat">
+              <div class="stat-label">Board</div>
+              <strong>固定 4x4 棋盘</strong>
+              <span>移动后按方向 lane 补牌，draw pile 耗尽后变安全地板。</span>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Growth</div>
+              <strong>卡牌升级 + 宝石镶嵌 + 开包</strong>
+              <span>宝石改变卡的规则角色，不只提供线性数值。</span>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Run Surface</div>
+              <strong>VariantPool 增厚局内决策</strong>
+              <span>玩家构筑决定可能遇到什么，系统在局内揭晓具体变体。</span>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Build</div>
+              <strong>Character + Cluster 双层</strong>
+              <span>角色决定起手偏置，cluster 让 build 从内容组合里浮现。</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section dark" id="power-budget">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">POWER BUDGET DUNGEON</div>
+            <h2>Power Budget 解决的是“强卡组要遇到什么地下城”</h2>
+          </div>
+          <p class="lead">旧 tier 方案容易变成外部难度档位。现在的做法是从玩家出发前的 loadoutPower 生成 stakeContext，并让奖励、变体和组合升格一起响应。</p>
+        </div>
+
+        <div class="diagram">
+          <div class="diagram-row">
+            <div class="diagram-cell">
+              <strong>loadoutPower</strong>
+              <p>读取卡组、镶嵌宝石、角色、starter relic 和后续 pre-run modifier。</p>
+            </div>
+            <div class="diagram-cell">
+              <strong>stakeContext</strong>
+              <p>进入 dungeon 前计算一次，本局锁定。局内临时卡、临时 buff 和本局新获得永久奖励影响下一局预览。</p>
+            </div>
+          </div>
+          <div class="diagram-row">
+            <div class="diagram-cell">
+              <strong>三条响应通道</strong>
+              <p>奖励倍率、Variant pool 子集/加权、ComboPromotion 的 stake eligibility。</p>
+            </div>
+            <div class="diagram-cell">
+              <strong>不走全局怪物倍率</strong>
+              <p>威胁来自内容池、组合和收益压力，不把所有怪物简单乘 HP/ATK。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="variant">
+      <div class="section-inner article-grid">
+        <article class="article">
+          <div class="article-block">
+            <div class="kicker">VARIANTPOOL / COMBO PROMOTION</div>
+            <h2>怪物变体用来给 Run 表面增加决策密度</h2>
+            <p>Flip or Flop 的 Meta 表面很厚：卡组、宝石、角色、开包、局外成长都在 run 前发生。为了让局内不只是在执行预案，VariantPool 把“这张卡今天以什么方式出现”放进 dungeon。</p>
+          </div>
+
+          <div class="article-block">
+            <h3>四层身份让作者权更清楚</h3>
+            <p>基础身份来自玩家带入的卡，宝石转化身份来自玩家镶嵌，变体由系统在进 dungeon 时锁定，状态由局内行为推进。这样玩家仍然是构筑作者，系统负责制造局内具体遭遇。</p>
+          </div>
+
+          <div class="article-block">
+            <h3>Goblin 池是第一个完整样本</h3>
+            <p>贪婪哥布林、工兵哥布林、巢居哥布林、巫师哥布林、狡猾哥布林分别服务不同 cluster。藏宝哥布林则来自 combo promotion：当变体、宝石和 stake 条件同时成立时，卡的身份可以升格成更具体的遭遇。</p>
+          </div>
+
+          <div class="article-block">
+            <h3>变数之眼把方差收敛做成玩家可见选择</h3>
+            <p>普通卡 reveal 时自动揭晓一个锁定变体；镶嵌变数之眼的卡会在 reveal 时给出 3 个候选，让玩家选择本次遭遇。这让随机仍然存在，但玩家能用 build 把随机收束到自己愿意承担的范围。</p>
+          </div>
+        </article>
+
+        <figure class="hero-figure">
+          <img src="images/power-budget-locked-stake-hud.png" alt="Flip or Flop locked stake HUD 截图">
+          <figcaption class="caption">Locked stake HUD：本局 stake 不随局内临时变化重算，保证同一 run 内所有 resolver 读同一份上下文。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">BUILD FRAMEWORK</div>
+            <h2>Build 框架从“职业模板”改成 Character + Cluster 双层</h2>
+          </div>
+          <p class="lead">角色回答“我用谁开局”，cluster 回答“我这一局围绕什么关系展开”。这让 build 可以从内容组合里浮现出来，避免提前把所有玩家路线写死。</p>
+        </div>
+
+        <div class="principles">
+          <article class="principle">
+            <div class="step-index">CHARACTER</div>
+            <strong>角色提供起手偏置。</strong>
+            <p>战士偏向战斗和过滤，盗贼偏向贪婪、额外揭示和藏宝哥布林，法师/巫蛊师在后续版本补齐。</p>
+          </article>
+          <article class="principle">
+            <div class="step-index">CLUSTER</div>
+            <strong>Cluster 从内容关系里浮现。</strong>
+            <p>C1/C2/C3/C8 等 cluster 用来组织怪物变体、宝石规则、relic 和 combo 的互相牵引，并给玩家路线留下浮现空间。</p>
+          </article>
+          <article class="principle">
+            <div class="step-index">CONVERGENCE</div>
+            <strong>收敛工具让 build 更像玩家自己的。</strong>
+            <p>M1 hard filter、M2 weighting、M5 reveal choice 分别处理过滤、偏置和当场选择。</p>
+          </article>
+          <article class="principle">
+            <div class="step-index">PVE BALANCE</div>
+            <strong>PVE 不追求 PvP 级别平衡。</strong>
+            <p>角色之间可以有强度差，关键是每条路线有清楚的风险、收益和表达空间。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">INTERFACE LAYER</div>
+            <h2>系统复杂度要落到可读界面里</h2>
+          </div>
+          <p class="lead">数值系统本身成立还不够。玩家需要知道当前卡的身份、变体、stake 奖励、角色/relic 影响和发现状态；否则 build 只会停在设计文档里。</p>
+        </div>
+
+        <div class="image-grid">
+          <figure>
+            <img src="images/card-album-discovery-preview.png" alt="Flip or Flop CardAlbum 与 Discovery 状态界面">
+            <figcaption>CardAlbum / Discovery：把发现过的内容、当前构筑预览和 debug 信息分层，不让玩家界面承担全部规则解释。</figcaption>
+          </figure>
+          <figure>
+            <img src="images/power-budget-departure-preview.png" alt="Flip or Flop Deck Power 和 Stake 预览界面">
+            <figcaption>出发预览：Deck Power / stake / 奖励倍率需要在进入 dungeon 前可读，避免玩家进局后才发现规则变化。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="status">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="kicker">CURRENT STATUS</div>
+            <h2>当前状态与边界</h2>
+          </div>
+          <p class="lead">这仍然是正在推进中的 demo。它已经能展示系统设计如何进入玩法结构，但还没有进入正式发布版本。</p>
+        </div>
+
+        <div class="status">
+          <article class="status-row">
+            <h3>已经进入 demo</h3>
+            <p>固定 4x4 draw-pile dungeon、方向 lane 补牌、出口确认、强宝石矩阵、开包揭晓、ContentRegistry、身份层、CardPresentation、VariantPool、PowerBudget、ComboPromotion、CardAlbum、Warrior/Rogue、多个 Goblin 变体和 Treasure Goblin。</p>
+          </article>
+          <article class="status-row">
+            <h3>正在推进</h3>
+            <p>v0.7 Round Out：补齐更多 Goblin 变体、DiscardRecycle / SummonPool 等桥接基础设施，以及 Mage / Cultist 两个角色的可玩入口。</p>
+          </article>
+          <article class="status-row">
+            <h3>还未包装</h3>
+            <p>正式美术、完整 Boss、通用词缀池、Orc/Wraith 内容池、成就系统、发布级 UI 和长期平衡仍在后续版本。</p>
+          </article>
+          <article class="status-row">
+            <h3>展示重点</h3>
+            <p>这页展示的是系统设计判断：HP 货币、输入随机、方差收敛、Power Budget、VariantPool 和双层 build 框架如何共同塑造一个 roguelike demo。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Steve Hong / Flip or Flop system design note</span>
+      <span class="mono">WORK IN PROGRESS · 2026</span>
+    </div>
+  </footer>
+</body>
+</html>

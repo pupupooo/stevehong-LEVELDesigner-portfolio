@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>洪祥健 Steve Hong - AI 游戏探索</title>
+  <style>
+    :root {
+      --paper: #f4f1e8;
+      --ink: #1d211d;
+      --muted: #6f695f;
+      --soft: #d8d0c2;
+      --line: rgba(49, 44, 36, 0.18);
+      --line-light: rgba(244, 241, 232, 0.22);
+      --dark: #1f2b26;
+      --dark-2: #151c19;
+      --accent: #b45c43;
+      --accent-2: #d89562;
+      --card: #fffaf0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(244, 241, 232, 0.18);
+      background: rgba(31, 43, 38, 0.96);
+      color: var(--paper);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 16px 28px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .mark {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--soft);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+    }
+
+    nav a:hover {
+      color: var(--paper);
+    }
+
+    .hero {
+      background: var(--dark);
+      color: var(--paper);
+    }
+
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      min-height: 660px;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 96px 28px 104px;
+    }
+
+    .hero-copy {
+      max-width: 900px;
+    }
+
+    .eyebrow,
+    .section-kicker {
+      color: var(--accent-2);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      max-width: 860px;
+      font-size: clamp(44px, 6vw, 84px);
+      font-weight: 800;
+      line-height: 1.08;
+    }
+
+    .identity {
+      margin-top: 22px;
+      color: #fffaf0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      max-width: 780px;
+      margin-top: 24px;
+      color: var(--soft);
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.9;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid currentColor;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .button:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .section {
+      padding: 92px 28px;
+    }
+
+    .section.dark {
+      background: var(--dark-2);
+      color: var(--paper);
+    }
+
+    .section-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      margin-top: 12px;
+      font-size: clamp(28px, 3.4vw, 48px);
+      font-weight: 800;
+      line-height: 1.16;
+    }
+
+    .section-lead {
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .dark .section-lead {
+      color: var(--soft);
+    }
+
+    .note {
+      border: 1px solid currentColor;
+      padding: 8px 10px;
+      color: var(--accent-2);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .thesis-grid,
+    .case-grid,
+    .experience-grid,
+    .capability-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    .thesis-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .thesis-card,
+    .case-card,
+    .experience-card,
+    .capability-card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 22px;
+    }
+
+    .dark .case-card,
+    .dark .experience-card {
+      border-color: var(--line-light);
+      background: rgba(244, 241, 232, 0.06);
+    }
+
+    .card-index,
+    .experience-meta {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.55;
+      text-transform: uppercase;
+    }
+
+    .dark .card-index,
+    .dark .experience-meta {
+      color: var(--accent-2);
+    }
+
+    .thesis-card h3,
+    .case-card h3,
+    .experience-card h3,
+    .capability-card h3 {
+      margin-top: 14px;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .thesis-card p,
+    .case-card p,
+    .experience-card p,
+    .capability-card p {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .dark .case-card p,
+    .dark .experience-card p {
+      color: var(--soft);
+    }
+
+    .case-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .case-card {
+      display: grid;
+      grid-template-columns: 168px minmax(0, 1fr);
+      gap: 20px;
+      min-height: 240px;
+    }
+
+    .case-image {
+      min-height: 196px;
+      border: 1px solid var(--line-light);
+      background-color: rgba(244, 241, 232, 0.08);
+      background-position: center;
+      background-size: cover;
+      filter: saturate(0.94) contrast(1.02);
+    }
+
+    .case-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border: 1px solid rgba(244, 241, 232, 0.24);
+      padding: 4px 8px;
+      color: var(--paper);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .case-link {
+      display: inline-flex;
+      margin-top: 18px;
+      color: var(--accent-2);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .case-link:hover {
+      color: var(--paper);
+    }
+
+    .experience-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .experience-card {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 24px;
+      padding: 28px;
+    }
+
+    .experience-card ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .capability-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 28px 42px;
+      background: var(--paper);
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      max-width: 1320px;
+      margin: 0 auto;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .footer span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 1120px) {
+      .case-card,
+      .experience-card {
+        grid-template-columns: 1fr;
+      }
+
+      .thesis-grid,
+      .capability-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .case-image {
+        min-height: 260px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 20px;
+      }
+
+      nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 3px;
+      }
+
+      .hero-inner {
+        min-height: auto;
+        padding: 58px 20px 64px;
+      }
+
+      .section {
+        padding: 64px 20px;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .note {
+        white-space: normal;
+      }
+
+      .thesis-grid,
+      .case-grid,
+      .capability-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .case-image {
+        min-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="mark"></span>
+        <span class="mono">HONG_XJ / AI GAME EXPLORATION</span>
+      </a>
+      <nav class="mono" aria-label="页面导航">
+        <a href="#thesis">近况</a>
+        <a href="#cases">研究</a>
+        <a href="#experience">经历</a>
+        <a href="#contact">联系</a>
+        <a href="resume.html">简历版</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">AI GAME EXPLORATION</div>
+          <h1>AI 游戏探索</h1>
+          <div class="identity mono">HONG XIANGJIAN // 洪祥健</div>
+          <p class="subtitle">游戏策划出身，主攻开放世界关卡与玩法系统。近期围绕 AI Agent 生产流程、LLM 玩法原型、roguelike demo 与系统切片研究展开原型验证，将设计问题转化为可检查的规则、交互和系统判断。</p>
+          <div class="actions">
+            <a class="button primary" href="#cases">查看研究与原型</a>
+            <a class="button" href="resume.html">查看简历版</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="thesis">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">FOCUS AREAS</div>
+            <h2 class="section-title">近期关注方向</h2>
+          </div>
+          <div class="note">RESEARCH / PROTOTYPE</div>
+        </div>
+        <p class="section-lead">近期关注系统切片、AI 辅助设计工具、可玩原型，以及开放世界项目经验中延伸出的生产问题。</p>
+
+        <div class="thesis-grid">
+          <article class="thesis-card">
+            <div class="card-index">01 / SYSTEMS</div>
+            <h3>游戏系统拆解</h3>
+            <p>从品类、玩家行为、经济循环和内容压力切入，分析系统成立的条件、风险和外部约束。</p>
+          </article>
+          <article class="thesis-card">
+            <div class="card-index">02 / TOOLING</div>
+            <h3>设计工具与资料整理</h3>
+            <p>把资料、设计意图和检查项整理成可复用结构，支持文档、分镜和检查报告的派生。</p>
+          </article>
+          <article class="thesis-card">
+            <div class="card-index">03 / DEMO</div>
+            <h3>可玩原型</h3>
+            <p>通过 Flip or Flop、Yatzyforge 和 LLM Director Hitman 推进小切片验证，观察规则、数值与交互是否成立。</p>
+          </article>
+          <article class="thesis-card">
+            <div class="card-index">04 / PROJECTS</div>
+            <h3>开放世界与关卡设计经验</h3>
+            <p>开放世界 POI、载具玩法规划、垂直关卡切片和商业化演出经验，用来校准个人原型与真实生产语境的距离。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="cases">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">SELECTED WORK</div>
+            <h2 class="section-title">近期研究与原型</h2>
+          </div>
+          <div class="note">AI / SYSTEMS / DESIGN</div>
+        </div>
+
+        <div class="case-grid">
+          <article class="case-card">
+            <a class="case-image" href="../../works/flip-or-flop/index.html" style="background-image:url('images/flip-or-flop-power-budget.png')" aria-label="Flip or Flop Power Budget 截图"></a>
+            <div>
+              <div class="card-index">01 / ROGUELIKE PROTOTYPE</div>
+              <h3>Flip or Flop：正在推进中的 roguelike demo</h3>
+              <p>一个围绕翻牌、构筑和撤离节奏推进的 roguelike demo。当前重点放在 HP 货币、输入随机、方差收敛、Power Budget、VariantPool、ComboPromotion 和角色/cluster 双层 build 框架上。</p>
+              <div class="case-meta">
+                <span class="tag">Roguelike Demo</span>
+                <span class="tag">数值设计</span>
+                <span class="tag">Build 框架</span>
+              </div>
+              <a class="case-link" href="../../works/flip-or-flop/index.html">READ / IN PROGRESS</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/arc-raiders-analysis/index.html" style="background-image:url('../../works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.webp')" aria-label="Arc Raiders 系统切片分析"></a>
+            <div>
+              <div class="card-index">02 / SYSTEM ANALYSIS</div>
+              <h3>Arc Raiders 系统切片分析</h3>
+              <p>从搜打撤品类、玩家生态、经济循环、匹配机制和海外受众偏好切入，解释一个反常识系统为什么能跑出表现，以及它依赖哪些外部条件。</p>
+              <div class="case-meta">
+                <span class="tag">品类拆解</span>
+                <span class="tag">玩家生态</span>
+                <span class="tag">系统推论</span>
+              </div>
+              <a class="case-link" href="../../works/arc-raiders-analysis/index.html">READ</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/llm-director-hitman/index.html" style="background-image:url('../../works/llm-director-hitman/images/poison_intent.png')" aria-label="LLM Director Hitman"></a>
+            <div>
+              <div class="card-index">03 / AI PLAY PROTOTYPE</div>
+              <h3>LLM Director Hitman</h3>
+              <p>把玩家自然语言计划编译成合法工具链，再由确定性规则写入世界状态。重点验证 AI 如何补回传统沙盒里被成本和稳定性压缩的计划感。</p>
+              <div class="case-meta">
+                <span class="tag">语义编排</span>
+                <span class="tag">确定性沙盒</span>
+                <span class="tag">可信中间状态</span>
+              </div>
+              <a class="case-link" href="../../works/llm-director-hitman/index.html">READ</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/yatzyforge/index.html" style="background-image:url('../../assets/kC7Kh.png')" aria-label="Yatzyforge"></a>
+            <div>
+              <div class="card-index">04 / PLAYABLE PROTOTYPE</div>
+              <h3>Yatzyforge</h3>
+              <p>从 HTML MVP 推进到 Godot 测试包，把机制、回合节奏、资源变化和打包检查落到可试玩版本，持续验证玩法结构的稳定性。</p>
+              <div class="case-meta">
+                <span class="tag">Godot 原型</span>
+                <span class="tag">玩法迭代</span>
+                <span class="tag">机制验证</span>
+              </div>
+              <a class="case-link" href="../../works/yatzyforge/index.html">READ</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/level-design-deck/index.html" style="background-image:url('../../works/level-design-deck/images/webapp-current-spec.webp')" aria-label="level-design-deck"></a>
+            <div>
+              <div class="card-index">05 / DESIGN TOOLING</div>
+              <h3>level-design-deck</h3>
+              <p>面向关卡策划的设计工具：把设计意图整理成结构化源事实，再派生文档、分镜、Deck 和检查报告。重点放在设计信息如何被复用、检查和交接。</p>
+              <div class="case-meta">
+                <span class="tag">设计源事实</span>
+                <span class="tag">机械检查</span>
+                <span class="tag">职能接口</span>
+              </div>
+              <a class="case-link" href="../../works/level-design-deck/index.html">READ</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/vehicle-deck-director/index.html" style="background-image:url('../../works/vehicle-deck-director/images/director-lab-preview.png')" aria-label="Vehicle Deck Director"></a>
+            <div>
+              <div class="card-index">06 / OPEN WORLD DIRECTOR</div>
+              <h3>Vehicle Deck Director</h3>
+              <p>把城市载具玩法拆成 T3/T2/T1 层级，并用 2D MVP 与 Director Lab 验证事件何时出现、如何接入、世界如何回应。</p>
+              <div class="case-meta">
+                <span class="tag">开放世界事件</span>
+                <span class="tag">语义门控</span>
+                <span class="tag">规则边界</span>
+              </div>
+              <a class="case-link" href="../../works/vehicle-deck-director/index.html">READ</a>
+            </div>
+          </article>
+
+          <article class="case-card">
+            <a class="case-image" href="../../works/level-design-factory34/index.html" style="background-image:url('../../works/level-design-factory34/images/个人作品页入口展示图.webp')" aria-label="34号制造厂"></a>
+            <div>
+              <div class="card-index">07 / GAME DESIGN CRAFT</div>
+              <h3>34号制造厂</h3>
+              <p>UE5 白盒关卡个人作品，补充空间节奏、视线管理、环境叙事和机制教学等关卡设计基本功。</p>
+              <div class="case-meta">
+                <span class="tag">UE5 白盒</span>
+                <span class="tag">关卡节奏</span>
+                <span class="tag">环境叙事</span>
+              </div>
+              <a class="case-link" href="../../works/level-design-factory34/index.html">READ</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="experience">
+      <div class="section-inner">
+        <div class="section-kicker">PROJECT EXPERIENCE</div>
+        <h2 class="section-title">项目经历</h2>
+        <p class="section-lead">开放世界关卡、载具玩法规划、商业化演出和跨职能沟通经验，为个人原型提供空间节奏、系统落地和真实团队协作背景。</p>
+
+        <div class="experience-grid">
+          <article class="experience-card">
+            <div class="experience-meta">
+              01 / YOTTA GAME<br>
+              OPEN WORLD PROJECT<br>
+              2025 - PRESENT<br>
+              ROLE: LEVEL DESIGNER
+            </div>
+            <div>
+              <h3>开放世界 POI、载具玩法体系与 AI 设计工具实践</h3>
+              <ul>
+                <li>负责城市开放世界 POI 深度体验设计与载具玩法体系设计。</li>
+                <li>用个人原型验证事件导演、LLM 语义推荐和规则边界。</li>
+                <li>用 Claude Code 构建结构化文档、分镜、检查报告和可复用设计产物。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="experience-card">
+            <div class="experience-meta">
+              02 / LIGHTSPEED<br>
+              OPEN WORLD PROJECT<br>
+              2022 - 2025<br>
+              ROLE: LEVEL DESIGNER
+            </div>
+            <div>
+              <h3>垂直关卡切片、Metrics 标准与模块化白盒</h3>
+              <ul>
+                <li>规划垂直关卡切片和玩法主题，建立空间指标与模块化白盒规范。</li>
+                <li>积累开放世界项目中关卡、系统、美术、程序之间的信息交接经验。</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="experience-card">
+            <div class="experience-meta">
+              03 / LIGHTSPEED<br>
+              TEAMFIGHT TACTICS CN<br>
+              2021 - 2022<br>
+              ROLE: MONETIZATION DESIGNER
+            </div>
+            <div>
+              <h3>神话级小小英雄演出与商业化资产设计</h3>
+              <ul>
+                <li>负责多个高价值资产演出设计，协助完成资产分级规范。</li>
+                <li>设计基于 SKU 关联的套装收集效果，缓解 Best-in-slot 问题。</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">CONTACT</div>
+            <h2 class="section-title">洪祥健 / Steve Hong</h2>
+          </div>
+          <div class="note">GAME DESIGN / AI PROTOTYPE</div>
+        </div>
+
+        <div class="capability-grid">
+          <article class="capability-card">
+            <div class="card-index">EMAIL</div>
+            <h3>hongsteve119@gmail.com</h3>
+          </article>
+          <article class="capability-card">
+            <div class="card-index">WECHAT</div>
+            <h3>17269630119</h3>
+          </article>
+          <article class="capability-card">
+            <div class="card-index">RESUME</div>
+            <h3><a href="resume.html">查看一页简历版</a></h3>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <span>POSITION</span>
+        游戏策划 / 关卡设计 / 系统拆解 / 可玩原型
+      </div>
+      <div>
+        <span>FOCUS</span>
+        AI Agent 生产流程、LLM 玩法原型、roguelike demo、系统切片研究
+      </div>
+      <div>
+        <span>STATUS</span>
+        定向 CV 页面，未从公开主页导航
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

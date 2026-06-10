@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>洪祥健 Steve Hong - 游戏策划简历</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    :root {
+      --paper: #f8f4ec;
+      --ink: #1f231f;
+      --muted: #69645c;
+      --soft: #8b8377;
+      --line: #d9d0c1;
+      --rail: #26322d;
+      --rail-soft: #dce6de;
+      --accent: #b45c43;
+      --accent-soft: #efe2d8;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #d9d5ce;
+      color: var(--ink);
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 63mm 1fr;
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      box-shadow: 0 18px 44px rgba(39, 33, 26, 0.16);
+      overflow: hidden;
+    }
+
+    .rail {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 18mm 9mm 14mm;
+      background: var(--rail);
+      color: var(--rail-soft);
+    }
+
+    .photo {
+      width: 28mm;
+      height: 28mm;
+      border: 1px solid rgba(248, 244, 236, 0.75);
+      background: var(--white);
+      object-fit: cover;
+    }
+
+    .name {
+      margin: 0;
+      color: #fffaf0;
+      font-size: 24pt;
+      font-weight: 700;
+      line-height: 1.12;
+    }
+
+    .name span {
+      display: block;
+      margin-top: 5px;
+      font-size: 11pt;
+      font-weight: 500;
+      color: var(--rail-soft);
+    }
+
+    .role {
+      margin: -8px 0 0;
+      color: var(--rail-soft);
+      font-size: 9.4pt;
+      font-weight: 500;
+      line-height: 1.65;
+    }
+
+    .rail-section {
+      padding-top: 16px;
+      border-top: 1px solid rgba(220, 230, 222, 0.32);
+    }
+
+    .rail h2,
+    .main h2 {
+      margin: 0;
+      font-size: 10.2pt;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .rail h2 {
+      color: #fffaf0;
+    }
+
+    .rail p,
+    .rail li {
+      margin: 0;
+      color: var(--rail-soft);
+      font-size: 8.2pt;
+      line-height: 1.7;
+    }
+
+    .rail ul,
+    .main ul {
+      margin: 8px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rail li + li {
+      margin-top: 4px;
+    }
+
+    .contact p + p {
+      margin-top: 4px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 9px;
+    }
+
+    .tag {
+      padding: 3px 6px 4px;
+      border: 1px solid rgba(220, 230, 222, 0.28);
+      color: #fffaf0;
+      font-size: 7.2pt;
+      line-height: 1;
+    }
+
+    .main {
+      padding: 17mm 11mm 12mm;
+    }
+
+    .intro {
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--accent);
+      font-size: 8pt;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .intro h1 {
+      margin: 0;
+      font-size: 16pt;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .intro p {
+      margin: 8px 0 0;
+      color: #3f403b;
+      font-size: 9.2pt;
+      line-height: 1.72;
+    }
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 8px;
+    }
+
+    .section-head::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .main h2 {
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .item {
+      break-inside: avoid;
+      padding: 8px 0 9px;
+      border-bottom: 1px solid rgba(217, 208, 193, 0.72);
+    }
+
+    .item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .item-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: baseline;
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 10.6pt;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .meta {
+      color: var(--soft);
+      font-size: 7.7pt;
+      font-weight: 500;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .item p,
+    .item li {
+      color: #3f403b;
+      font-size: 8.45pt;
+      line-height: 1.62;
+    }
+
+    .item p {
+      margin: 6px 0 0;
+    }
+
+    .item ul {
+      margin-top: 6px;
+    }
+
+    .item li {
+      position: relative;
+      padding-left: 10px;
+    }
+
+    .item li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.72em;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+    }
+
+    .project {
+      break-inside: avoid;
+      padding: 8px 0 9px;
+      border-bottom: 1px solid rgba(217, 208, 193, 0.72);
+    }
+
+    .project h3 {
+      margin: 0;
+      font-size: 9.7pt;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .project p {
+      margin: 5px 0 0;
+      color: #3f403b;
+      font-size: 8.05pt;
+      line-height: 1.58;
+    }
+
+    .project strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .method-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 9px;
+    }
+
+    .method {
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px solid rgba(217, 208, 193, 0.86);
+    }
+
+    .method h3 {
+      margin: 0 0 5px;
+      color: var(--accent);
+      font-size: 8.7pt;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .method p {
+      margin: 0;
+      color: #3f403b;
+      font-size: 8pt;
+      line-height: 1.56;
+    }
+
+    @media print {
+      html,
+      body {
+        width: 210mm;
+        height: 297mm;
+        background: var(--paper);
+        padding: 0;
+      }
+
+      body {
+        display: block;
+      }
+
+      .page {
+        width: 210mm;
+        min-height: 297mm;
+        box-shadow: none;
+      }
+    }
+
+    @media screen and (max-width: 860px) {
+      body {
+        padding: 0;
+        background: var(--paper);
+      }
+
+      .page {
+        display: block;
+        width: 100%;
+        min-height: auto;
+        box-shadow: none;
+      }
+
+      .rail,
+      .main {
+        padding: 28px 22px;
+      }
+
+      .rail {
+        gap: 16px;
+      }
+
+      .project-grid,
+      .method-row {
+        grid-template-columns: 1fr;
+      }
+
+      .item-head {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .meta {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <article class="page" aria-label="洪祥健 Steve Hong 游戏策划简历">
+    <aside class="rail">
+      <img class="photo" src="../../resume-assets/photo.png" alt="洪祥健照片">
+
+      <div>
+        <h1 class="name">洪祥健<span>Steve Hong</span></h1>
+      </div>
+
+      <p class="role">游戏策划 / 关卡设计<br>系统拆解 / 可玩原型</p>
+
+      <section class="rail-section contact" aria-label="联系方式">
+        <h2>联系方式</h2>
+        <p>hongsteve119@gmail.com</p>
+        <p>WeChat 17269630119</p>
+      </section>
+
+      <section class="rail-section" aria-label="能力方向">
+        <h2>能力方向</h2>
+        <ul>
+          <li>开放世界关卡与 POI 体验</li>
+          <li>玩法系统与数值框架拆解</li>
+          <li>可玩原型与 demo 推进</li>
+          <li>品类、玩家生态与系统推论</li>
+          <li>设计工具与 AI 辅助流程</li>
+        </ul>
+      </section>
+
+      <section class="rail-section" aria-label="工具">
+        <h2>工具</h2>
+        <div class="tag-list">
+          <span class="tag">UE5</span>
+          <span class="tag">Unity</span>
+          <span class="tag">Godot</span>
+          <span class="tag">HTML Prototype</span>
+          <span class="tag">Figma</span>
+          <span class="tag">Blender</span>
+          <span class="tag">Claude Code</span>
+          <span class="tag">Codex</span>
+        </div>
+      </section>
+
+      <section class="rail-section" aria-label="教育经历">
+        <h2>教育经历</h2>
+        <p>复旦大学 / 应用心理学 硕士<br>2019 - 2021</p>
+        <p style="margin-top: 10px;">中国地质大学 / 地质工程 学士<br>2013 - 2017</p>
+      </section>
+    </aside>
+
+    <main class="main">
+      <header class="intro">
+        <p class="eyebrow">GAME DESIGN / SYSTEM ANALYSIS / PLAYABLE PROTOTYPE</p>
+        <h1>游戏策划，主攻开放世界关卡、系统拆解与可玩原型</h1>
+        <p>过去项目经验集中在开放世界关卡、POI 体验设计、系统玩法体系和商业化设计。近期尝试通过 AI Agent 制作流程推进 roguelike demo、接入 LLM 的玩法原型和 AI 辅助生产的设计工具，关注 AI 如何重塑行业的生产端和娱乐消费体验，并尝试搭建原型验证。</p>
+      </header>
+
+      <section class="section" aria-label="工作经历">
+        <div class="section-head">
+          <h2>工作经历</h2>
+        </div>
+
+        <article class="item">
+          <div class="item-head">
+            <h3>友塔游戏 / 城市开放世界项目</h3>
+            <div class="meta">2025 - Present · 关卡策划</div>
+          </div>
+          <ul>
+            <li>负责城市开放世界 POI 深度体验设计，梳理叙事流程、空间节奏、玩家动线与跨职能落地沟通。</li>
+            <li>推进大世界载具玩法体系设计，围绕 T3/T2/T1 层级组织玩法、事件接入和世界反馈。</li>
+            <li>使用 Claude Code / Codex 辅助设计资料整理、文档派生、分镜和检查报告，服务于设计表达与验证。</li>
+          </ul>
+        </article>
+
+        <article class="item">
+          <div class="item-head">
+            <h3>腾讯光子 / UES 开放世界项目</h3>
+            <div class="meta">2022 - 2025 · 关卡策划</div>
+          </div>
+          <p>基于现代通天塔概念规划垂直关卡切片，构建随海拔变化的玩法主题；建立 Metrics 标准与模块化白盒规范，统一关卡生产管线，服务设计、关卡搭建和跨职能沟通。</p>
+        </article>
+
+        <article class="item">
+          <div class="item-head">
+            <h3>腾讯光子 / 金铲铲之战</h3>
+            <div class="meta">2021 - 2022 · 商业化策划</div>
+          </div>
+          <p>负责多个神话级小小英雄演出设计，协助完成高价值资产分级规范，并设计基于 SKU 关联的套装收集效果，缓解 Best-in-slot 问题。</p>
+        </article>
+      </section>
+
+      <section class="section" aria-label="近期个人研究与原型">
+        <div class="section-head">
+          <h2>近期个人研究与原型</h2>
+        </div>
+
+        <div class="project-grid">
+          <article class="project">
+            <h3>Flip or Flop：正在推进中的 roguelike demo</h3>
+            <p><strong>数值与 build 框架。</strong>围绕翻牌、构筑和撤离节奏推进，把 HP 货币、输入随机、方差收敛、Power Budget、VariantPool、ComboPromotion 和角色/cluster 双层 build 框架落到具体规则。</p>
+          </article>
+
+          <article class="project">
+            <h3>Arc Raiders 系统切片分析</h3>
+            <p><strong>品类与玩家生态。</strong>从搜打撤品类、玩家生态、经济循环、匹配机制和海外受众偏好切入，解释一个反常识系统为什么能跑出表现，以及它依赖哪些外部条件。</p>
+          </article>
+
+          <article class="project">
+            <h3>LLM Director Hitman</h3>
+            <p><strong>AI 参与玩法原型。</strong>把玩家自然语言计划编译成合法工具链，再由确定性规则写入世界状态；验证 AI 参与沙盒体验时如何保留中间状态和规则边界。</p>
+          </article>
+
+          <article class="project">
+            <h3>level-design-deck</h3>
+            <p><strong>关卡设计工具。</strong>把设计意图整理成结构化源事实，再派生文档、分镜、Deck 和检查报告；重点是设计信息如何被复用、检查和交接。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-label="正在验证的问题">
+        <div class="section-head">
+          <h2>正在验证的问题</h2>
+        </div>
+
+        <div class="method-row">
+          <article class="method">
+            <h3>生产端</h3>
+            <p>AI Agent 如何进入策划生产：把资料整理、规则拆解、文档派生和检查报告连成可复用流程，同时保留设计判断和边界控制。</p>
+          </article>
+          <article class="method">
+            <h3>体验端</h3>
+            <p>LLM 如何进入玩家体验：把自然语言意图转成可裁决工具链和世界状态，让玩家获得更高自由度，同时让系统反馈保持稳定。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </article>
+</body>
+</html>
