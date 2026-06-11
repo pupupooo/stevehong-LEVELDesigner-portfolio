@@ -476,6 +476,7 @@
         <a href="#problem">边界</a>
         <a href="#system">分层</a>
         <a href="#demo">原型</a>
+        <a href="demo/index.html">Echo Demo</a>
         <a href="director-lab.html">Director Lab</a>
         <a href="#llm">LLM 调度</a>
       </nav>
@@ -488,9 +489,9 @@
         <div>
           <div class="kicker">OPEN WORLD VEHICLE SYSTEM</div>
           <h1>大世界载具玩法设计与事件导演系统设计</h1>
-          <p class="lead">前半部分是载具玩法体系规划：把城市驾驶体验拆成 T3 感官交互、T2 复合玩法和 T1 系统挑战。后半部分是事件导演系统验证：用 2D 原型与 LLM 推理测试这些玩法如何根据玩家行为、车辆身份和世界语义被推送。</p>
+          <p class="lead">前半部分是载具玩法体系规划：把城市驾驶体验拆成 T3 感官交互、T2 复合玩法和 T1 系统挑战。后半部分是 Echo Director 原型验证：玩家驾驶行为会被压缩成 Snapshot、识别为 Episode、写回 Echo，并实际影响下一次 Vehicle Beat 分发。</p>
           <div class="actions">
-            <a class="button primary" href="demo/index.html">打开 MVP Demo</a>
+            <a class="button primary" href="demo/index.html">打开 Echo Director Demo</a>
             <a class="button" href="director-lab.html">打开 Director Lab</a>
             <a class="button" href="design.html">查看早期设计草稿</a>
           </div>
@@ -506,11 +507,11 @@
             </div>
             <div>
               <strong>原型验证</strong>
-              用 2D MVP 和 Director Lab 测试玩家中心分发、Beat 结构化和 LLM 语义调度。
+              用 Echo Director Demo 测试行为 Snapshot、Episode 识别、规则裁决、Echo 写回和实际抽牌权重。
             </div>
             <div>
               <strong>当前状态</strong>
-              载具体系规划来自项目生产语境；分发系统与 LLM 调度处于原型验证阶段。
+              载具体系规划来自项目生产语境；Echo Director 使用 LLM-ready mock 验证职责边界，未接真实 LLM API。
             </div>
           </div>
         </aside>
@@ -534,7 +535,7 @@
           </div>
           <div class="panel">
             <h3>探索侧：原型验证</h3>
-            <p>2D MVP 和 Director Lab 用来验证分发节奏、事件接入、世界响应，以及 LLM 的参与边界。</p>
+            <p>Echo Director Demo 用来验证分发节奏、事件接入、世界响应，以及 LLM-ready 语义层与规则层的边界。</p>
           </div>
         </div>
       </div>
@@ -583,8 +584,8 @@
         <div class="flow" aria-label="导演分发流程">
           <div class="flow-step"><strong>项目载具体系</strong><span>先把城市驾驶拆成 T3、T2、T1 三种体验颗粒度。</span></div>
           <div class="flow-step"><strong>T2 结构化</strong><span>把复合玩法整理为有上下文、接入、目标、反馈和结算的 Vehicle Beat。</span></div>
-          <div class="flow-step"><strong>2D MVP</strong><span>用纯 Deck 模拟 T2 事件何时出现、如何接入、如何被忽略。</span></div>
-          <div class="flow-step"><strong>Director Lab</strong><span>单独展示 LLM 参与后的语义 Beat 推荐、规则裁决和事件池实例化。</span></div>
+          <div class="flow-step"><strong>Echo Director Demo</strong><span>把行为 Snapshot、Episode、Echo 偏置和下一次 Deck draw 权重接成可玩闭环。</span></div>
+          <div class="flow-step"><strong>Director Lab</strong><span>单独展示 LLM-ready 语义 Beat 推荐、规则裁决和事件池实例化。</span></div>
           <div class="flow-step"><strong>设计边界</strong><span>LLM 只提建议，规则层和策划定义的事件池决定什么能真正发生。</span></div>
           <div class="flow-step"><strong>完整体验链</strong><span>T3 提供城市触感，T2 负责事件接入，T1 组织更长线的高光挑战。</span></div>
         </div>
@@ -594,19 +595,19 @@
     <section class="section dark" id="demo">
       <div class="section-inner">
         <div class="kicker">03 / IMPLEMENTATION PROOF</div>
-        <h2 class="section-title">2D MVP 聚焦 T2 分发验证。</h2>
-        <p class="section-lead">T3 依赖真实城市资产、物理反馈和路段布设；T1 需要更长的任务链、状态管理和系统级压力。当前 MVP 聚焦 T2，用于验证“事件何时出现、如何接入、玩家如何接受/忽略、世界如何回应”。</p>
+        <h2 class="section-title">Echo Director Demo 聚焦 T2 分发闭环。</h2>
+        <p class="section-lead">T3 依赖真实城市资产、物理反馈和路段布设；T1 需要更长的任务链、状态管理和系统级压力。当前可玩原型聚焦 T2，用于验证“玩家行为如何变成世界回响，并影响下一次事件分发”。</p>
         <div class="proof-block">
-          <h3>MVP Demo：纯 Deck 分发模拟</h3>
-          <p>用可玩的 2D 白盒验证 T2 事件的触发节奏、接入信号、接受/忽略和抢车后的世界响应。</p>
+          <h3>Echo Director Demo：行为回响与实际分发</h3>
+          <p>用可玩的 2D 白盒验证玩家行为如何形成 Snapshot、Episode 和 Echo 偏置；这些偏置会进入下一次 Deck draw 权重，任务保护等规则可以拒绝不合适的 T2 推送。</p>
           <div class="demo-frame">
-            <iframe src="demo/index.html" title="Vehicle Deck Director MVP Demo"></iframe>
+            <iframe src="demo/index.html" title="Vehicle Echo Director Demo"></iframe>
           </div>
         </div>
 
         <div class="proof-block">
-          <h3>Director Lab：LLM 语义调度链</h3>
-          <p>把同一套 T2 事件池放进 world snapshot、LLM Beat 推荐、Director Policy 裁决和事件池实例化链路中，展示 LLM 参与后的职责边界。</p>
+          <h3>Director Lab：独立语义调度观察页</h3>
+          <p>把同一套 T2 事件池放进 world snapshot、LLM-ready Beat 推荐、Director Policy 裁决和事件池实例化链路中，展示语义层参与后的职责边界。</p>
           <div class="demo-frame lab-frame">
             <iframe src="director-lab.html" title="Vehicle Director Lab"></iframe>
           </div>
@@ -636,7 +637,7 @@
                 <div><strong>车辆身份与世界响应</strong><span>抢车、车辆类型、热度和区域标签会改变后续推荐，让分发回应玩家行为与所在区域。</span></div>
               </li>
               <li>
-                <div><strong>LLM 语义调度链</strong><span>Director Lab 展示 world snapshot、LLM 推荐 Beat、Director Policy 裁决和事件池实例化。</span></div>
+                <div><strong>Echo Director 闭环</strong><span>Demo 展示 Snapshot、Episode Detector、语义候选、规则裁决、Echo 写回和实际 Deck draw 权重。</span></div>
               </li>
             </ol>
           </article>
@@ -675,8 +676,8 @@
             <li><strong>T3：</strong>作为区域语义、物理解法和风险条件被系统读取。</li>
             <li><strong>T2：</strong>主验证层，被整理成 Vehicle Beat、事件族、接入方式和结果反馈。</li>
             <li><strong>T1：</strong>作为稀缺系统级挑战章节，调用 T3/T2 组织完整体验波段。</li>
-            <li><strong>2D Demo：</strong>使用纯 Deck 抽取模拟分发回路，承担无 LLM 条件下的可玩验证。</li>
-            <li><strong>Director Lab：</strong>展示 LLM 参与后的语义推荐、规则裁决和事件池实例化。</li>
+            <li><strong>Echo Director Demo：</strong>使用 deterministic mock 验证语义候选、规则裁决、Echo 写回和实际 Deck 权重。</li>
+            <li><strong>Director Lab：</strong>展示 LLM-ready 语义推荐、规则裁决和事件池实例化。</li>
             <li><strong>设计边界：</strong>Deck/Beat 提供玩法边界和节奏框架，LLM 提供语义判断与表现建议，规则层决定什么能发生。</li>
           </ul>
         </div>

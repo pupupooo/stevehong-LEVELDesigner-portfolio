@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>载具Deck分发系统 — MVP Demo</title>
-<link rel="stylesheet" href="css/style.css?v=20260607-marker-guidance">
+<title>Vehicle Echo Director Lab — 载具事件导演 Demo</title>
+<link rel="stylesheet" href="css/style.css?v=20260610-echo-director">
 </head>
 <body>
 
@@ -18,19 +18,19 @@
 <!-- 演示说明 -->
 <div id="demo-brief">
   <div class="brief-card">
-    <div class="brief-kicker">PORTFOLIO DEMO / VEHICLE DECK DIRECTOR</div>
-    <h1>大世界载具玩法与事件导演 Demo</h1>
+    <div class="brief-kicker">PORTFOLIO DEMO / VEHICLE ECHO DIRECTOR</div>
+    <h1>Vehicle Echo Director Lab</h1>
     <p>
-      在涩谷-代官山启发的城市白盒中驾驶，观察事件如何根据车辆、地点和玩家行为出现。
-      本 demo 重点展示 T2 载具玩法分发、事件接入提示，以及抢车后的世界响应如何影响导演调度。
+      本 demo 展示 T2 载具玩法分发，以及玩家驾驶行为如何被压缩成 Snapshot、识别为 Episode、
+      写回 Echo，并影响下一次 Vehicle Beat 推荐。当前不接真实 LLM，使用 LLM-ready mock 展示语义层和规则层边界。
     </p>
     <div class="brief-steps">
-      <span>驾驶一段距离或时间后抽牌</span>
-      <span>出现可接入事件提示</span>
-      <span>按 E 接入 / Esc 忽略</span>
-      <span>车辆、地点、热度影响推荐</span>
+      <span>驾驶或注入测试场景</span>
+      <span>Snapshot 记录身份/区域/状态</span>
+      <span>规则裁决是否推送 Beat</span>
+      <span>Echo 改变下一次推荐</span>
     </div>
-    <button id="brief-start" type="button">开始演示</button>
+    <button id="brief-start" type="button">进入实验</button>
   </div>
 </div>
 
@@ -42,6 +42,13 @@
 <!-- 调试面板 -->
 <div id="debug-panel">
   <div class="debug-header">导演透视面板</div>
+  <div id="scenario-controls" aria-label="Echo Director 场景注入控制">
+    <button type="button" data-echo-scenario="police_high_speed">警局高速</button>
+    <button type="button" data-echo-scenario="bank_heavy_block">重卡堵银行</button>
+    <button type="button" data-echo-scenario="residential_danger">危险驾驶</button>
+    <button type="button" id="mission-protect-toggle">任务保护</button>
+    <button type="button" id="echo-reset">重置</button>
+  </div>
   <div id="debug-content">
     <!-- 由 debug.js 动态填充 -->
   </div>
@@ -63,8 +70,10 @@
 <script src="js/trigger.js?v=20260607-marker-guidance"></script>
 <script src="js/director.js?v=20260607-marker-guidance"></script>
 <script src="js/encounters.js?v=20260607-marker-guidance"></script>
-<script src="js/debug.js?v=20260607-marker-guidance"></script>
-<script src="js/main.js?v=20260607-marker-guidance"></script>
+<script src="js/director-advisor.js?v=20260610-echo-director"></script>
+<script src="js/echo-director.js?v=20260610-echo-director"></script>
+<script src="js/debug.js?v=20260610-echo-director"></script>
+<script src="js/main.js?v=20260610-echo-director"></script>
 <script src="../../../cv/for-ai-native/work-context.js"></script>
 
 </body>

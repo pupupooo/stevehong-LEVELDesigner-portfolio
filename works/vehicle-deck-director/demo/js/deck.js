@@ -84,6 +84,25 @@
       }
     },
 
+    _pickWeightedIndex(weights) {
+      if (!weights || this.drawPile.length <= 1) return this.drawPile.length - 1;
+
+      let bestIndex = this.drawPile.length - 1;
+      let bestScore = -Infinity;
+
+      for (let i = 0; i < this.drawPile.length; i++) {
+        const card = this.drawPile[i];
+        const base = weights[card.type] == null ? 1 : weights[card.type];
+        const score = base + Math.random() * 0.001;
+        if (score > bestScore) {
+          bestScore = score;
+          bestIndex = i;
+        }
+      }
+
+      return bestIndex;
+    },
+
     draw() {
       // 如果牌组空了，重洗
       if (this.drawPile.length === 0) {
@@ -92,7 +111,11 @@
 
       if (this.drawPile.length === 0) return null;
 
-      const card = this.drawPile.pop();
+      const weights = DS.EchoDirector && DS.EchoDirector.getDeckWeights ?
+        DS.EchoDirector.getDeckWeights() :
+        null;
+      const index = this._pickWeightedIndex(weights);
+      const card = this.drawPile.splice(index, 1)[0];
       this.currentCard = card;
       this.discardPile.push(card);
 

@@ -76,6 +76,15 @@
       const card = DS.DeckManager.draw();
       if (!card) return;
 
+      if (DS.EchoDirector && DS.EchoDirector.shouldBlockCard && DS.EchoDirector.shouldBlockCard(card.type)) {
+        const reason = DS.EchoDirector.getBlockReason ? DS.EchoDirector.getBlockReason() : '规则拒绝实例化。';
+        this._log('Policy Gate 拒绝: ' + card.def.name + ' — ' + reason, 'gate');
+        if (DS.Renderer && DS.Renderer.showMessage) {
+          DS.Renderer.showMessage('Policy Gate: 延后推送 ' + card.def.name, '#ffaa22', 2);
+        }
+        return;
+      }
+
       if (card.type === 'blank') {
         // 空牌：静默处理
         this._log('抽牌: 空牌 — 世界呼吸中', 'draw');
@@ -159,8 +168,13 @@
     _buildRecommendationReason(meta, worldState, vehicleProfile, poiName, speedState) {
       const heatText = worldState.heatTier || '低关注';
       const speedText = speedState === 'fast' ? '高速驾驶' : '巡航驾驶';
-      return (meta.llmHint || '基于当前世界上下文选择可接入事件。') +
+      const baseReason = (meta.llmHint || '基于当前世界上下文选择可接入事件。') +
         ' 当前上下文: ' + vehicleProfile.name + ' / ' + speedText + ' / ' + heatText + ' / ' + poiName + '。';
+      const echo = DS.EchoDirector && DS.EchoDirector.getState ? DS.EchoDirector.getState() : null;
+      const echoText = echo && echo.echoTags && echo.echoTags.length ?
+        ' Echo: ' + echo.echoTags.slice(-2).join(' / ') + '。' :
+        '';
+      return baseReason + echoText;
     },
 
     acceptPendingBeat() {

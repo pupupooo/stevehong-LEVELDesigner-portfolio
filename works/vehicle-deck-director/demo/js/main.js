@@ -72,6 +72,11 @@
     // 初始化调试面板
     DS.DebugPanel.init();
 
+    // 初始化 Echo Director Lab 层
+    if (DS.EchoDirector) {
+      DS.EchoDirector.init();
+    }
+
     // Esc 拒绝/取消当前玩法
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Escape') {
@@ -90,8 +95,60 @@
     });
     window.addEventListener('keydown', closeBrief);
 
+    function bindScenarioControls() {
+      if (!DS.EchoDirector) return;
+
+      const scenarioButtons = document.querySelectorAll('[data-echo-scenario]');
+      const missionToggle = document.getElementById('mission-protect-toggle');
+
+      for (const button of scenarioButtons) {
+        button.addEventListener('click', () => {
+          DS.EchoDirector.runScenario(button.dataset.echoScenario);
+          for (const item of scenarioButtons) {
+            item.classList.toggle('active', item === button);
+          }
+          if (DS.Renderer && DS.Renderer.showMessage) {
+            DS.Renderer.showMessage('场景注入: ' + button.textContent, '#38bdf8', 2);
+          }
+        });
+      }
+
+      if (missionToggle) {
+        missionToggle.addEventListener('click', () => {
+          const state = DS.EchoDirector.toggleMissionProtected();
+          missionToggle.classList.toggle('active', !!(state && state.mainMissionProtected));
+          if (DS.Renderer && DS.Renderer.showMessage) {
+            DS.Renderer.showMessage(
+              state.mainMissionProtected ? '任务保护：拒绝新 T2 推送' : '任务保护关闭：恢复 Echo 分发',
+              state.mainMissionProtected ? '#ffaa22' : '#44cc66',
+              2
+            );
+          }
+        });
+      }
+
+      const reset = document.getElementById('echo-reset');
+      if (reset) {
+        reset.addEventListener('click', () => {
+          DS.EchoDirector.reset();
+          if (DS.DebugPanel) {
+            DS.DebugPanel.logEntries = [];
+          }
+          for (const item of scenarioButtons) {
+            item.classList.remove('active');
+          }
+          if (missionToggle) missionToggle.classList.remove('active');
+          if (DS.Renderer && DS.Renderer.showMessage) {
+            DS.Renderer.showMessage('Echo Director 已重置', '#888899', 1.6);
+          }
+        });
+      }
+    }
+
+    bindScenarioControls();
+
     // 启动欢迎消息
-    DS.Renderer.showMessage('载具Deck分发系统 — MVP Demo', '#ff4500', 3);
+    DS.Renderer.showMessage('Vehicle Echo Director Lab', '#ff4500', 3);
     setTimeout(() => {
       DS.Renderer.showMessage('WASD 驾驶 | E 交互 | Esc 取消', '#888', 4);
     }, 3500);
@@ -135,6 +192,11 @@
 
     // 更新导演
     DS.Director.update(dt);
+
+    // 更新 Echo Director Lab 层
+    if (DS.EchoDirector) {
+      DS.EchoDirector.update(dt);
+    }
 
     // 更新渲染器（摄像机等）
     DS.Renderer.update(dt);

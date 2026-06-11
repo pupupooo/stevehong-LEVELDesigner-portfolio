@@ -161,8 +161,8 @@ body {
 
 /* ── 调试面板 ── */
 #debug-panel {
-  width: 320px;
-  min-width: 320px;
+  width: 420px;
+  min-width: 420px;
   height: 100vh;
   background: var(--surface);
   border-left: 1px solid var(--border);
@@ -182,6 +182,30 @@ body {
   color: var(--accent);
   letter-spacing: 1px;
   text-transform: uppercase;
+}
+
+#scenario-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+}
+
+#scenario-controls button {
+  min-height: 32px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+#scenario-controls button.active,
+#scenario-controls button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .debug-section {
@@ -244,6 +268,55 @@ body {
 .weight-item strong {
   color: var(--text);
   font-weight: 600;
+}
+
+.echo-stage {
+  display: grid;
+  gap: 6px;
+}
+
+.echo-card {
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.035);
+  padding: 8px;
+}
+
+.echo-card strong {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.echo-card p,
+.echo-card li {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.echo-card ul {
+  display: grid;
+  gap: 2px;
+  margin-left: 14px;
+}
+
+.echo-card .weight-list {
+  margin-top: 6px;
+}
+
+.echo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.echo-tag {
+  border: 1px solid rgba(68,136,255,0.4);
+  color: var(--blue);
+  padding: 2px 6px;
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 10px;
 }
 
 /* ── 牌组可视化 ── */
@@ -338,6 +411,7 @@ body {
 .status-tag.running { background: rgba(68,204,102,0.15); color: var(--green); }
 .status-tag.active  { background: rgba(255,69,0,0.15);   color: var(--accent); }
 .status-tag.idle    { background: rgba(136,136,153,0.1);  color: var(--text-muted); }
+.status-tag.blocked { background: rgba(255,95,109,0.15);  color: #ff5f6d; }
 
 /* ── 提示文字 ── */
 .hint-text {
@@ -359,7 +433,7 @@ body {
   #debug-panel {
     width: 100%;
     min-width: 0;
-    height: 320px;
+    height: 360px;
     border-left: 0;
     border-top: 1px solid var(--border);
   }

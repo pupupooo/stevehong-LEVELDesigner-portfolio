@@ -75,6 +75,7 @@
       const speed = Math.abs(Math.round(DS.Vehicle.speed));
 
       let html = '';
+      html += this._renderEchoDirector();
 
       // 速度状态
       html += '<div class="debug-section">';
@@ -216,6 +217,88 @@
     _row(label, value, colorClass) {
       return '<div class="debug-row"><span class="label">' + label +
         '</span><span class="value ' + (colorClass || '') + '">' + value + '</span></div>';
+    },
+
+    _renderEchoDirector() {
+      if (!DS.EchoDirector) return '';
+      const state = DS.EchoDirector.getState();
+      if (!state) return '';
+
+      const snapshot = state.latestSnapshot || {};
+      const latestEpisode = state.episodes[state.episodes.length - 1];
+      const topCandidate = state.semanticCandidates && state.semanticCandidates.length ?
+        state.semanticCandidates[0] :
+        null;
+      const policy = state.policy || {};
+      const echoTags = state.echoTags || [];
+      const nextBeatPool = state.nextBeatPool || [];
+
+      let html = '<div class="debug-section">';
+      html += '<h3>Echo Director 闭环</h3>';
+      html += '<div class="echo-stage">';
+
+      html += '<div class="echo-card"><strong>1 Snapshot</strong>';
+      html += '<p>' + [
+        snapshot.vehicleName || '未知车辆',
+        (snapshot.speed || 0) + 'km/h',
+        snapshot.regionTag || '未知区域',
+        snapshot.nearbyPoi ? snapshot.nearbyPoi.name : '无 POI',
+        'heat ' + (snapshot.heat || 0),
+      ].join(' / ') + '</p></div>';
+
+      html += '<div class="echo-card"><strong>2 Episode Detector</strong>';
+      if (latestEpisode) {
+        html += '<p>' + latestEpisode.label + ' <span class="echo-tag">' + latestEpisode.source + '</span></p>';
+        html += '<ul>' + latestEpisode.evidence.map(item => '<li>' + item + '</li>').join('') + '</ul>';
+      } else {
+        html += '<p>暂未形成可记录 Episode。可驾驶到警局/银行附近，或使用上方场景注入。</p>';
+      }
+      html += '</div>';
+
+      html += '<div class="echo-card"><strong>3 Semantic Candidate</strong>';
+      if (topCandidate) {
+        html += '<p>' + topCandidate.cnLabel + ' / score ' + topCandidate.score + '</p>';
+        if (topCandidate.reasons && topCandidate.reasons.length) {
+          html += '<ul>' + topCandidate.reasons.slice(0, 2).map(item => '<li>' + item + '</li>').join('') + '</ul>';
+        }
+      } else {
+        html += '<p>等待 LLM-ready mock 产出语义候选。</p>';
+      }
+      html += '</div>';
+
+      html += '<div class="echo-card"><strong>4 Rule Arbiter</strong>';
+      html += '<p><span class="status-tag ' + (policy.blocked ? 'blocked' : 'running') + '">' +
+        (policy.blocked ? 'BLOCKED' : 'PASS') + '</span> ' + (policy.reason || '等待裁决') + '</p>';
+      if (policy.checks && policy.checks.length) {
+        html += '<div class="weight-list">' + policy.checks.map(check =>
+          '<div class="weight-item"><span>' + check.label + '</span><strong>' +
+          (check.pass ? 'PASS' : 'FAIL') + '</strong></div>'
+        ).join('') + '</div>';
+      }
+      html += '</div>';
+
+      html += '<div class="echo-card"><strong>5 Echo / Next Bias</strong>';
+      html += '<div class="echo-tags">' + (echoTags.length ?
+        echoTags.map(tag => '<span class="echo-tag">' + tag + '</span>').join('') :
+        '<span class="echo-tag">No Echo</span>') + '</div>';
+      html += '<div class="weight-list">';
+      for (const key of Object.keys(state.directorBias || {})) {
+        const value = state.directorBias[key];
+        html += '<div class="weight-item"><span>' + key + '</span><strong>' +
+          (value > 0 ? '+' : '') + value + '</strong></div>';
+      }
+      html += '</div></div>';
+
+      html += '<div class="echo-card"><strong>6 Actual Next Draw Weights</strong>';
+      html += '<div class="weight-list">' + nextBeatPool.map(item =>
+        '<div class="weight-item"><span>' + item.label + '</span><strong>x' +
+        item.drawWeight.toFixed(2) + '</strong></div>'
+      ).join('') + '</div>';
+      html += '<p>这里是真正传给 Deck draw 的权重，不只是解释面板。</p>';
+      html += '</div>';
+
+      html += '</div></div>';
+      return html;
     },
 
     _formatTime(seconds) {
