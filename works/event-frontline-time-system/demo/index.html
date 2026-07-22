@@ -1,0 +1,2653 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>事件前线 Demo：世界流动，现场接管</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --paper: #f2eee4;
+      --panel: #fffaf1;
+      --ink: #20231f;
+      --muted: #5f665d;
+      --line: #c9bea9;
+      --accent: #b84f2a;
+      --blue: #2d638d;
+      --green: #2f7659;
+      --gold: #9c6a22;
+      --violet: #67558d;
+      --red: #9b3c33;
+      --road: #b8aa94;
+      --water: #d9e8ec;
+      --shadow: rgba(32, 35, 31, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.58 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button {
+      border: 1px solid var(--ink);
+      background: var(--panel);
+      color: var(--ink);
+      padding: 9px 12px;
+      min-height: 40px;
+      font: 780 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 1px 0 var(--shadow);
+    }
+
+    .case-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--panel);
+      padding: 9px 12px;
+      min-height: 40px;
+      font: 780 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-decoration: none;
+    }
+
+    .case-link:hover { background: var(--accent); }
+
+    button:hover { background: #f7eadc; }
+    button.is-active { background: #dcebf2; border-color: var(--blue); }
+    button:focus-visible,
+    [role="button"]:focus-visible {
+      outline: 3px solid rgba(45, 99, 141, .36);
+      outline-offset: 2px;
+    }
+    button:disabled {
+      color: #9c9589;
+      border-color: #d8d0c2;
+      cursor: not-allowed;
+      background: #f7f1e8;
+    }
+
+    .page {
+      width: min(1280px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 28px 0 46px;
+    }
+
+    header {
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+      align-items: end;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 18px;
+      margin-bottom: 16px;
+    }
+
+    .kicker {
+      color: var(--accent);
+      font: 850 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stat,
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 241, .82);
+    }
+
+    .stat {
+      padding: 12px;
+      min-height: 78px;
+    }
+
+    .stat small,
+    .panel-title small {
+      display: block;
+      color: var(--muted);
+      font: 750 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .time-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .time-mode {
+      border: 1px solid var(--line);
+      background: #edf4f6;
+      color: var(--blue);
+      padding: 4px 6px;
+      font: 800 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+    }
+
+    .stat.is-scene-paused {
+      border-color: var(--accent);
+      background: #fff3e7;
+    }
+
+    .stat.is-scene-paused .time-mode {
+      border-color: var(--accent);
+      background: #f7ded0;
+      color: var(--red);
+    }
+
+    .stat.is-scene-paused .clock-bar {
+      background: repeating-linear-gradient(
+        135deg,
+        #ecd5c7 0,
+        #ecd5c7 7px,
+        #fff5e9 7px,
+        #fff5e9 14px
+      );
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(680px, 1.65fr) minmax(350px, .8fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .layout.is-scene-active {
+      grid-template-columns: minmax(520px, 1fr) minmax(500px, 1fr);
+    }
+
+    .map-panel {
+      grid-row: span 2;
+    }
+
+    .panel {
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .play-panel.is-scene-active {
+      border-color: var(--accent);
+      box-shadow: inset 0 4px 0 var(--accent);
+    }
+
+    .play-panel.is-scene-active .outcome,
+    .play-panel.is-scene-active .entry-list {
+      display: none;
+    }
+
+    .play-panel.is-scene-active .world-actions {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .panel-title h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .map {
+      position: relative;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(121, 109, 92, .055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(121, 109, 92, .055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(217, 232, 236, .7), rgba(217, 232, 236, 0) 34%),
+        var(--panel);
+      background-size: 32px 32px, 32px 32px, auto, auto;
+      min-height: 520px;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    .boot-error {
+      border: 2px solid var(--red);
+      background: #fff2ef;
+      color: var(--ink);
+      margin: 12px;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .boot-error strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .boot-error code {
+      display: block;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+
+    .town-map {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 520px;
+    }
+
+    .road {
+      stroke: var(--road);
+      stroke-width: 18;
+      stroke-linecap: round;
+      opacity: .62;
+    }
+
+    .road-line {
+      stroke: #796d5c;
+      stroke-width: 2;
+      stroke-dasharray: 7 9;
+      opacity: .6;
+    }
+
+    .terrain {
+      stroke: none;
+      opacity: .42;
+      pointer-events: none;
+    }
+
+    .terrain-field { fill: #b8ca98; }
+    .terrain-square { fill: #e7ca8e; }
+    .terrain-forest { fill: #7fa58a; }
+    .terrain-hill { fill: #c7b9a1; }
+
+    .landmark {
+      opacity: .42;
+      pointer-events: none;
+    }
+
+    .landmark .building {
+      fill: #efe0c5;
+      stroke: #8b7d6b;
+      stroke-width: 1.2;
+    }
+
+    .landmark .building-roof { fill: #c78455; }
+
+    .flow {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 5;
+      stroke-dasharray: 10 8;
+      opacity: .9;
+    }
+
+    .flow-known { stroke: var(--blue); }
+    .flow-pressure { stroke: var(--red); }
+    .flow-reentry { stroke: var(--violet); }
+    .flow-relief { stroke: var(--green); stroke-dasharray: 1 0; }
+
+    .player-move-line {
+      stroke: var(--accent);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 7 8;
+      opacity: .68;
+    }
+
+    .actor-route {
+      fill: none;
+      stroke: rgba(32, 35, 31, .28);
+      stroke-width: 3;
+      stroke-dasharray: 4 8;
+      stroke-linecap: round;
+    }
+
+    .zone-node {
+      cursor: default;
+    }
+
+    .zone-node text,
+    .zone-shape,
+    .zone-hop {
+      pointer-events: none;
+    }
+
+    .zone-hit {
+      fill: transparent;
+      pointer-events: none;
+    }
+
+    .zone-node.is-neighbor .zone-hit {
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .zone-shape {
+      fill: #fffaf1;
+      stroke: var(--line);
+      stroke-width: 2.5;
+      filter: drop-shadow(0 4px 0 rgba(32, 35, 31, .1));
+    }
+
+    .zone-node.is-current .zone-shape {
+      stroke: var(--accent);
+      stroke-width: 4;
+      fill: #fff1e3;
+    }
+
+    .zone-node.is-neighbor .zone-shape {
+      stroke: var(--blue);
+      stroke-width: 3;
+      fill: #f3f8fb;
+    }
+
+    .zone-node.is-neighbor .zone-hop {
+      opacity: 1;
+    }
+
+    .zone-hop {
+      fill: var(--blue);
+      opacity: 0;
+    }
+
+    .zone-hop-text {
+      fill: #fffaf1;
+      font: 900 10px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-anchor: middle;
+      opacity: 0;
+    }
+
+    .zone-node.is-neighbor .zone-hop-text { opacity: 1; }
+
+    .zone-node.has-pressure .zone-shape { fill: #fff0dc; stroke: #c3914a; }
+    .zone-node.has-danger .zone-shape { fill: #f7e2de; stroke: var(--red); }
+    .zone-node.has-black-market .zone-shape { fill: #ede7f3; stroke: var(--violet); }
+    .zone-node.has-authority .zone-shape { fill: #e7eef4; stroke: var(--blue); }
+    .zone-node.has-scar .zone-shape { fill: #eaded8; stroke: #9a8276; }
+    .zone-node.has-relief .zone-shape { fill: #e5f1e8; stroke: var(--green); }
+
+    .zone-node.is-disabled { opacity: .72; }
+
+    .zone-code {
+      fill: var(--blue);
+      font: 900 20px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .zone-name {
+      fill: var(--ink);
+      font: 850 19px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .zone-role {
+      fill: var(--muted);
+      font: 720 10px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .zone-condition-pill {
+      stroke: rgba(32, 35, 31, .32);
+      stroke-width: 1;
+    }
+
+    .zone-condition-label {
+      fill: var(--ink);
+      font: 820 9px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-anchor: middle;
+    }
+
+    .status-pressure { fill: #f2cf91; }
+    .status-danger { fill: #d88e82; }
+    .status-black-market { fill: #b8a2ce; }
+    .status-authority { fill: #9bb9cf; }
+    .status-scar { fill: #b99d91; }
+    .status-relief { fill: #9dc5aa; }
+
+    .player-token {
+      fill: var(--accent);
+      stroke: var(--ink);
+      stroke-width: 3;
+    }
+
+    .player-ring {
+      fill: rgba(255, 250, 241, .72);
+      stroke: var(--accent);
+      stroke-width: 3;
+      opacity: .9;
+    }
+
+    .marker-player {
+      pointer-events: none;
+      filter: drop-shadow(0 2px 0 rgba(32, 35, 31, .18));
+    }
+
+    .marker,
+    .actor,
+    .actor-route {
+      pointer-events: none;
+    }
+
+    .marker circle,
+    .marker rect,
+    .marker polygon {
+      stroke: var(--ink);
+      stroke-width: 2;
+    }
+
+    .marker text {
+      fill: var(--ink);
+      font: 880 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-anchor: middle;
+    }
+
+    .marker-preview circle { fill: #dcebf2; }
+    .marker-live polygon { fill: #efb08f; }
+    .marker-reentry rect { fill: #cfe8d6; }
+    .marker-rumor rect { fill: #f1dfb8; }
+    .marker-scar circle { fill: #ead7d1; }
+    .marker-cargo rect { fill: #f1d08e; }
+
+    .actor .actor-body,
+    .actor .actor-label-bg {
+      stroke: var(--ink);
+      stroke-width: 1.6;
+    }
+
+    .actor .actor-label-bg { fill: rgba(255, 250, 241, .96); }
+
+    .actor text {
+      fill: var(--ink);
+      font: 850 9px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-anchor: middle;
+    }
+
+    .actor-healer .actor-body { fill: #d8e8d8; }
+    .actor-civilian .actor-body { fill: #eadbbd; }
+    .actor-authority .actor-body { fill: #cbddec; }
+    .actor-threat .actor-body { fill: #e4b5ae; }
+    .actor-resource .actor-body { fill: #f1d08e; }
+    .actor-pressure .actor-body { fill: #f0c7ad; }
+    .actor-black-market .actor-body { fill: #d9c8e6; }
+    .actor-relief .actor-body { fill: #c8e4ce; }
+
+    .actor-shadow {
+      fill: rgba(32, 35, 31, .16);
+    }
+
+    .world-pulse {
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      background: #fffaf1;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .pulse-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    .pulse-head strong {
+      font-size: 17px;
+    }
+
+    .pulse-head span {
+      color: var(--muted);
+      font: 760 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .pulse-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(180px, .9fr);
+      gap: 10px;
+    }
+
+    .pulse-card {
+      border: 1px solid var(--line);
+      background: #fff6e8;
+      padding: 10px;
+      min-width: 0;
+    }
+
+    .pulse-card strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .pulse-card small {
+      display: block;
+      color: var(--blue);
+      font: 800 10px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .pulse-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pulse-zones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .pulse-zone {
+      border: 1px solid var(--line);
+      background: #f7eddc;
+      padding: 5px 7px;
+      font: 760 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .pulse-zone.danger { background: #f4e0dc; border-color: #d9aaa1; }
+    .pulse-zone.black-market { background: #eee6f5; border-color: #baa8d2; }
+    .pulse-zone.authority { background: #e6eff6; border-color: #a9bfd0; }
+    .pulse-zone.pressure { background: #f7ebd6; border-color: #d5bd8d; }
+    .pulse-zone.scar { background: #ece1dc; border-color: #c8afa4; }
+    .pulse-zone.relief { background: #e5f1e8; border-color: #abcab4; }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1px solid var(--ink);
+    }
+
+    .legend .player-dot { border-radius: 50%; background: var(--accent); }
+    .legend .preview-dot { border-radius: 50%; background: #dcebf2; }
+    .legend .live-dot { background: #efb08f; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+    .legend .reentry-dot { background: #cfe8d6; }
+    .legend .rumor-dot { border-radius: 50%; background: #f1dfb8; }
+    .legend .actor-dot { border-radius: 50%; background: #eadbbd; }
+    .legend .pressure-dot { background: #f7e2bd; }
+
+    .clock-bar {
+      border: 1px solid var(--line);
+      height: 10px;
+      margin-top: 8px;
+      background: rgba(255, 250, 241, .8);
+      overflow: hidden;
+    }
+
+    .clock-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width .12s linear;
+    }
+
+    .actions,
+    .script-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .entry-list,
+    .debug-list,
+    .event-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .entry,
+    .event-card,
+    .log-item {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .entry strong,
+    .event-card strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 17px;
+    }
+
+    .entry p,
+    .event-card p,
+    .log-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .entry.preview { border-left: 5px solid var(--blue); }
+    .entry.live { border-left: 5px solid var(--accent); }
+    .entry.reentry { border-left: 5px solid var(--green); }
+    .entry.reentry.weak { border-left-color: var(--gold); background: #fff9ed; }
+    .entry.transfer { border-left: 5px solid var(--gold); background: #fff9ed; }
+
+    .choice-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 9px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: #f7eddc;
+      color: var(--ink);
+      padding: 5px 7px;
+      font: 730 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      background: #f4ead9;
+      padding: 5px 7px;
+      font: 760 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .tag.strong { background: #e5f1e8; border-color: #abcab4; }
+    .tag.weak { background: #f7ebd6; border-color: #d5bd8d; }
+    .tag.warn { background: #f4e0dc; border-color: #d9aaa1; }
+
+    .event-card {
+      display: grid;
+      gap: 8px;
+    }
+
+    .event-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .event-card-head strong {
+      margin: 0;
+    }
+
+    .event-stage {
+      border: 1px solid var(--line);
+      background: #f4ead9;
+      padding: 4px 6px;
+      color: var(--muted);
+      font: 760 11px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      white-space: nowrap;
+    }
+
+    .event-stage.good { background: #e5f1e8; border-color: #abcab4; color: var(--green); }
+    .event-stage.warn { background: #f4e0dc; border-color: #d9aaa1; color: var(--red); }
+
+    .front-track {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 3px;
+    }
+
+    .front-track span {
+      border-top: 4px solid #ded5c7;
+      padding-top: 4px;
+      color: #938a7c;
+      font-size: 10px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .front-track span.is-done { border-color: #8ca997; color: var(--green); }
+    .front-track span.is-current { border-color: var(--accent); color: var(--ink); font-weight: 800; }
+
+    .log {
+      max-height: 310px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .log-item {
+      margin-bottom: 8px;
+    }
+
+    .log-item code {
+      display: block;
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      margin-bottom: 4px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .note {
+      border-left: 5px solid var(--gold);
+      background: var(--panel);
+      padding: 12px;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    .outcome {
+      border: 2px solid var(--ink);
+      background: #fff6e8;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .outcome.good { border-color: var(--green); background: #edf6ee; }
+    .outcome.bad { border-color: var(--red); background: #f7e8e4; }
+    .outcome.neutral { border-color: var(--gold); }
+
+    .outcome strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+
+    .outcome p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .scene-panel {
+      border: 2px solid var(--ink);
+      border-top: 6px solid var(--accent);
+      background: #fffaf1;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 5px 0 rgba(32, 35, 31, .08);
+    }
+
+    .scene-panel[hidden] { display: none; }
+
+    .scene-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+
+    .scene-title-block {
+      min-width: 0;
+    }
+
+    .scene-eyebrow {
+      display: block;
+      color: var(--accent);
+      font: 850 11px/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .scene-title {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .scene-lock {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 0 0 auto;
+      border: 1px solid var(--accent);
+      background: #f7ded0;
+      color: var(--red);
+      padding: 8px 10px;
+    }
+
+    .scene-lock-icon {
+      display: grid;
+      grid-template-columns: repeat(2, 4px);
+      gap: 4px;
+      width: 12px;
+      height: 16px;
+    }
+
+    .scene-lock-icon::before,
+    .scene-lock-icon::after {
+      content: "";
+      display: block;
+      width: 4px;
+      height: 16px;
+      background: var(--red);
+    }
+
+    .scene-lock small,
+    .scene-lock strong {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .scene-lock small {
+      font: 760 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin-bottom: 3px;
+    }
+
+    .scene-lock strong {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .scene-phase {
+      border: 1px solid var(--accent);
+      background: #f7ded0;
+      padding: 5px 8px;
+      color: var(--red);
+      font: 800 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: nowrap;
+    }
+
+    .scene-beat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .scene-beat-head strong {
+      font-size: 14px;
+    }
+
+    .scene-beat-head span:last-child {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scene-beats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+
+    .scene-beats span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      border-left: 5px solid #ded5c7;
+      background: #f7f1e8;
+      padding: 7px 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .scene-beats b {
+      color: #918879;
+      font: 850 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .scene-beats span.is-done { border-left-color: var(--green); background: #edf6ee; }
+    .scene-beats span.is-current { border-color: var(--accent); border-left-color: var(--accent); background: #fff0e5; color: var(--ink); font-weight: 800; }
+
+    .scene-map {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid #9d927f;
+      background: #edf0e9;
+    }
+
+    .scene-map .scene-sky { fill: #dce9eb; }
+    .scene-map .scene-ground { fill: #e4e6db; }
+    .scene-map .scene-ridge { fill: #bec9af; opacity: .78; }
+    .scene-map .scene-road { stroke: var(--road); stroke-width: 42; stroke-linecap: round; }
+    .scene-map .scene-road-line { stroke: #796d5c; stroke-width: 3; stroke-dasharray: 10 10; }
+    .scene-map .scene-bandit { fill: #d88e82; stroke: var(--ink); stroke-width: 3; }
+    .scene-map .scene-cart { fill: #f1d08e; stroke: var(--ink); stroke-width: 3; }
+    .scene-map .scene-player { fill: var(--accent); stroke: var(--ink); stroke-width: 3; }
+    .scene-map .scene-medicine { fill: #f5d58f; stroke: var(--ink); stroke-width: 3; }
+    .scene-map .scene-intent-line { stroke: var(--red); stroke-width: 3; stroke-dasharray: 7 7; }
+    .scene-map text {
+      fill: var(--ink);
+      font: 850 14px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-anchor: middle;
+    }
+
+    .scene-entity {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .scene-entity-hit {
+      fill: transparent;
+      pointer-events: all;
+    }
+
+    .scene-entity-halo {
+      fill: rgba(255, 250, 241, .72);
+      stroke: var(--blue);
+      stroke-width: 3;
+      stroke-dasharray: 6 5;
+    }
+
+    .scene-entity.is-linked .scene-entity-halo,
+    .scene-entity:hover .scene-entity-halo,
+    .scene-entity:focus .scene-entity-halo {
+      fill: rgba(220, 235, 242, .88);
+      stroke-width: 5;
+    }
+
+    .scene-resource-unknown circle {
+      fill: #fffaf1;
+      stroke: var(--gold);
+      stroke-width: 2;
+    }
+
+    .scene-resource-unknown text {
+      fill: var(--gold);
+      font: 900 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .scene-action-link {
+      stroke: var(--blue);
+      stroke-width: 2;
+      stroke-dasharray: 4 5;
+      pointer-events: none;
+    }
+
+    .scene-map-action {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .scene-map-action rect {
+      fill: #fffaf1;
+      stroke: var(--blue);
+      stroke-width: 2;
+      filter: drop-shadow(0 3px 0 rgba(32, 35, 31, .14));
+    }
+
+    .scene-map-action text {
+      fill: var(--ink);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    .scene-map-action.primitive-redirect rect { stroke: var(--red); background: #fff3ef; }
+    .scene-map-action.primitive-transfer rect { stroke: var(--gold); fill: #fff2cf; }
+    .scene-map-action:hover rect,
+    .scene-map-action:focus rect,
+    .scene-map-action.is-linked rect {
+      fill: #dcebf2;
+      stroke-width: 3;
+    }
+
+    .scene-map-action.primitive-transfer:hover rect,
+    .scene-map-action.primitive-transfer:focus rect,
+    .scene-map-action.primitive-transfer.is-linked rect {
+      fill: #f7dfaa;
+    }
+
+    .scene-feedback {
+      border-left: 5px solid var(--accent);
+      background: #fff3e7;
+      margin: 10px 0 8px;
+      padding: 9px 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .scene-feedback strong { color: var(--ink); }
+
+    .scene-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .scene-fact {
+      border: 1px solid var(--line);
+      background: #f4ead9;
+      padding: 5px 7px;
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    .scene-action-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 11px;
+      margin-bottom: 8px;
+    }
+
+    .scene-action-head strong {
+      font-size: 16px;
+    }
+
+    .scene-action-head span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scene-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .scene-action {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+      text-align: left;
+      padding: 10px;
+      min-height: 72px;
+    }
+
+    .scene-action-target {
+      display: grid;
+      place-items: center;
+      align-self: stretch;
+      border-right: 1px solid var(--line);
+      color: var(--blue);
+      font: 850 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-align: center;
+    }
+
+    .scene-action-target em {
+      display: block;
+      color: var(--muted);
+      font: 700 9px/1.1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-style: normal;
+      margin-top: 4px;
+    }
+
+    .scene-action-copy {
+      display: block;
+      min-width: 0;
+    }
+
+    .scene-action-copy strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .scene-action-copy small {
+      display: block;
+      color: var(--muted);
+      font: 650 11px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-transform: none;
+    }
+
+    .scene-action.primitive-inspect { border-color: var(--blue); }
+    .scene-action.primitive-redirect { border-color: var(--red); }
+    .scene-action.primitive-transfer { border-color: var(--gold); background: #fff5d9; }
+    .scene-action.primitive-wait { grid-column: 1 / -1; min-height: 58px; }
+
+    .scene-action.is-linked,
+    .scene-action:hover,
+    .scene-action:focus-visible {
+      background: #e9f2f5;
+      box-shadow: inset 4px 0 0 var(--blue);
+    }
+
+    .scene-action.primitive-transfer.is-linked,
+    .scene-action.primitive-transfer:hover,
+    .scene-action.primitive-transfer:focus-visible {
+      background: #f7dfaa;
+      box-shadow: inset 4px 0 0 var(--gold);
+    }
+
+    @media (max-width: 1100px) {
+      header { display: block; }
+
+      .layout {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .layout.is-scene-active .play-panel { order: -1; }
+
+      header .script-buttons {
+        margin-top: 14px;
+      }
+
+      .map,
+      .town-map {
+        min-height: 430px;
+      }
+
+      .status-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pulse-main {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page { width: min(calc(100vw - 18px), 1280px); padding-top: 18px; }
+      .status-strip { grid-template-columns: 1fr; }
+      button { width: 100%; }
+      .script-buttons button,
+      .actions button,
+      .script-buttons .case-link { width: auto; flex: 1 1 140px; }
+      .zone-code { font-size: 23px; }
+      .zone-name { font-size: 22px; }
+      .zone-role { font-size: 12px; }
+      .zone-condition-label { font-size: 11px; }
+      .marker text { font-size: 14px; }
+      .actor text { font-size: 11px; }
+      .scene-panel { padding: 11px; }
+      .scene-head { align-items: flex-start; gap: 8px; }
+      .scene-title { font-size: 20px; }
+      .scene-lock { padding: 7px 8px; }
+      .scene-lock small { display: none; }
+      .scene-beat-head span:last-child { display: none; }
+      .scene-beats span { justify-content: center; padding-inline: 4px; }
+      .scene-actions { grid-template-columns: 1fr; }
+      .scene-action.primitive-wait { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <div>
+      <div class="kicker">Event Frontline Demo / Lesson 0009</div>
+      <h1>世界流动，现场接管</h1>
+    </div>
+    <div class="script-buttons" aria-label="测试路线">
+      <button type="button" data-route="intervene">路线 A：现场救车</button>
+      <button type="button" data-route="missed">路线 B：预兆后错过</button>
+      <button type="button" data-route="unseen">路线 C：未见预兆</button>
+      <button type="button" data-reset="B">重置到 B</button>
+      <a class="case-link" href="../index.html">设计说明</a>
+    </div>
+  </header>
+
+  <section class="status-strip" aria-label="当前状态">
+    <div id="time-stat" class="stat">
+      <small>time</small>
+      <div class="time-row">
+        <strong id="time-label">初始化中</strong>
+        <span id="time-mode" class="time-mode">自然流动</span>
+      </div>
+      <div class="clock-bar" aria-hidden="true"><div id="clock-fill" class="clock-fill"></div></div>
+    </div>
+    <div class="stat">
+      <small>zone</small>
+      <strong id="zone-label">B 桥市</strong>
+    </div>
+    <div class="stat">
+      <small>seen previews</small>
+      <div id="seen-previews" class="tags"><span class="tag">等待初始化</span></div>
+    </div>
+    <div class="stat">
+      <small>world tags</small>
+      <div id="world-tags" class="tags"><span class="tag">等待初始化</span></div>
+    </div>
+    <div class="stat">
+      <small>carry</small>
+      <div id="inventory-tags" class="tags"><span class="tag">空手</span></div>
+    </div>
+  </section>
+
+  <section id="main-layout" class="layout">
+    <aside class="panel map-panel">
+      <div class="panel-title">
+        <div>
+          <small>2d town</small>
+          <h2>可玩小镇</h2>
+        </div>
+      </div>
+      <div id="map" class="map">
+        <svg class="town-map" viewBox="0 0 780 560" role="img" aria-label="小镇初始化底图">
+          <rect x="0" y="0" width="780" height="560" fill="transparent"></rect>
+          <path d="M 0 86 C 120 40 180 95 265 72 C 370 44 430 22 520 62 C 612 104 700 82 780 48" fill="none" stroke="var(--water)" stroke-width="44" opacity=".86"></path>
+          <line class="road" x1="170" y1="200" x2="340" y2="180"></line>
+          <line class="road" x1="340" y1="180" x2="520" y2="260"></line>
+          <line class="road" x1="520" y1="260" x2="650" y2="125"></line>
+          <line class="road" x1="520" y1="260" x2="570" y2="430"></line>
+          <line class="road" x1="570" y1="430" x2="250" y2="410"></line>
+          <line class="road" x1="250" y1="410" x2="170" y2="200"></line>
+          <g class="zone-node is-current"><rect class="zone-shape" x="266" y="138" width="148" height="84" rx="8"></rect><text class="zone-code" x="282" y="167">B</text><text class="zone-name" x="309" y="167">桥市</text><text class="zone-role" x="282" y="196">交通瓶颈 / 商队</text></g>
+          <g class="zone-node"><rect class="zone-shape" x="96" y="158" width="148" height="84" rx="8"></rect><text class="zone-code" x="112" y="187">A</text><text class="zone-name" x="139" y="187">山路</text><text class="zone-role" x="112" y="216">事件源头 / 药车</text></g>
+          <g class="zone-node"><rect class="zone-shape" x="446" y="218" width="148" height="84" rx="8"></rect><text class="zone-code" x="462" y="247">C</text><text class="zone-name" x="489" y="247">市集</text><text class="zone-role" x="462" y="276">谣言 / 黑市</text></g>
+          <g class="marker marker-player"><circle class="player-token" cx="340" cy="114" r="15"></circle><text x="340" y="118">你</text></g>
+        </svg>
+      </div>
+      <div id="world-pulse" class="world-pulse" aria-label="世界变化摘要">
+        <div class="pulse-head">
+          <strong>世界变化</strong>
+          <span>等待初始化</span>
+        </div>
+      </div>
+      <div class="legend" aria-label="地图图例">
+        <span><i class="player-dot"></i>玩家</span>
+        <span><i class="actor-dot"></i>镇民/NPC</span>
+        <span><i class="preview-dot"></i>预兆</span>
+        <span><i class="live-dot"></i>现场</span>
+        <span><i class="reentry-dot"></i>后果入口</span>
+        <span><i class="rumor-dot"></i>弱传闻</span>
+        <span><i class="pressure-dot"></i>地点状态</span>
+      </div>
+      <div class="note">世界时间自然流动；事件现场会接管并暂停世界时间。每次现场行动只结算一个局部节拍，并改变后续地点写回。</div>
+    </aside>
+
+    <section id="play-panel" class="panel play-panel">
+      <div class="panel-title">
+        <div>
+          <small id="play-mode-label">play space</small>
+          <h2 id="current-zone-title"></h2>
+        </div>
+      </div>
+      <section id="scene-panel" class="scene-panel" aria-live="polite" hidden></section>
+      <div id="outcome" class="outcome neutral"></div>
+      <div id="entries" class="entry-list"></div>
+      <div class="actions world-actions" aria-label="当前行动">
+        <button id="observe-button" type="button">观察当前区域</button>
+        <button id="rest-button" type="button">休息推进半日</button>
+        <button id="world-step-button" type="button">世界流动一步</button>
+        <button id="auto-button" type="button">开始流动</button>
+      </div>
+    </section>
+
+    <aside id="event-fronts" class="panel event-panel">
+      <div class="panel-title">
+        <div>
+          <small>event fronts</small>
+          <h2>事件前线</h2>
+        </div>
+      </div>
+      <div id="event-list" class="event-list"></div>
+      <div class="panel-title" style="margin-top: 14px;">
+        <div>
+          <small>world write</small>
+          <h2>世界写回</h2>
+        </div>
+      </div>
+      <div id="log" class="log"></div>
+    </aside>
+  </section>
+</main>
+
+<script>
+  window.__eventFrontlineBootError = function(error) {
+    const map = document.querySelector("#map");
+    if (!map) return;
+    const message = error && error.stack ? error.stack : String(error ?? "Unknown error");
+    const box = document.createElement("div");
+    box.className = "boot-error";
+    box.innerHTML = `<strong>Demo 脚本没有成功启动</strong><code></code>`;
+    box.querySelector("code").textContent = message;
+    map.prepend(box);
+  };
+  window.addEventListener("error", (event) => {
+    window.__eventFrontlineBootError?.(event.error ?? event.message);
+  });
+  window.addEventListener("unhandledrejection", (event) => {
+    window.__eventFrontlineBootError?.(event.reason);
+  });
+</script>
+
+<script type="module">
+  let EVENT_FRONTS;
+  let MEDICINE_SCENE_PHASES;
+  let TICKS;
+  let ZONES;
+  let createGameState;
+  let getActorTracks;
+  let getActors;
+  let getMapMarkers;
+  let getSceneActions;
+  let getVisibleEntries;
+  let getZone;
+  let getZoneConditions;
+  let getWorldOutcome;
+  let performAction;
+
+  let state;
+  let autoTimer = null;
+  let animationFrame = null;
+  let lastFrameAt = 0;
+  let tickProgress = 0;
+  let tickDuration = 12000;
+  let lastMove = null;
+  let playerTravel = null;
+  let booted = false;
+  const WORLD_MOVE_SPEED = 30 / 1000;
+  const PLAYER_DOCK = { x: -88, y: -56 };
+
+  const els = {
+    timeStat: document.querySelector("#time-stat"),
+    time: document.querySelector("#time-label"),
+    timeMode: document.querySelector("#time-mode"),
+    clockFill: document.querySelector("#clock-fill"),
+    zone: document.querySelector("#zone-label"),
+    previews: document.querySelector("#seen-previews"),
+    tags: document.querySelector("#world-tags"),
+    inventory: document.querySelector("#inventory-tags"),
+    layout: document.querySelector("#main-layout"),
+    map: document.querySelector("#map"),
+    worldPulse: document.querySelector("#world-pulse"),
+    currentZoneTitle: document.querySelector("#current-zone-title"),
+    playPanel: document.querySelector("#play-panel"),
+    playModeLabel: document.querySelector("#play-mode-label"),
+    scene: document.querySelector("#scene-panel"),
+    outcome: document.querySelector("#outcome"),
+    entries: document.querySelector("#entries"),
+    observe: document.querySelector("#observe-button"),
+    rest: document.querySelector("#rest-button"),
+    worldStep: document.querySelector("#world-step-button"),
+    auto: document.querySelector("#auto-button"),
+    events: document.querySelector("#event-list"),
+    log: document.querySelector("#log"),
+  };
+
+  const routeScripts = {
+    intervene: {
+      startZone: "B",
+      actions: [
+        { type: "observe" },
+        { type: "move", targetZone: "A" },
+        { type: "sceneAction", actionId: "warn_cart" },
+        { type: "sceneAction", actionId: "delay_bandit" },
+        { type: "sceneBeat" },
+        { type: "move", targetZone: "B" },
+        { type: "move", targetZone: "C" },
+        { type: "rest" },
+      ],
+    },
+    missed: {
+      startZone: "B",
+      actions: [
+        { type: "observe" },
+        { type: "move", targetZone: "C" },
+        { type: "observe" },
+        { type: "rest" },
+        { type: "rest" },
+        { type: "rest" },
+      ],
+    },
+    unseen: {
+      startZone: "C",
+      actions: [
+        { type: "rest" },
+        { type: "rest" },
+        { type: "rest" },
+        { type: "rest" },
+      ],
+    },
+  };
+
+  bootstrap();
+
+  async function bootstrap() {
+    try {
+      const engine = await import(`./event-frontline-engine.mjs?v=${Date.now()}`);
+      ({
+        EVENT_FRONTS,
+        MEDICINE_SCENE_PHASES,
+        TICKS,
+        ZONES,
+        createGameState,
+        getActorTracks,
+        getActors,
+        getMapMarkers,
+        getSceneActions,
+        getVisibleEntries,
+        getZone,
+        getZoneConditions,
+        getWorldOutcome,
+        performAction,
+      } = engine);
+
+      state = createGameState({ startZone: "B" });
+      booted = true;
+      wireControls();
+      render();
+      startAuto();
+    } catch (error) {
+      showBootError(error);
+    }
+  }
+
+  function showBootError(error) {
+    window.__eventFrontlineBootError?.(error);
+  }
+
+  function dispatch(action) {
+    if (!booted) return;
+    try {
+      const beforeZone = state.zoneId;
+      const hadScene = Boolean(state.activeScene);
+      state = performAction(state, action);
+      const sceneStarted = !hadScene && Boolean(state.activeScene);
+      tickProgress = action.type === "worldStep" || action.type === "rest" ? 0 : tickProgress;
+      if (sceneStarted) pauseAuto();
+      lastMove = action.type === "move" || action.type === "movePlayer"
+        ? { from: beforeZone, to: state.zoneId, tick: state.currentTick.id }
+        : null;
+      if (autoTimer && state.tickIndex >= TICKS.length - 1 && !state.activeScene) pauseAuto();
+      render();
+      if (sceneStarted && window.matchMedia("(max-width: 1100px)").matches) {
+        window.requestAnimationFrame(() => {
+          els.playPanel.scrollIntoView({ block: "start" });
+        });
+      }
+    } catch (error) {
+      lastMove = null;
+      state.log.push({
+        tick: state.currentTick.id,
+        zone: state.zoneId,
+        eventId: "system",
+        stage: "blocked",
+        worldWrite: [],
+        visibleFeedback: error.message,
+      });
+      render();
+    }
+  }
+
+  function runRoute(routeId) {
+    pauseAuto();
+    const script = routeScripts[routeId];
+    state = createGameState({ startZone: script.startZone });
+    lastMove = null;
+    playerTravel = null;
+    tickProgress = 0;
+    for (const action of script.actions) {
+      state = performAction(state, action);
+    }
+    render();
+  }
+
+  function reset(startZone) {
+    pauseAuto();
+    state = createGameState({ startZone });
+    lastMove = null;
+    playerTravel = null;
+    tickProgress = 0;
+    render();
+    startAuto();
+  }
+
+  function stepWorld() {
+    if (state.activeScene || state.tickIndex >= TICKS.length - 1) return;
+    dispatch({ type: "worldStep" });
+  }
+
+  function toggleAuto() {
+    if (autoTimer) {
+      pauseAuto();
+      render();
+      return;
+    }
+    startAuto();
+    render();
+  }
+
+  function startAuto() {
+    if (autoTimer || state.activeScene || state.tickIndex >= TICKS.length - 1) return;
+    autoTimer = true;
+    if (window.__eventFrontlineDebug) window.__eventFrontlineDebug.autoRunning = true;
+    lastFrameAt = performance.now();
+    animationFrame = window.requestAnimationFrame(animationLoop);
+    renderControls();
+  }
+
+  function pauseAuto() {
+    autoTimer = null;
+    if (window.__eventFrontlineDebug) window.__eventFrontlineDebug.autoRunning = false;
+    if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+  }
+
+  function animationLoop(now) {
+    if (!autoTimer) return;
+    const delta = Math.max(0, now - lastFrameAt);
+    lastFrameAt = now;
+
+    if (playerTravel && now >= playerTravel.endsAt) {
+      const targetZone = playerTravel.to;
+      playerTravel = null;
+      dispatch({ type: "movePlayer", targetZone });
+      if (!autoTimer) return;
+    }
+
+    if (state.activeScene) {
+      pauseAuto();
+      render();
+      return;
+    }
+
+    tickProgress += delta / tickDuration;
+    if (tickProgress >= 1) {
+      tickProgress = 0;
+      stepWorld();
+    } else {
+      renderMotionFrame();
+    }
+
+    if (state.tickIndex >= TICKS.length - 1 && !state.activeScene) {
+      pauseAuto();
+      render();
+      return;
+    }
+    if (autoTimer) animationFrame = window.requestAnimationFrame(animationLoop);
+  }
+
+  function renderMotionFrame() {
+    els.clockFill.style.width = `${Math.round(tickProgress * 100)}%`;
+    if (window.__eventFrontlineDebug) {
+      window.__eventFrontlineDebug.tickProgress = tickProgress;
+      window.__eventFrontlineDebug.autoRunning = Boolean(autoTimer);
+    }
+    const actorLayer = els.map.querySelector(".layer-actors");
+    const playerLayer = els.map.querySelector(".layer-player");
+    const skyLayer = els.map.querySelector(".layer-sky");
+    if (!actorLayer || !playerLayer || !skyLayer) return;
+
+    const actorTracks = getActorTracks(state);
+    const actorLayouts = getActorLayouts(actorTracks);
+    for (const [index, track] of actorTracks.entries()) {
+      const element = actorLayer.querySelector(`[data-actor="${track.id}"]`);
+      if (!element) continue;
+      const renderState = getActorRenderState(track, index, actorLayouts.get(track.id));
+      element.setAttribute("transform", `translate(${renderState.x} ${renderState.y})`);
+      element.setAttribute("aria-label", `${track.label}：${renderState.intent}`);
+      const title = element.querySelector("title");
+      if (title) title.textContent = `${track.label}：${renderState.intent}`;
+    }
+
+    const playerPosition = getPlayerPosition();
+    const player = playerLayer.querySelector("[data-player-token]");
+    if (player) player.setAttribute("transform", `translate(${playerPosition.x} ${playerPosition.y})`);
+
+    const sky = getSkyState();
+    const shade = skyLayer.querySelector(".sky-shade");
+    if (shade) shade.setAttribute("opacity", sky.opacity.toFixed(3));
+    skyLayer.querySelectorAll(".sky-lamp").forEach((lamp) => {
+      lamp.setAttribute("opacity", sky.lampOpacity.toFixed(3));
+    });
+  }
+
+  function render() {
+    const zone = getZone(state);
+    const entries = getVisibleEntries(state);
+    const sceneActive = Boolean(state.activeScene);
+
+    els.time.textContent = state.currentTick.label;
+    els.timeMode.textContent = sceneActive ? "事件接管 · 暂停" : autoTimer ? "自然流动" : "已暂停";
+    els.timeStat.classList.toggle("is-scene-paused", sceneActive);
+    els.layout.classList.toggle("is-scene-active", sceneActive);
+    els.playPanel.classList.toggle("is-scene-active", sceneActive);
+    els.playModeLabel.textContent = sceneActive ? "live scene" : "play space";
+    els.clockFill.style.width = `${Math.round(tickProgress * 100)}%`;
+    els.zone.textContent = zone.name;
+    els.currentZoneTitle.textContent = zone.name;
+    renderTags(
+      els.previews,
+      [...state.seenPreviews].map((eventId) => EVENT_FRONTS[eventId]?.title ?? eventId),
+      "strong",
+      "尚未观察到预兆",
+    );
+    renderTags(els.tags, [...state.worldTags].map(worldTagLabel), "weak", "尚无写回");
+    renderTags(els.inventory, [...state.inventory].map(inventoryLabel), "strong", "空手");
+    renderMap();
+    renderWorldPulse(entries);
+    renderScene();
+    renderOutcome();
+    renderEntries(entries);
+    renderEvents();
+    renderLog();
+    renderControls();
+    window.__eventFrontlineDebug = {
+      tick: state.currentTick.id,
+      zone: state.zoneId,
+      tickProgress,
+      autoRunning: Boolean(autoTimer),
+      playerTravel: playerTravel ? { ...playerTravel } : null,
+      activeScene: state.activeScene ? { ...state.activeScene } : null,
+      inventory: [...state.inventory],
+      worldMoveSpeed: WORLD_MOVE_SPEED * 1000,
+      actors: getActors(state).map((actor) => ({ id: actor.id, zoneId: actor.zoneId })),
+    };
+    window.__eventFrontlineAudit = () => ({
+      time: els.time.textContent,
+      zone: els.zone.textContent,
+      hasMapSvg: Boolean(els.map.querySelector("svg")),
+      zoneNodes: els.map.querySelectorAll("[data-zone]").length,
+      hitTargets: els.map.querySelectorAll(".zone-hit").length,
+      actorTokens: els.map.querySelectorAll(".actor").length,
+      eventMarkers: els.map.querySelectorAll(".marker:not(.marker-player)").length,
+      pulseHasText: (els.worldPulse.textContent || "").trim().length > 20,
+      sceneVisible: !els.scene.hidden,
+      visualOverlaps: getVisualOverlaps(),
+      bootError: Boolean(document.querySelector(".boot-error")),
+    });
+  }
+
+  function getVisualOverlaps() {
+    const zones = [...els.map.querySelectorAll(".zone-shape")].map((element) => ({
+      zoneId: element.closest("[data-zone]")?.dataset.zone,
+      rect: element.getBoundingClientRect(),
+    }));
+    const overlays = [...els.map.querySelectorAll(".actor:not(.is-moving), .marker:not(.marker-player)")].map((element) => ({
+      label: element.getAttribute("aria-label"),
+      rect: element.getBoundingClientRect(),
+    }));
+    return zones.flatMap((zone) => overlays
+      .filter((overlay) => rectanglesOverlap(zone.rect, overlay.rect))
+      .map((overlay) => `${zone.zoneId}:${overlay.label}`));
+  }
+
+  function rectanglesOverlap(a, b) {
+    return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+  }
+
+  function renderTags(container, values, className, emptyText) {
+    container.innerHTML = "";
+    if (!values.length) {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = emptyText;
+      container.append(tag);
+      return;
+    }
+    for (const value of values) {
+      const tag = document.createElement("span");
+      tag.className = `tag ${className}`;
+      tag.textContent = value;
+      container.append(tag);
+    }
+  }
+
+  function renderScene() {
+    const scene = state.activeScene;
+    if (!scene) {
+      els.scene.hidden = true;
+      els.scene.innerHTML = "";
+      return;
+    }
+
+    const phase = MEDICINE_SCENE_PHASES[scene.phaseIndex];
+    const actions = getSceneActions(state);
+    const banditBase = [108, 188, 278][scene.phaseIndex];
+    const cartBase = [382, 348, 316][scene.phaseIndex];
+    const banditX = banditBase - (scene.banditDelayed ? 40 : 0);
+    const cartX = cartBase + (scene.cartWarned ? 44 : 0);
+    const medicineX = scene.medicineSecured ? 240 : cartX;
+    const medicineY = scene.medicineSecured ? 220 : 126;
+    const primitiveLabels = {
+      inspect: "观察",
+      redirect: "改变意图",
+      transfer: "携带",
+      wait: "等待",
+    };
+    const targetLabels = {
+      bandit: "山贼",
+      cart: "药车",
+      medicine: "药箱",
+      scene: "现场",
+    };
+    const mapActionLabels = {
+      inspect_intent: "观察山贼",
+      warn_cart: "警告车夫",
+      delay_bandit: "拖住山贼",
+      secure_medicine: "抢救药箱",
+    };
+    const facts = [
+      scene.intentKnown ? "山贼目标：药箱" : "山贼意图：未知",
+      scene.cartWarned ? "车夫：已改道" : null,
+      scene.banditDelayed ? "山贼：被拖延" : null,
+      scene.medicineSecured ? "药箱：在玩家手中" : null,
+    ].filter(Boolean);
+    const actionableTargets = new Set(
+      actions.filter((action) => action.target !== "scene").map((action) => action.target),
+    );
+    const targetPoints = {
+      bandit: { x: banditX, y: 132 },
+      cart: { x: cartX, y: 132 },
+      medicine: { x: medicineX, y: medicineY },
+    };
+    const targetActionCounts = {};
+    const mapActions = actions
+      .filter((action) => action.target !== "scene")
+      .map((action) => {
+        const target = targetPoints[action.target];
+        const targetIndex = targetActionCounts[action.target] ?? 0;
+        targetActionCounts[action.target] = targetIndex + 1;
+        const x = Math.max(8, Math.min(356, target.x - 58));
+        const y = action.target === "medicine" ? 218 : 24 + targetIndex * 38;
+        return {
+          action,
+          x,
+          y,
+          target,
+          label: mapActionLabels[action.id],
+        };
+      });
+    const targetCount = actionableTargets.size;
+
+    els.scene.hidden = false;
+    els.scene.innerHTML = `
+      <div class="scene-head">
+        <div class="scene-title-block">
+          <span class="scene-eyebrow">live event / A 山路</span>
+          <strong class="scene-title">药车遇袭</strong>
+        </div>
+        <div class="scene-lock" aria-label="世界时间已经暂停">
+          <span class="scene-lock-icon" aria-hidden="true"></span>
+          <span><small>WORLD TIME</small><strong>已暂停</strong></span>
+        </div>
+      </div>
+      <div class="scene-beat-head">
+        <span class="scene-phase">第 ${scene.phaseIndex + 1}/3 拍 · ${phase.label}</span>
+        <span>每次行动结算一拍</span>
+      </div>
+      <div class="scene-beats" aria-label="现场阶段">
+        ${MEDICINE_SCENE_PHASES.map((item, index) => `<span class="${index < scene.phaseIndex ? "is-done" : index === scene.phaseIndex ? "is-current" : ""}"><b>0${index + 1}</b>${item.label}</span>`).join("")}
+      </div>
+      <svg class="scene-map" viewBox="0 0 480 270" role="img" aria-label="可交互的药车遇袭现场">
+        <rect class="scene-sky" x="0" y="0" width="480" height="98"></rect>
+        <rect class="scene-ground" x="0" y="98" width="480" height="172"></rect>
+        <path class="scene-ridge" d="M0 110 C72 65 126 112 190 82 C252 52 314 114 376 79 C419 55 452 70 480 57 L480 152 L0 152 Z"></path>
+        <line class="scene-road" x1="24" y1="140" x2="456" y2="140"></line>
+        <line class="scene-road-line" x1="24" y1="140" x2="456" y2="140"></line>
+        ${scene.intentKnown ? `<line class="scene-intent-line" x1="${banditX + 22}" y1="119" x2="${medicineX - 18}" y2="${medicineY}"></line>` : ""}
+        ${mapActions.map((item) => `<line class="scene-action-link" x1="${item.x + 58}" y1="${item.y + 16}" x2="${item.target.x}" y2="${item.target.y - 22}"></line>`).join("")}
+        <g class="scene-entity ${actionableTargets.has("bandit") ? "is-actionable" : ""}" data-scene-target="bandit" ${actionableTargets.has("bandit") ? `role="button" tabindex="0" aria-label="山贼，可互动"` : ""} transform="translate(${banditX} 132)">
+          ${actionableTargets.has("bandit") ? `<circle class="scene-entity-halo" cx="0" cy="-5" r="43"></circle>` : ""}
+          <circle class="scene-entity-hit" cx="0" cy="-5" r="48"></circle>
+          <polygon class="scene-bandit" points="0,-34 26,17 -26,17"></polygon>
+          <text x="0" y="43">山贼</text>
+        </g>
+        <g class="scene-entity ${actionableTargets.has("cart") ? "is-actionable" : ""}" data-scene-target="cart" ${actionableTargets.has("cart") ? `role="button" tabindex="0" aria-label="药车，可互动"` : ""} transform="translate(${cartX} 132)">
+          ${actionableTargets.has("cart") ? `<circle class="scene-entity-halo" cx="0" cy="-3" r="51"></circle>` : ""}
+          <circle class="scene-entity-hit" cx="0" cy="-3" r="54"></circle>
+          <rect class="scene-cart" x="-38" y="-24" width="76" height="38" rx="5"></rect>
+          <circle class="scene-cart" cx="-24" cy="20" r="9"></circle>
+          <circle class="scene-cart" cx="24" cy="20" r="9"></circle>
+          <text x="0" y="52">药车</text>
+        </g>
+        <g class="scene-entity ${actionableTargets.has("medicine") ? "is-actionable" : ""}" data-scene-target="medicine" ${actionableTargets.has("medicine") ? `role="button" tabindex="0" aria-label="药箱，可互动"` : ""} transform="translate(${medicineX} ${medicineY})">
+          ${actionableTargets.has("medicine") ? `<circle class="scene-entity-halo" cx="0" cy="0" r="34"></circle>` : ""}
+          <circle class="scene-entity-hit" cx="0" cy="0" r="38"></circle>
+          <rect class="scene-medicine" x="-18" y="-14" width="36" height="28" rx="3"></rect>
+          <path d="M-7 -14 V-21 H7 V-14" fill="none" stroke="var(--ink)" stroke-width="3"></path>
+          <text x="0" y="-30">药箱</text>
+          ${!scene.intentKnown ? `<g class="scene-resource-unknown" transform="translate(25 -23)"><circle cx="0" cy="0" r="11"></circle><text x="0" y="5">?</text></g>` : ""}
+        </g>
+        <g transform="translate(240 232)">
+          <circle class="scene-player" cx="0" cy="0" r="18"></circle>
+          <text x="0" y="5" fill="#fffaf1">你</text>
+        </g>
+        ${mapActions.map((item) => `
+          <g class="scene-map-action primitive-${item.action.primitive}" data-scene-map-action="${item.action.id}" data-action-key="${item.action.id}" transform="translate(${item.x} ${item.y})" role="button" tabindex="0" aria-label="${item.action.label}：${item.action.text}">
+            <rect x="0" y="0" width="116" height="32" rx="4"></rect>
+            <text x="58" y="21">${item.label}</text>
+          </g>
+        `).join("")}
+      </svg>
+      <p class="scene-feedback"><strong>${phase.text}</strong> ${scene.lastFeedback}</p>
+      <div class="scene-facts">${facts.map((fact) => `<span class="scene-fact">${fact}</span>`).join("")}</div>
+      <div class="scene-action-head">
+        <strong>可用行动</strong>
+        <span>${targetCount} 个现场对象可互动</span>
+      </div>
+      <div class="scene-actions" aria-label="现场行动">
+        ${actions.map((action) => `
+          <button type="button" class="scene-action primitive-${action.primitive}" data-scene-action="${action.id}" data-action-key="${action.id}" data-action-target="${action.target}">
+            <span class="scene-action-target">${targetLabels[action.target]}<em>${primitiveLabels[action.primitive]}</em></span>
+            <span class="scene-action-copy"><strong>${action.label}</strong><small>${action.text}</small></span>
+          </button>
+        `).join("")}
+      </div>
+    `;
+
+    els.scene.querySelectorAll("[data-scene-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        dispatch({ type: "sceneAction", actionId: button.dataset.sceneAction });
+      });
+    });
+
+    els.scene.querySelectorAll("[data-scene-map-action]").forEach((button) => {
+      const activate = () => dispatch({ type: "sceneAction", actionId: button.dataset.sceneMapAction });
+      button.addEventListener("click", activate);
+      button.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        activate();
+      });
+    });
+
+    els.scene.querySelectorAll("[data-action-key]").forEach((control) => {
+      const actionId = control.dataset.actionKey;
+      control.addEventListener("pointerenter", () => setSceneActionHighlight(actionId, true));
+      control.addEventListener("pointerleave", () => setSceneActionHighlight(actionId, false));
+      control.addEventListener("focus", () => setSceneActionHighlight(actionId, true));
+      control.addEventListener("blur", () => setSceneActionHighlight(actionId, false));
+    });
+
+    els.scene.querySelectorAll("[data-scene-target][role='button']").forEach((target) => {
+      const focusTargetAction = () => {
+        const button = els.scene.querySelector(`[data-scene-action][data-action-target="${target.dataset.sceneTarget}"]`);
+        if (!button) return;
+        button.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        button.focus({ preventScroll: true });
+      };
+      target.addEventListener("click", focusTargetAction);
+      target.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        focusTargetAction();
+      });
+    });
+  }
+
+  function setSceneActionHighlight(actionId, isActive) {
+    const action = getSceneActions(state).find((candidate) => candidate.id === actionId);
+    els.scene.querySelectorAll(`[data-action-key="${actionId}"]`).forEach((element) => {
+      element.classList.toggle("is-linked", isActive);
+    });
+    if (!action || action.target === "scene") return;
+    els.scene.querySelector(`[data-scene-target="${action.target}"]`)?.classList.toggle("is-linked", isActive);
+  }
+
+  function renderWorldPulse(entries) {
+    const nextTick = TICKS[Math.min(state.tickIndex + 1, TICKS.length - 1)];
+    const visible = entries[0];
+    const conditions = getZoneConditions(state);
+    const sceneResultStages = new Set([
+      "scene_cart_saved",
+      "scene_medicine_recovered",
+      "scene_cart_lost",
+    ]);
+    const currentWrites = state.log
+      .filter((item) => item.tick === state.currentTick.id)
+      .filter((item) => !item.stage.startsWith("scene_") || sceneResultStages.has(item.stage))
+      .slice(-3);
+    const dirtyZones = Object.entries(conditions)
+      .filter(([, items]) => items.length)
+      .flatMap(([zoneId, items]) =>
+        items.slice(0, 2).map((item) => ({
+          zoneId,
+          label: `${zoneId} ${item.label}`,
+          tone: classTone(item.tone),
+        })),
+      );
+    const headText = state.activeScene
+      ? `${state.currentTick.label} · 世界时间暂停`
+      : state.tickIndex >= TICKS.length - 1
+        ? `${state.currentTick.label} · 已收束`
+        : `${state.currentTick.label} -> ${nextTick.label}`;
+    const liveText = state.activeScene
+      ? {
+          title: `现场接管 · 第 ${state.activeScene.phaseIndex + 1}/3 拍`,
+          text: `${MEDICINE_SCENE_PHASES[state.activeScene.phaseIndex].text} 世界不会在玩家决策时继续流动。`,
+        }
+      : visible
+      ? {
+          title: visible.kind === "live"
+            ? "当前现场"
+            : visible.kind === "preview"
+              ? "可见预兆"
+              : visible.kind === "transfer"
+                ? "可交付资源"
+              : visible.strength === "weak" ? "弱传闻" : "后果入口",
+          text: visible.text,
+        }
+      : { title: "当前没有显性入口", text: "世界仍在流动。移动到相邻地点、观察预兆或等待下一次写回。" };
+    const writeText = currentWrites.length
+      ? `${currentWrites.map((item) => item.visibleFeedback.replace(/[。；！？]+$/, "")).join("；")}。`
+      : state.activeScene
+        ? "现场尚未定局。每次局部行动只结算一拍，第三拍后统一写回世界。"
+        : "本时段尚无写回。事件仍在成熟，下一次边界可能改变地点状态。";
+
+    els.worldPulse.innerHTML = `
+      <div class="pulse-head">
+        <strong>世界变化</strong>
+        <span>${headText}</span>
+      </div>
+      <div class="pulse-main">
+        <div class="pulse-card">
+          <small>你在这里能看见</small>
+          <strong>${liveText.title}</strong>
+          <p>${liveText.text}</p>
+        </div>
+        <div class="pulse-card">
+          <small>本时段写入世界</small>
+          <strong>${currentWrites.length ? `${currentWrites.length} 条变化` : "尚未发生"}</strong>
+          <p>${writeText}</p>
+        </div>
+      </div>
+      <div class="pulse-zones" aria-label="已改变的地点">
+        ${dirtyZones.length
+          ? dirtyZones.map((item) => `<span class="pulse-zone ${item.tone}">${item.label}</span>`).join("")
+          : `<span class="pulse-zone">地点状态尚未写回</span>`}
+      </div>
+    `;
+  }
+
+  function renderMap() {
+    const markers = getMapMarkers(state);
+    const actorTracks = getActorTracks(state);
+    const conditions = getZoneConditions(state);
+    const roads = [];
+    const seenRoads = new Set();
+    for (const zone of Object.values(ZONES)) {
+      for (const neighborId of zone.neighbors) {
+        const key = [zone.id, neighborId].sort().join("-");
+        if (seenRoads.has(key)) continue;
+        seenRoads.add(key);
+        const neighbor = ZONES[neighborId];
+        roads.push({ from: zone, to: neighbor });
+      }
+    }
+
+    const roadSvg = roads.map((road) => `
+      <line class="road" x1="${road.from.x}" y1="${road.from.y}" x2="${road.to.x}" y2="${road.to.y}"></line>
+      <line class="road-line" x1="${road.from.x}" y1="${road.from.y}" x2="${road.to.x}" y2="${road.to.y}"></line>
+    `).join("");
+
+    const terrainSvg = `
+      <path class="terrain terrain-field" d="M 28 145 C 70 112 150 106 220 134 C 236 174 223 246 178 286 C 108 300 48 265 24 214 Z"></path>
+      <path class="terrain terrain-square" d="M 252 104 C 340 82 470 112 555 178 C 575 226 554 304 498 338 C 405 329 305 276 254 210 Z"></path>
+      <path class="terrain terrain-forest" d="M 92 356 C 145 319 267 318 344 363 C 366 416 332 503 257 532 C 166 527 102 477 82 421 Z"></path>
+      <path class="terrain terrain-hill" d="M 498 354 C 567 320 704 347 756 407 L 756 536 L 474 536 C 456 467 464 400 498 354 Z"></path>
+      <g class="landmark" transform="translate(742 54)">
+        <rect class="building" x="-25" y="-4" width="50" height="32" rx="4"></rect>
+        <path class="building-roof" d="M -32 -4 L 0 -22 L 32 -4 Z"></path>
+      </g>
+      <g class="landmark" transform="translate(692 486)">
+        <rect class="building" x="-31" y="-6" width="62" height="36" rx="4"></rect>
+        <path class="building-roof" d="M -38 -6 L 0 -26 L 38 -6 Z"></path>
+      </g>
+    `;
+
+    const flowSvg = renderFlows();
+    const playerTrailSvg = renderPlayerTrail();
+    const skySvg = renderSkyOverlay();
+    const actorLayouts = getActorLayouts(actorTracks);
+    const actorRouteSvg = actorTracks
+      .filter((track) => track.moving)
+      .map((track) => {
+        const from = ZONES[track.fromZoneId];
+        const to = ZONES[track.toZoneId];
+        const layout = actorLayouts.get(track.id);
+        const fromDock = actorDockOffset(layout?.from?.index ?? 0, layout?.from?.total ?? 1, from.id);
+        const toDock = actorDockOffset(layout?.to?.index ?? 0, layout?.to?.total ?? 1, to.id);
+        const x1 = from.x + fromDock.x;
+        const y1 = from.y + fromDock.y;
+        const x2 = to.x + toDock.x;
+        const y2 = to.y + toDock.y;
+        return `<path class="actor-route" d="M ${x1} ${y1} Q ${(x1 + x2) / 2} ${(y1 + y2) / 2 - 24} ${x2} ${y2}"></path>`;
+      })
+      .join("");
+
+    const zoneSvg = Object.values(ZONES).map((zone) => {
+      const current = zone.id === state.zoneId;
+      const isNeighbor = !current && ZONES[state.zoneId].neighbors.includes(zone.id);
+      const disabled = !current && !isNeighbor;
+      const conditionClass = zoneConditionClass(conditions[zone.id]);
+      const primaryCondition = conditions[zone.id][0];
+      const conditionLabel = primaryCondition
+        ? `${primaryCondition.label}${conditions[zone.id].length > 1 ? ` +${conditions[zone.id].length - 1}` : ""}`
+        : "";
+      const conditionPill = primaryCondition
+        ? `<rect class="zone-condition-pill status-${classTone(primaryCondition.tone)}" x="${zone.x - 54}" y="${zone.y + 21}" width="108" height="15" rx="7"></rect>
+           <text class="zone-condition-label" x="${zone.x}" y="${zone.y + 32}">${conditionLabel}</text>`
+        : "";
+      return `
+        <g class="zone-node ${current ? "is-current" : ""} ${isNeighbor ? "is-neighbor" : ""} ${disabled ? "is-disabled" : ""} ${conditionClass}" data-zone="${zone.id}" tabindex="${isNeighbor ? "0" : "-1"}" role="${isNeighbor ? "button" : "img"}" aria-label="${isNeighbor ? "移动到" : "地点"}${zone.name}">
+          <rect class="zone-hit" x="${zone.x - 88}" y="${zone.y - 70}" width="176" height="140" rx="14"></rect>
+          <rect class="zone-shape" x="${zone.x - 72}" y="${zone.y - 42}" width="144" height="84" rx="8"></rect>
+          <circle class="zone-hop" cx="${zone.x + 55}" cy="${zone.y - 29}" r="13"></circle>
+          <text class="zone-hop-text" x="${zone.x + 55}" y="${zone.y - 25}">走</text>
+          <text class="zone-code" x="${zone.x - 54}" y="${zone.y - 13}">${zone.id}</text>
+          <text class="zone-name" x="${zone.x - 20}" y="${zone.y - 13}">${zone.name.replace(`${zone.id} `, "")}</text>
+          <text class="zone-role" x="${zone.x - 54}" y="${zone.y + 10}">${shortRole(zone.role)}</text>
+          ${conditionPill}
+        </g>
+      `;
+    }).join("");
+
+    const markerGroups = groupByZone(markers.filter((marker) => marker.kind !== "player"));
+    const markerSvg = Object.entries(markerGroups).flatMap(([zoneId, zoneMarkers]) => {
+      const zone = ZONES[zoneId];
+      return zoneMarkers.map((marker, index) => {
+        const offset = markerOffset(index, zoneMarkers.length);
+        const x = zone.x + offset.x;
+        const y = zone.y + offset.y;
+        return renderEventMarker(marker, zone, x, y);
+      });
+    }).join("");
+
+    const actorSvg = renderActorLayer(actorTracks, actorLayouts);
+    const playerSvg = renderPlayerMarker();
+
+    els.map.innerHTML = `
+      <svg class="town-map" viewBox="0 0 780 560" role="img" aria-label="六区小镇2D地图">
+        <rect x="0" y="0" width="780" height="560" fill="transparent"></rect>
+        <path d="M 0 86 C 120 40 180 95 265 72 C 370 44 430 22 520 62 C 612 104 700 82 780 48" fill="none" stroke="var(--water)" stroke-width="44" opacity=".86"></path>
+        <g class="map-layer layer-terrain">${terrainSvg}</g>
+        <g class="map-layer layer-roads">${roadSvg}</g>
+        <g class="map-layer layer-sky">${skySvg}</g>
+        <g class="map-layer layer-flow">${flowSvg}</g>
+        <g class="map-layer layer-routes">${actorRouteSvg}${playerTrailSvg}</g>
+        <g class="map-layer layer-actors">${actorSvg}</g>
+        <g class="map-layer layer-zones">${zoneSvg}</g>
+        <g class="map-layer layer-events">${markerSvg}</g>
+        <g class="map-layer layer-player">${playerSvg}</g>
+      </svg>
+    `;
+
+    els.map.querySelectorAll(".zone-node").forEach((node) => {
+      node.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        startPlayerTravel(node.dataset.zone);
+      });
+    });
+  }
+
+  function renderActorLayer(actorTracks, actorLayouts) {
+    return actorTracks
+      .map((track, index) => renderActorTrack(track, index, actorLayouts.get(track.id)))
+      .join("");
+  }
+
+  function renderPlayerMarker() {
+    const position = getPlayerPosition();
+    const x = position.x;
+    const y = position.y;
+    const zone = ZONES[state.zoneId];
+    return `
+      <g class="marker marker-player" data-player-token transform="translate(${x} ${y})" aria-label="玩家在${zone.name}">
+        <circle class="player-ring" cx="0" cy="0" r="24"></circle>
+        <circle class="player-token" cx="0" cy="0" r="15"></circle>
+        <text x="0" y="4">你</text>
+      </g>
+    `;
+  }
+
+  function startPlayerTravel(targetZone) {
+    if (!ZONES[state.zoneId].neighbors.includes(targetZone) || playerTravel) return;
+    if (state.activeScene) dispatch({ type: "leaveScene" });
+    const now = performance.now();
+    const duration = getWorldMoveDuration(state.zoneId, targetZone);
+    playerTravel = {
+      from: state.zoneId,
+      to: targetZone,
+      startedAt: now,
+      endsAt: now + duration,
+      duration,
+    };
+    render();
+    if (!autoTimer) startAuto();
+  }
+
+  function getWorldMoveDuration(fromZoneId, toZoneId) {
+    const from = ZONES[fromZoneId];
+    const to = ZONES[toZoneId];
+    return Math.hypot(to.x - from.x, to.y - from.y) / WORLD_MOVE_SPEED;
+  }
+
+  function handleMapPointer(event) {
+    if (!booted || event.button !== 0) return;
+    const svg = els.map.querySelector("svg");
+    if (!svg) return;
+    const targetZone = event.target.closest?.("[data-zone]")?.dataset.zone
+      ?? nearestZoneFromPointer(svg, event);
+    if (!targetZone || targetZone === state.zoneId) return;
+    if (!ZONES[state.zoneId].neighbors.includes(targetZone)) return;
+    event.preventDefault();
+    startPlayerTravel(targetZone);
+  }
+
+  function nearestZoneFromPointer(svg, event) {
+    const point = svg.createSVGPoint();
+    point.x = event.clientX;
+    point.y = event.clientY;
+    const matrix = svg.getScreenCTM();
+    if (!matrix) return null;
+    const local = point.matrixTransform(matrix.inverse());
+    return Object.values(ZONES)
+      .map((zone) => ({
+        zoneId: zone.id,
+        distance: Math.hypot(local.x - zone.x, local.y - zone.y),
+      }))
+      .sort((a, b) => a.distance - b.distance)[0]?.zoneId ?? null;
+  }
+
+  function getActorLayouts(tracks) {
+    const fromBuckets = groupBy(tracks, (track) => track.fromZoneId);
+    const toBuckets = groupBy(tracks, (track) => track.toZoneId);
+    const layouts = new Map();
+    for (const [endpoint, buckets] of [["from", fromBuckets], ["to", toBuckets]]) {
+      for (const bucket of Object.values(buckets)) {
+        bucket.sort((a, b) => a.id.localeCompare(b.id));
+        bucket.forEach((track, index) => {
+          const layout = layouts.get(track.id) ?? {};
+          layout[endpoint] = { index, total: bucket.length };
+          layouts.set(track.id, layout);
+        });
+      }
+    }
+    return layouts;
+  }
+
+  function renderActorTrack(track, index, layout) {
+    const renderState = getActorRenderState(track, index, layout);
+    return `
+      <g class="actor actor-${classTone(track.tone)} ${track.moving ? "is-moving" : ""}" data-actor="${track.id}" transform="translate(${renderState.x} ${renderState.y})" aria-label="${track.label}：${renderState.intent}">
+        <title>${track.label}：${renderState.intent}</title>
+        <ellipse class="actor-shadow" cx="0" cy="14" rx="13" ry="5"></ellipse>
+        ${renderActorGlyph(track, 0, 0)}
+        <rect class="actor-label-bg" x="-17" y="-33" width="34" height="14" rx="7"></rect>
+        <text x="0" y="-23">${track.label.slice(0, 2)}</text>
+      </g>
+    `;
+  }
+
+  function getActorRenderState(track, index, layout) {
+    const from = ZONES[track.fromZoneId];
+    const to = ZONES[track.toZoneId];
+    const fromDock = actorDockOffset(layout?.from?.index ?? 0, layout?.from?.total ?? 1, from.id);
+    const toDock = actorDockOffset(layout?.to?.index ?? 0, layout?.to?.total ?? 1, to.id);
+    const fromPoint = { x: from.x + fromDock.x, y: from.y + fromDock.y };
+    const toPoint = { x: to.x + toDock.x, y: to.y + toDock.y };
+    const progress = track.moving
+      ? movementProgress(fromPoint, toPoint, tickProgress * tickDuration)
+      : 0;
+    const x = lerp(fromPoint.x, toPoint.x, progress);
+    const y = lerp(fromPoint.y, toPoint.y, progress);
+    const intent = progress > .55 ? track.toIntent : track.fromIntent;
+    return { x, y, intent };
+  }
+
+  function renderActorGlyph(actor, x, y) {
+    if (actor.id === "medicine_cart") {
+      return `
+        <rect class="actor-body" x="${x - 17}" y="${y - 11}" width="34" height="19" rx="4"></rect>
+        <circle class="actor-body" cx="${x - 10}" cy="${y + 10}" r="5"></circle>
+        <circle class="actor-body" cx="${x + 10}" cy="${y + 10}" r="5"></circle>
+        <path d="M ${x + 17} ${y - 2} L ${x + 27} ${y - 9}" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"></path>
+      `;
+    }
+    if (actor.tone === "threat") {
+      return `<polygon class="actor-body" points="${x},${y - 16} ${x + 15},${y + 12} ${x - 15},${y + 12}"></polygon>`;
+    }
+    if (actor.tone === "authority") {
+      return `
+        <circle class="actor-body" cx="${x}" cy="${y}" r="13"></circle>
+        <rect class="actor-body" x="${x - 10}" y="${y - 18}" width="20" height="8" rx="3"></rect>
+      `;
+    }
+    if (actor.tone === "black_market") {
+      return `
+        <rect class="actor-body" x="${x - 13}" y="${y - 13}" width="26" height="26" rx="6"></rect>
+        <path d="M ${x - 8} ${y + 2} Q ${x} ${y - 7} ${x + 8} ${y + 2}" stroke="var(--ink)" stroke-width="2" fill="none"></path>
+      `;
+    }
+    return `
+      <circle class="actor-body" cx="${x}" cy="${y - 7}" r="8"></circle>
+      <rect class="actor-body" x="${x - 9}" y="${y}" width="18" height="20" rx="9"></rect>
+    `;
+  }
+
+  function getPlayerPosition() {
+    if (!playerTravel) {
+      const zone = ZONES[state.zoneId];
+      return { x: zone.x + PLAYER_DOCK.x, y: zone.y + PLAYER_DOCK.y };
+    }
+    const now = performance.now();
+    const progress = Math.min(1, Math.max(0, (now - playerTravel.startedAt) / (playerTravel.endsAt - playerTravel.startedAt)));
+    const from = ZONES[playerTravel.from];
+    const to = ZONES[playerTravel.to];
+    return {
+      x: lerp(from.x, to.x, progress) + PLAYER_DOCK.x,
+      y: lerp(from.y, to.y, progress) + PLAYER_DOCK.y,
+    };
+  }
+
+  function renderEventMarker(marker, zone, x, y) {
+    if (marker.kind === "cargo") {
+      return `
+        <g class="marker marker-cargo" aria-label="${marker.title}由玩家携带">
+          <rect x="${x - 23}" y="${y - 15}" width="46" height="30" rx="6"></rect>
+          <text x="${x}" y="${y + 4}">${marker.label}</text>
+        </g>
+      `;
+    }
+    if (marker.kind === "live") {
+      return `
+        <g class="marker marker-live" aria-label="${marker.title}现场在${zone.name}">
+          <polygon points="${x},${y - 18} ${x + 20},${y + 17} ${x - 20},${y + 17}"></polygon>
+          <text x="${x}" y="${y + 8}">${marker.label}</text>
+        </g>
+      `;
+    }
+    if (marker.kind === "reentry") {
+      return `
+        <g class="marker marker-reentry" aria-label="${marker.title}后果在${zone.name}">
+          <rect x="${x - 23}" y="${y - 15}" width="46" height="30" rx="6"></rect>
+          <text x="${x}" y="${y + 4}">${marker.label}</text>
+        </g>
+      `;
+    }
+    if (marker.kind === "preview") {
+      return `
+        <g class="marker marker-preview" aria-label="${marker.title}预兆在${zone.name}">
+          <circle cx="${x}" cy="${y}" r="18"></circle>
+          <text x="${x}" y="${y + 4}">${marker.label}</text>
+        </g>
+      `;
+    }
+    if (marker.kind === "missed") {
+      return `
+        <g class="marker marker-scar" aria-label="${marker.title}痕迹在${zone.name}">
+          <circle cx="${x}" cy="${y}" r="17"></circle>
+          <text x="${x}" y="${y + 4}">${marker.label}</text>
+        </g>
+      `;
+    }
+    return `
+        <g class="marker marker-rumor" aria-label="${marker.title}在${zone.name}">
+        <rect x="${x - 23}" y="${y - 15}" width="46" height="30" rx="15"></rect>
+        <text x="${x}" y="${y + 4}">${marker.label}</text>
+      </g>
+    `;
+  }
+
+  function renderFlows() {
+    const flows = [];
+    for (const front of Object.values(EVENT_FRONTS)) {
+      const eventState = state.events[front.id];
+      const source = ZONES[front.sourceZone];
+
+      if (state.seenPreviews.has(front.id) && eventState.status === "active") {
+        const live = ZONES[front.liveZone];
+        flows.push(flowPath(source, live, "flow-known"));
+      }
+
+      if (eventState.status === "resolved" && front.id === "medicine_cart_ambush") {
+        flows.push(flowPath(source, ZONES.D, "flow-relief"));
+      }
+
+      if (eventState.missedApplied && eventState.status !== "resolved") {
+        flows.push(...front.missedTags.map((tag, index) => {
+          const target = tag.includes("medicine") ? ZONES.D : tag.includes("market") || tag.includes("trade") ? ZONES.C : source;
+          return flowPath(source, target, "flow-pressure", index);
+        }));
+      }
+
+      if (eventState.reentryApplied) {
+        for (const entry of state.reentries.filter((item) => item.eventId === front.id)) {
+          flows.push(flowPath(source, ZONES[entry.zoneId], "flow-reentry"));
+        }
+      }
+    }
+    return flows.join("");
+  }
+
+  function renderPlayerTrail() {
+    if (playerTravel && ZONES[playerTravel.from] && ZONES[playerTravel.to]) {
+      const from = ZONES[playerTravel.from];
+      const to = ZONES[playerTravel.to];
+      return `<line class="player-move-line" x1="${from.x + PLAYER_DOCK.x}" y1="${from.y + PLAYER_DOCK.y}" x2="${to.x + PLAYER_DOCK.x}" y2="${to.y + PLAYER_DOCK.y}"></line>`;
+    }
+    if (!lastMove || !ZONES[lastMove.from] || !ZONES[lastMove.to]) return "";
+    const from = ZONES[lastMove.from];
+    const to = ZONES[lastMove.to];
+    return `<line class="player-move-line" x1="${from.x + PLAYER_DOCK.x}" y1="${from.y + PLAYER_DOCK.y}" x2="${to.x + PLAYER_DOCK.x}" y2="${to.y + PLAYER_DOCK.y}"></line>`;
+  }
+
+  function renderSkyOverlay() {
+    const sky = getSkyState();
+    return `
+      <rect class="sky-shade" x="0" y="0" width="780" height="560" fill="#24314a" opacity="${sky.opacity.toFixed(3)}" pointer-events="none"></rect>
+      <circle class="sky-lamp" cx="520" cy="260" r="32" fill="#ffd778" opacity="${sky.lampOpacity.toFixed(3)}" pointer-events="none"></circle>
+      <circle class="sky-lamp" cx="650" cy="125" r="28" fill="#ffd778" opacity="${sky.lampOpacity.toFixed(3)}" pointer-events="none"></circle>
+      <circle class="sky-lamp" cx="570" cy="430" r="24" fill="#ffd778" opacity="${sky.lampOpacity.toFixed(3)}" pointer-events="none"></circle>
+    `;
+  }
+
+  function getSkyState() {
+    const currentNight = state.currentTick.id.includes("night");
+    const nextTick = TICKS[Math.min(state.tickIndex + 1, TICKS.length - 1)];
+    const nextNight = nextTick.id.includes("night");
+    const opacity = lerp(currentNight ? .1 : 0, nextNight ? .1 : 0, tickProgress);
+    const lampOpacity = currentNight || nextNight ? Math.max(.08, opacity * 1.8) : .04;
+    return { opacity, lampOpacity };
+  }
+
+  function flowPath(from, to, className, bendIndex = 0) {
+    if (from.id === to.id) {
+      return `<circle class="flow ${className}" cx="${from.x}" cy="${from.y}" r="${72 + bendIndex * 10}"></circle>`;
+    }
+    const mx = (from.x + to.x) / 2;
+    const my = (from.y + to.y) / 2 - 42 - bendIndex * 18;
+    return `<path class="flow ${className}" d="M ${from.x} ${from.y} Q ${mx} ${my} ${to.x} ${to.y}"></path>`;
+  }
+
+  function markerOffset(index, total = 1) {
+    const columns = Math.min(total, 3);
+    const row = Math.floor(index / 3);
+    const column = index % 3;
+    return {
+      x: (column - (columns - 1) / 2) * 52,
+      y: -68 - row * 40,
+    };
+  }
+
+  function actorDockOffset(index, total, zoneId) {
+    const columns = Math.min(total, 4);
+    const row = Math.floor(index / 4);
+    const column = index % 4;
+    const zoneShiftX = zoneId === "D" ? 32 : 0;
+    return {
+      x: (column - (columns - 1) / 2) * 36 + zoneShiftX,
+      y: 78 + row * 48,
+    };
+  }
+
+  function movementProgress(from, to, elapsedMs) {
+    const duration = Math.hypot(to.x - from.x, to.y - from.y) / WORLD_MOVE_SPEED;
+    return duration > 0 ? Math.min(1, elapsedMs / duration) : 1;
+  }
+
+  function lerp(from, to, progress) {
+    return from + (to - from) * progress;
+  }
+
+  function groupByZone(items) {
+    return items.reduce((groups, item) => {
+      if (!groups[item.zoneId]) groups[item.zoneId] = [];
+      groups[item.zoneId].push(item);
+      return groups;
+    }, {});
+  }
+
+  function groupBy(items, getKey) {
+    return items.reduce((groups, item) => {
+      const key = getKey(item);
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(item);
+      return groups;
+    }, {});
+  }
+
+  function zoneConditionClass(items) {
+    return [...new Set(items.map((item) => `has-${classTone(item.tone)}`))].join(" ");
+  }
+
+  function classTone(tone) {
+    return String(tone).replaceAll("_", "-");
+  }
+
+  function worldTagLabel(tag) {
+    const labels = {
+      cart_missing: "药车失踪",
+      medicine_shortage: "医馆缺药",
+      trade_slowdown: "商队减少",
+      market_price_up: "市价上涨",
+      road_fear: "山路恐惧",
+      wounded_witness: "伤者逃来",
+      clinic_price_up: "药价上涨",
+      bandit_confidence_up: "山贼气焰",
+      medicine_delivered: "药物送达",
+      corruption_normalized: "黑税常态",
+      route_abandoned: "道路废弃",
+    };
+    return labels[tag] ?? tag.replaceAll("_", " ");
+  }
+
+  function inventoryLabel(tokenId) {
+    const labels = {
+      medicine_crate: "抢救出的药箱",
+    };
+    return labels[tokenId] ?? tokenId.replaceAll("_", " ");
+  }
+
+  function shortRole(role) {
+    return role.split("、").slice(0, 2).join(" / ");
+  }
+
+  function renderOutcome() {
+    const outcome = getWorldOutcome(state);
+    els.outcome.className = `outcome ${outcome.tone}`;
+    els.outcome.innerHTML = `<strong>${outcome.title}</strong><p>${outcome.text}</p>`;
+  }
+
+  function renderEntries(entries) {
+    els.entries.innerHTML = "";
+    if (!entries.length) {
+      const empty = document.createElement("article");
+      empty.className = "entry";
+      empty.innerHTML = "<strong>没有显性入口</strong><p>这个时段没有现场事件或后果入口。可以移动、观察或休息。</p>";
+      els.entries.append(empty);
+    }
+
+    for (const entry of entries) {
+      const article = document.createElement("article");
+      article.className = `entry ${entry.kind} ${entry.strength ?? ""}`;
+      article.innerHTML = `
+        <strong>${entry.title}</strong>
+        <p>${entry.text}</p>
+      `;
+
+      if (entry.kind === "live" && entry.eventId !== "medicine_cart_ambush") {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "介入现场";
+        button.addEventListener("click", () => dispatch({ type: "intervene", eventId: entry.eventId }));
+        actions.append(button);
+        article.append(actions);
+      }
+
+      if (entry.kind === "transfer") {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "把药箱交给医馆";
+        button.dataset.deliverToken = entry.tokenId;
+        button.addEventListener("click", () => {
+          dispatch({ type: "deliverToken", tokenId: entry.tokenId });
+        });
+        actions.append(button);
+        article.append(actions);
+      }
+
+      if (entry.kind === "reentry") {
+        const choices = document.createElement("div");
+        choices.className = "choice-list";
+        for (const choice of entry.choices) {
+          const chip = document.createElement("span");
+          chip.className = `chip ${entry.strength}`;
+          chip.textContent = choice;
+          choices.append(chip);
+        }
+        article.append(choices);
+      }
+
+      els.entries.append(article);
+    }
+  }
+
+  function renderEvents() {
+    els.events.innerHTML = "";
+    for (const front of Object.values(EVENT_FRONTS)) {
+      const eventState = state.events[front.id];
+      const stage = getEventStage(front, eventState);
+      const latestWrite = [...state.log].reverse().find((item) => item.eventId === front.id);
+      const trackLabels = ["预兆", "现场", "写回", "重接", "定局"];
+      const card = document.createElement("article");
+      card.className = "event-card";
+      card.innerHTML = `
+        <div class="event-card-head">
+          <strong>${front.title}</strong>
+          <span class="event-stage ${stage.tone}">${stage.label}</span>
+        </div>
+        <div class="front-track" aria-label="${front.title}进度">
+          ${trackLabels.map((label, index) => `<span class="${index < stage.index ? "is-done" : index === stage.index ? "is-current" : ""}">${label}</span>`).join("")}
+        </div>
+        <p>${latestWrite?.visibleFeedback ?? front.previewText}</p>
+      `;
+      els.events.append(card);
+    }
+  }
+
+  function getEventStage(front, eventState) {
+    if (state.activeScene?.eventId === front.id) {
+      return { label: `第 ${state.activeScene.phaseIndex + 1}/3 拍 · 暂停`, tone: "warn", index: 1 };
+    }
+    if (eventState.status === "resolved") {
+      if (eventState.sceneOutcome === "cart_saved") return { label: "药车获救", tone: "good", index: 2 };
+      if (eventState.sceneOutcome === "medicine_recovered") return { label: "药箱已交付", tone: "good", index: 2 };
+      return { label: "玩家已解决", tone: "good", index: 2 };
+    }
+    if (eventState.sceneOutcome === "medicine_recovered") {
+      return { label: "药箱待交付", tone: "", index: 2 };
+    }
+    if (eventState.sceneOutcome === "cart_lost" && !eventState.missedApplied) {
+      return { label: "现场已结束", tone: "warn", index: 1 };
+    }
+    if (eventState.scarApplied) return { label: "已经定局", tone: "warn", index: 4 };
+    if (eventState.reentryApplied) {
+      return state.seenPreviews.has(front.id) || eventState.witnessed
+        ? { label: "后果已重接", tone: "warn", index: 3 }
+        : { label: "弱传闻生成", tone: "", index: 3 };
+    }
+    if (eventState.missedApplied) return { label: "现场已写回", tone: "warn", index: 2 };
+    if (state.currentTick.id === front.liveTick) return { label: "现场发生中", tone: "warn", index: 1 };
+    if (state.currentTick.id === front.previewTick) return { label: "预兆出现", tone: "", index: 0 };
+    return { label: "尚未显露", tone: "", index: 0 };
+  }
+
+  function renderLog() {
+    els.log.innerHTML = "";
+    const items = [...state.log].reverse();
+    if (!items.length) {
+      const empty = document.createElement("article");
+      empty.className = "log-item";
+      empty.innerHTML = "<p>暂无写回。</p>";
+      els.log.append(empty);
+      return;
+    }
+
+    for (const item of items) {
+      const log = document.createElement("article");
+      log.className = "log-item";
+      log.innerHTML = `
+        <code>${item.tick} / ${item.zone} / ${item.eventId} / ${item.stage}</code>
+        <p>${item.visibleFeedback}</p>
+      `;
+      els.log.append(log);
+    }
+  }
+
+  function renderControls() {
+    const isEnd = state.tickIndex >= TICKS.length - 1;
+    const sceneActive = Boolean(state.activeScene);
+    els.timeMode.textContent = sceneActive ? "事件接管 · 暂停" : autoTimer ? "自然流动" : "已暂停";
+    els.observe.disabled = sceneActive;
+    els.rest.disabled = sceneActive || isEnd;
+    els.worldStep.disabled = sceneActive || isEnd;
+    els.auto.disabled = sceneActive || (isEnd && !autoTimer);
+    els.auto.classList.toggle("is-active", Boolean(autoTimer));
+    els.auto.textContent = sceneActive
+      ? "世界时间已暂停"
+      : autoTimer ? "暂停自然流动" : "继续自然流动";
+  }
+
+  function wireControls() {
+    if (wireControls.done) return;
+    wireControls.done = true;
+
+    els.observe.addEventListener("click", () => dispatch({ type: "observe" }));
+    els.rest.addEventListener("click", () => dispatch({ type: "rest" }));
+    els.worldStep.addEventListener("click", stepWorld);
+    els.auto.addEventListener("click", toggleAuto);
+    els.map.addEventListener("pointerdown", handleMapPointer);
+
+    document.querySelectorAll("[data-route]").forEach((button) => {
+      button.addEventListener("click", () => runRoute(button.dataset.route));
+    });
+
+    document.querySelectorAll("[data-reset]").forEach((button) => {
+      button.addEventListener("click", () => reset(button.dataset.reset));
+    });
+  }
+</script>
+</body>
+</html>

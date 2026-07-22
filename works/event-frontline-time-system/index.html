@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="事件前线：连续世界时间与离散事件接管的开放世界系统设计原型。">
+  <title>事件前线｜连续世界时间与离散事件接管</title>
+  <link rel="icon" href="data:,">
+  <style>
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("../../assets/fonts/ibm-plex-mono-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("../../assets/fonts/ibm-plex-mono-600.woff2") format("woff2");
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --ink: #171915;
+      --paper: #f1ede3;
+      --surface: #fffaf0;
+      --muted: #68685f;
+      --line: #bdb3a1;
+      --accent: #bc4b2a;
+      --blue: #2e688f;
+      --green: #39765a;
+      --gold: #a06b1f;
+      --danger: #953d36;
+      --dark-surface: #23251f;
+      --dark-muted: #c7c1b6;
+      --max: 1240px;
+      --sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.72;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(46, 104, 143, .45);
+      outline-offset: 3px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(255, 250, 240, .2);
+      background: rgba(23, 25, 21, .96);
+      color: var(--surface);
+    }
+
+    .topbar-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 60px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 600 12px/1 var(--mono);
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--accent);
+      position: relative;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      background: var(--accent);
+    }
+
+    .brand-mark::before { width: 24px; height: 2px; left: -5px; top: 6px; }
+    .brand-mark::after { width: 2px; height: 24px; left: 6px; top: -5px; }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      color: var(--dark-muted);
+      font: 400 12px/1 var(--mono);
+    }
+
+    nav a:hover,
+    .brand:hover { color: #ff7048; }
+
+    .hero {
+      min-height: clamp(560px, calc(100svh - 116px), 760px);
+      color: var(--surface);
+      background-image:
+        linear-gradient(90deg, rgba(16, 18, 15, .96) 0%, rgba(16, 18, 15, .86) 38%, rgba(16, 18, 15, .34) 70%, rgba(16, 18, 15, .18) 100%),
+        linear-gradient(0deg, rgba(16, 18, 15, .8) 0%, transparent 38%),
+        url("images/event-frontline-preview.png");
+      background-size: cover;
+      background-position: center top;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .hero-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: inherit;
+      margin: 0 auto;
+      padding: 72px 0 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 48px;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .metric-label,
+    .proof-label,
+    .step-index {
+      font: 600 12px/1.2 var(--mono);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .proof-label { color: #ff7048; }
+
+    h1 {
+      margin-top: 16px;
+      font-size: 72px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero-subtitle {
+      margin-top: 14px;
+      color: #f0c9b8;
+      font-size: 26px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin-top: 22px;
+      color: #ded8cd;
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--surface);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .button:hover { background: var(--surface); color: var(--ink); }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid rgba(255, 250, 240, .28);
+      border-bottom: 1px solid rgba(255, 250, 240, .28);
+    }
+
+    .hero-metric {
+      min-width: 0;
+      padding: 14px 16px;
+      border-right: 1px solid rgba(255, 250, 240, .28);
+    }
+
+    .hero-metric:last-child { border-right: 0; }
+    .metric-label { display: block; color: #f0b09a; margin-bottom: 5px; }
+    .hero-metric strong { display: block; font-size: 16px; line-height: 1.3; }
+
+    .band { border-bottom: 1px solid var(--line); }
+    .band.surface { background: var(--surface); }
+    .band.dark { background: var(--dark-surface); color: var(--surface); border-color: rgba(255, 250, 240, .16); }
+    .band.blue { background: #e4eef2; }
+
+    .section-inner {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 76px 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(220px, .42fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: start;
+      margin-bottom: 42px;
+    }
+
+    .section-title {
+      margin-top: 10px;
+      font-size: 38px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .dark .section-lead { color: var(--dark-muted); }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .problem-item {
+      min-width: 0;
+      padding: 28px;
+      border-right: 1px solid var(--line);
+    }
+
+    .problem-item:last-child { border-right: 0; }
+    .problem-item strong { display: block; font-size: 20px; margin-bottom: 9px; }
+    .problem-item p { color: var(--muted); font-size: 14px; }
+
+    .thesis {
+      margin-top: 44px;
+      border-left: 7px solid var(--accent);
+      padding: 10px 0 10px 24px;
+      font-size: 28px;
+      font-weight: 760;
+      line-height: 1.55;
+    }
+
+    .time-model {
+      display: grid;
+      gap: 18px;
+    }
+
+    .time-track {
+      display: grid;
+      grid-template-columns: 170px repeat(5, minmax(0, 1fr));
+      min-height: 116px;
+      border: 1px solid rgba(255, 250, 240, .2);
+    }
+
+    .track-name,
+    .track-step {
+      min-width: 0;
+      padding: 18px;
+      border-right: 1px solid rgba(255, 250, 240, .2);
+    }
+
+    .track-step:last-child { border-right: 0; }
+    .track-name { display: flex; flex-direction: column; justify-content: space-between; background: #171915; }
+    .track-name strong { font-size: 18px; }
+    .track-name span { color: #ff9678; font: 400 11px/1.3 var(--mono); }
+    .track-step { display: flex; flex-direction: column; justify-content: space-between; color: var(--dark-muted); }
+    .track-step strong { color: var(--surface); font-size: 15px; }
+    .track-step.is-live { background: rgba(188, 75, 42, .22); box-shadow: inset 0 5px 0 #ff7048; }
+    .track-step.is-player { background: rgba(46, 104, 143, .24); box-shadow: inset 0 5px 0 #5cb3df; }
+    .track-step.is-result { background: rgba(57, 118, 90, .24); box-shadow: inset 0 5px 0 #74b58f; }
+    .step-index { color: #8f8c84; }
+
+    .handoff {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+      margin-top: 28px;
+    }
+
+    .handoff-copy {
+      border-top: 4px solid var(--accent);
+      padding-top: 14px;
+    }
+
+    .handoff-copy:last-child { border-color: var(--green); }
+    .handoff-copy strong { display: block; font-size: 20px; margin-bottom: 7px; }
+    .handoff-copy p { color: var(--dark-muted); font-size: 14px; }
+    .handoff-arrow { text-align: center; color: #ff7048; font: 600 22px/1 var(--mono); }
+
+    .proof-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    .proof-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border: 1px solid var(--line);
+      object-fit: cover;
+      object-position: top center;
+      background: #dce8eb;
+    }
+
+    .proof-copy h3 { margin-top: 10px; font-size: 28px; line-height: 1.25; }
+    .proof-copy > p { margin-top: 14px; color: var(--muted); }
+
+    .route-list {
+      display: grid;
+      margin-top: 26px;
+      border-top: 1px solid var(--line);
+    }
+
+    .route {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 14px;
+      padding: 17px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .route-code {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--ink);
+      font: 600 15px/1 var(--mono);
+    }
+
+    .route strong { display: block; font-size: 16px; }
+    .route p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+
+    .demo-cta {
+      margin-top: 26px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .demo-cta .button { border-color: var(--ink); }
+    .demo-cta .button.primary:hover { border-color: var(--ink); }
+
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid rgba(255, 250, 240, .2);
+    }
+
+    .rule {
+      min-width: 0;
+      min-height: 220px;
+      padding: 24px;
+      border-right: 1px solid rgba(255, 250, 240, .2);
+    }
+
+    .rule:last-child { border-right: 0; }
+    .rule-index { color: #ff7048; font: 600 12px/1 var(--mono); }
+    .rule strong { display: block; margin-top: 34px; font-size: 20px; }
+    .rule p { margin-top: 9px; color: var(--dark-muted); font-size: 14px; }
+
+    .boundary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .boundary {
+      border-top: 6px solid var(--green);
+      background: var(--surface);
+      padding: 26px;
+    }
+
+    .boundary.future { border-color: var(--gold); background: #fff4d9; }
+    .boundary h3 { font-size: 24px; }
+    .boundary > p { margin-top: 7px; color: var(--muted); }
+
+    .check-list {
+      list-style: none;
+      margin: 22px 0 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .check-list li {
+      position: relative;
+      padding: 12px 0 12px 24px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      left: 2px;
+      top: 20px;
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+    }
+
+    .future .check-list li::before { background: var(--gold); }
+
+    .closing {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 32px;
+      align-items: end;
+    }
+
+    .closing h2 { max-width: 800px; font-size: 38px; line-height: 1.35; }
+    .closing p { max-width: 760px; margin-top: 14px; color: var(--dark-muted); }
+    .closing .button { flex: 0 0 auto; }
+
+    footer {
+      background: #10110e;
+      color: var(--dark-muted);
+      border-top: 1px solid rgba(255, 250, 240, .16);
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 86px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      font: 400 12px/1.4 var(--mono);
+    }
+
+    .footer-inner a:hover { color: #ff7048; }
+
+    @media (max-width: 980px) {
+      h1 { font-size: 58px; }
+      .hero-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-metric:nth-child(2) { border-right: 0; }
+      .hero-metric:nth-child(-n+2) { border-bottom: 1px solid rgba(255, 250, 240, .28); }
+      .section-head,
+      .proof-layout { grid-template-columns: 1fr; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .problem-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .problem-item:last-child { border-bottom: 0; }
+      .time-track { min-width: 860px; grid-template-columns: 130px repeat(5, minmax(120px, 1fr)); overflow: visible; }
+      .time-model { overflow-x: auto; padding-bottom: 8px; }
+      .proof-image { max-height: 620px; }
+      .rule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rule:nth-child(2) { border-right: 0; }
+      .rule:nth-child(-n+2) { border-bottom: 1px solid rgba(255, 250, 240, .2); }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner,
+      .hero-inner,
+      .section-inner,
+      .footer-inner { width: min(100% - 24px, var(--max)); }
+      nav { display: none; }
+      .hero {
+        min-height: calc(100svh - 92px);
+        background-image:
+          linear-gradient(0deg, rgba(16, 18, 15, .96) 0%, rgba(16, 18, 15, .72) 72%, rgba(16, 18, 15, .5) 100%),
+          url("images/event-frontline-preview.png");
+        background-position: 58% top;
+      }
+      .hero-inner { padding: 46px 0 22px; gap: 34px; }
+      h1 { font-size: 46px; }
+      .hero-subtitle { font-size: 20px; }
+      .hero-copy { font-size: 16px; }
+      .hero-actions .button { width: 100%; }
+      .hero-metric { padding: 11px; }
+      .hero-metric strong { font-size: 14px; }
+      .section-inner { padding: 54px 0; }
+      .section-head { gap: 18px; margin-bottom: 30px; }
+      .section-title,
+      .closing h2 { font-size: 30px; }
+      .section-lead { font-size: 15px; }
+      .thesis { font-size: 22px; padding-left: 18px; }
+      .handoff { grid-template-columns: 1fr; }
+      .handoff-arrow { transform: rotate(90deg); }
+      .proof-layout { gap: 24px; }
+      .proof-image { aspect-ratio: 4 / 3; }
+      .rule-grid,
+      .boundary-grid { grid-template-columns: 1fr; }
+      .rule { min-height: 0; border-right: 0; border-bottom: 1px solid rgba(255, 250, 240, .2); }
+      .rule:last-child { border-bottom: 0; }
+      .closing { grid-template-columns: 1fr; align-items: start; }
+      .closing .button { width: 100%; }
+      .footer-inner { min-height: 110px; flex-direction: column; align-items: flex-start; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../index.html#works"><span class="brand-mark" aria-hidden="true"></span><span>STEVE HONG / SYSTEM DESIGN</span></a>
+      <nav aria-label="页面导航">
+        <a href="#problem">设计命题</a>
+        <a href="#model">规则模型</a>
+        <a href="#proof">可玩验证</a>
+        <a href="#boundary">验证边界</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">PLAYABLE SYSTEM DESIGN PROTOTYPE / 2026</div>
+          <h1 id="hero-title">事件前线</h1>
+          <div class="hero-subtitle">连续世界时间 × 离散事件接管</div>
+          <p class="hero-copy">世界照常流动，事件在玩家看不见的地方成熟；当玩家抵达关键现场，世界时间暂停，由三拍局部行动接管。介入、错过与携带资源都会被写回地点，并成为下一次遭遇的入口。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="demo/index.html">打开可玩 Demo</a>
+            <a class="button" href="#model">查看规则模型</a>
+          </div>
+        </div>
+
+        <div class="hero-metrics" aria-label="原型结构摘要">
+          <div class="hero-metric"><span class="metric-label">TIME LAYERS</span><strong>连续世界 + 离散现场</strong></div>
+          <div class="hero-metric"><span class="metric-label">LOCAL BEATS</span><strong>3 拍收束</strong></div>
+          <div class="hero-metric"><span class="metric-label">PRIMITIVES</span><strong>观察 / 改向 / 转移 / 等待</strong></div>
+          <div class="hero-metric"><span class="metric-label">STATUS</span><strong>可玩规则原型</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem" class="band surface">
+      <div class="section-inner">
+        <div class="section-head">
+          <div><div class="section-kicker">01 / DESIGN PROBLEM</div><h2 class="section-title">自然时间为什么仍然不自然</h2></div>
+          <p class="section-lead">连续流动容易让世界看起来“活着”，却可能只是在重复日常循环；行动推进容易控制内容密度，却会让时间像菜单资源。本原型尝试的不是二选一，而是明确两套时间各自负责什么。</p>
+        </div>
+
+        <div class="problem-grid">
+          <article class="problem-item"><strong>世界持续流动</strong><p>如果结果不累计，玩家不触发主线时，大世界只是在重复同一天。</p></article>
+          <article class="problem-item"><strong>行动推动时间</strong><p>内容容易收束，但移动和探索都像在支付点数，3D 空间的连续感被打断。</p></article>
+          <article class="problem-item"><strong>硬倒计时施压</strong><p>时间有机会成本，却也迫使玩家跳过观察，削弱探索和局部决策的价值。</p></article>
+        </div>
+
+        <p class="thesis">世界时间负责让事件成熟，现场时间负责让玩家决策；两者在写回节点重新汇合。</p>
+      </div>
+    </section>
+
+    <section id="model" class="band dark">
+      <div class="section-inner">
+        <div class="section-head">
+          <div><div class="section-kicker">02 / TIME MODEL</div><h2 class="section-title">双层时间结构</h2></div>
+          <p class="section-lead">系统只保留少量阶段和局部规则。复杂感不来自为每条支线编写完整分支，而来自事件成熟、玩家位置、角色意图和资源归属之间的组合。</p>
+        </div>
+
+        <div class="time-model" aria-label="双层时间结构示意">
+          <div class="time-track">
+            <div class="track-name"><strong>世界时间</strong><span>CONTINUOUS TICK</span></div>
+            <div class="track-step"><span class="step-index">01</span><strong>预兆出现</strong><span>可观察，也可错过</span></div>
+            <div class="track-step"><span class="step-index">02</span><strong>事件成熟</strong><span>角色向现场移动</span></div>
+            <div class="track-step is-live"><span class="step-index">03</span><strong>现场激活</strong><span>玩家到场则接管时间</span></div>
+            <div class="track-step is-result"><span class="step-index">04</span><strong>结果写回</strong><span>地点与角色状态改变</span></div>
+            <div class="track-step"><span class="step-index">05</span><strong>后果重接</strong><span>入口刷新到玩家附近</span></div>
+          </div>
+
+          <div class="time-track">
+            <div class="track-name"><strong>现场时间</strong><span>DISCRETE BEATS</span></div>
+            <div class="track-step is-player"><span class="step-index">PAUSE</span><strong>世界暂停</strong><span>取消实时决策压力</span></div>
+            <div class="track-step is-player"><span class="step-index">BEAT 01</span><strong>观察</strong><span>揭露意图与资源</span></div>
+            <div class="track-step is-player"><span class="step-index">BEAT 02</span><strong>改向 / 转移</strong><span>改变角色时序或资源归属</span></div>
+            <div class="track-step is-player"><span class="step-index">BEAT 03</span><strong>收束</strong><span>完成、部分成功或失守</span></div>
+            <div class="track-step is-result"><span class="step-index">RESUME</span><strong>返回世界</strong><span>继续连续流动</span></div>
+          </div>
+        </div>
+
+        <div class="handoff">
+          <div class="handoff-copy"><strong>场外：低分辨率模拟</strong><p>事件只推进阶段、位置、压力和痕迹，不持续模拟完整戏剧过程。</p></div>
+          <div class="handoff-arrow" aria-hidden="true">→</div>
+          <div class="handoff-copy"><strong>到场：高分辨率展开</strong><p>关键角色变成可交互对象，玩家用有限动作改变现场的因果关系。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="proof" class="band surface">
+      <div class="section-inner">
+        <div class="section-head">
+          <div><div class="section-kicker">03 / PLAYABLE PROOF</div><h2 class="section-title">同一事件，三种收敛</h2></div>
+          <p class="section-lead">Demo 不是叙事展示器，而是规则对照实验。玩家可以直接在地图移动、观察预兆，并在药车伏击现场点击山贼、药车和药箱。</p>
+        </div>
+
+        <div class="proof-layout">
+          <img class="proof-image" src="images/event-frontline-world.png" alt="事件前线 Demo 的小镇地图、事件前线与世界变化界面">
+          <div class="proof-copy">
+            <div class="proof-label">THREE CONTRAST ROUTES</div>
+            <h3>玩家改变的不是剧情选项，而是现场关系</h3>
+            <p>四种交互原语作用于角色意图、抵达时序和资源所有权。结果不会停在结算弹窗，而会继续改变医馆、市集、官署和山路。</p>
+
+            <div class="route-list">
+              <div class="route"><span class="route-code">A</span><div><strong>警告药车 + 拖住山贼</strong><p>药车脱离伏击，救援路线保住。</p></div></div>
+              <div class="route"><span class="route-code">B</span><div><strong>识别目标 + 抢救药箱</strong><p>药车失守，但药箱成为可携带资源；送到医馆后形成部分成功。</p></div></div>
+              <div class="route"><span class="route-code">C</span><div><strong>错过或未观察现场</strong><p>事件照常写回；根据玩家是否见过预兆，生成强后果入口或弱传闻。</p></div></div>
+            </div>
+
+            <div class="demo-cta">
+              <a class="button primary" href="demo/index.html">进入可玩原型</a>
+              <a class="button" href="demo/index.html#event-fronts">直接查看事件前线</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band dark">
+      <div class="section-inner">
+        <div class="section-head">
+          <div><div class="section-kicker">04 / LOCAL RULES</div><h2 class="section-title">用简单规则制造戏剧差异</h2></div>
+          <p class="section-lead">原型不模拟所有角色的完整人生，只维护足以产生后果的局部状态。每条规则都能直接映射到画面、交互与世界写回。</p>
+        </div>
+
+        <div class="rule-grid">
+          <article class="rule"><span class="rule-index">RULE 01</span><strong>阶段成熟</strong><p>事件前线只经过预兆、现场、写回、重接和定局五个阶段。</p></article>
+          <article class="rule"><span class="rule-index">RULE 02</span><strong>局部阈值</strong><p>角色意图、时间差和资源归属决定三拍后的结果，不枚举完整剧情树。</p></article>
+          <article class="rule"><span class="rule-index">RULE 03</span><strong>痕迹衰减</strong><p>玩家见过预兆或亲历失败时，后果会以更强入口重新接近玩家。</p></article>
+          <article class="rule"><span class="rule-index">RULE 04</span><strong>结果写回</strong><p>成功、部分成功和错过都会改变地点标签、NPC 状态和后续入口。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="boundary" class="band blue">
+      <div class="section-inner">
+        <div class="section-head">
+          <div><div class="section-kicker">05 / VALIDATION BOUNDARY</div><h2 class="section-title">原型证明了什么，还没证明什么</h2></div>
+          <p class="section-lead">这部分决定它能否作为作品，而不是概念图。左侧是当前可直接操作和复现的证据；右侧是仍需继续验证的系统规模问题。</p>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary">
+            <h3>已验证</h3>
+            <p>在单个事件前线与六区小镇中可稳定复现。</p>
+            <ul class="check-list">
+              <li>场外世界自然流动，角色位置随 tick 改变</li>
+              <li>玩家进入现场后，世界时间立即暂停</li>
+              <li>每次行动只推进一个离散节拍</li>
+              <li>玩家能改变角色意图与资源所有权</li>
+              <li>结果写回地点，并生成不同强度的重接入口</li>
+            </ul>
+          </article>
+
+          <article class="boundary future">
+            <h3>尚未验证</h3>
+            <p>这些内容属于后续系统方向，不伪装成当前成果。</p>
+            <ul class="check-list">
+              <li>多条事件前线争夺同一角色与资源时的稳定性</li>
+              <li>数十天尺度下的状态累积、遗忘与存档成本</li>
+              <li>3D 连续移动中，预兆和后果入口的空间可读性</li>
+              <li>批量生产事件内容所需的配置工具与调试界面</li>
+              <li>玩家长期利用暂停机制时的节奏与平衡问题</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band dark">
+      <div class="section-inner closing">
+        <div>
+          <div class="section-kicker">CONCLUSION</div>
+          <h2>自由不是让所有事情等待玩家，而是让世界继续变化，同时把可理解、可介入的后果送回玩家身边。</h2>
+          <p>事件前线把连续时间的自然感与离散决策的可控性分工处理。它目前是一套小规模、可验证的系统假设，而不是对完整开放世界的替代方案。</p>
+        </div>
+        <a class="button primary" href="demo/index.html">运行 Demo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner"><span>EVENT FRONTLINE TIME SYSTEM / STEVE HONG</span><a href="../../index.html#works">返回作品栏</a></div>
+  </footer>
+</body>
+</html>
