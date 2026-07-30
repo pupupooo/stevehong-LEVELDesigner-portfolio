@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="断流湿地 POI 白盒：用岩石奇波的能力重建栖息地，并通过环境反馈呈现可学习的生态规律。"
+    />
+    <link
+      rel="canonical"
+      href="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/works/wetland-poi-case-study/"
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="断流湿地 POI｜关卡设计案例" />
+    <meta
+      property="og:description"
+      content="用岩石奇波的能力重建栖息地，并通过环境反馈呈现可学习的生态规律。"
+    />
+    <meta
+      property="og:url"
+      content="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/works/wetland-poi-case-study/"
+    />
+    <meta
+      property="og:image"
+      content="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/works/wetland-poi-case-study/assets/wetland-restoration.webp"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>断流湿地 POI｜关卡设计案例</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+
+    <header class="topbar" aria-label="页面导航">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark" aria-hidden="true">W·P</span>
+        <span>
+          <strong>断流湿地 POI</strong>
+          <small>Level design case study</small>
+        </span>
+      </a>
+      <nav>
+        <a href="#evidence">实机证据</a>
+        <a href="#structure">空间结构</a>
+        <a href="#validation">设计思路</a>
+      </nav>
+      <div class="top-actions">
+        <a class="portfolio-link" href="../../level-design/">Steve 的关卡作品</a>
+        <button class="print-button" type="button" data-print>打印备份</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">UE 5.5 WHITEBOX · PERSONAL PORTFOLIO · 2026.07.30</p>
+          <h1 id="hero-title">一只岩石奇波，<br />改变整座湿地。</h1>
+          <p class="hero-lede">
+            玩家先在干涸湿地看到废弃巢穴和奇波留下的痕迹。找到岩石奇波后，连续打通 A–E
+            五处堵点：开洞口、抬高两个水池、放出山里的积水、恢复山下湿地。最后可以借滑翔鸟回到起点，
+            看到重新出现的水獭。
+          </p>
+
+          <div class="hero-facts" aria-label="项目概要">
+            <div>
+              <span>载体</span>
+              <strong>UE 5.5 白盒</strong>
+            </div>
+            <div>
+              <span>实机记录</span>
+              <strong>02:22</strong>
+            </div>
+            <div>
+              <span>流程</span>
+              <strong>A → B → C → D → E</strong>
+            </div>
+          </div>
+
+          <aside class="thesis-note">
+            <span class="note-index">出发点</span>
+            <p>
+              <strong>现实经验应当能在这个世界里派上用场。</strong>
+              玩家看到水域，会期待水生生物；看到断崖或岩缝，也会联想到鸟巢与蜥蜴。
+              关卡把这些经验变成可验证的生态规律：玩家读懂环境、做出判断，世界再给出回应。
+            </p>
+          </aside>
+        </div>
+
+        <figure class="hero-visual">
+          <img
+            class="hero-after"
+            src="./assets/wetland-restoration.webp"
+            alt="完成 E 节点后，从崖顶俯瞰重新蓄水的外部湿地"
+          />
+          <figcaption class="image-label image-label-after">
+            <span>E / RESTORED</span>
+            水重新写回地貌
+          </figcaption>
+          <div class="hero-before">
+            <img
+              src="./assets/initial-dry-wetland.webp"
+              alt="玩家初到 POI 时看到的干涸湿地、废弃巢穴与远处山体"
+            />
+            <span class="image-label">
+              <span>00 / DRY</span>
+              同一盆地，初始状态
+            </span>
+          </div>
+          <div class="contour-lines" aria-hidden="true"></div>
+        </figure>
+      </section>
+
+      <section class="flow-thesis" aria-label="玩家流程">
+        <p>看到干涸湿地</p>
+        <i aria-hidden="true"></i>
+        <p>找到岩石奇波</p>
+        <i aria-hidden="true"></i>
+        <p>打通堵点</p>
+        <i aria-hidden="true"></i>
+        <p>水系连通</p>
+        <i aria-hidden="true"></i>
+        <p>生物回归</p>
+      </section>
+
+      <section class="section evidence-section" id="evidence" aria-labelledby="evidence-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">01 / PLAYABLE EVIDENCE</p>
+            <h2 id="evidence-title">同一种能力，<br />如何重建一片湿地。</h2>
+          </div>
+          <p>
+            点击右侧章节可以直接跳到对应位置。视频播放时，当前步骤和下方水位会一起变化。
+            左上角保留了 Debug 信息，方便核对 A–E 做到了哪一步。
+          </p>
+        </div>
+
+        <div class="evidence-workbench">
+          <div class="player-column">
+            <div class="video-shell">
+              <video
+                id="case-video"
+                controls
+                preload="metadata"
+                poster="./assets/initial-dry-wetland.webp"
+                aria-label="断流湿地 POI 白盒完整流程录像"
+              >
+                <source src="./assets/wetland-poi-walkthrough.mp4" type="video/mp4" />
+                <track
+                  default
+                  kind="chapters"
+                  src="./chapters.vtt"
+                  srclang="zh"
+                  label="设计章节"
+                />
+                当前浏览器无法播放 MP4，请直接打开 assets/wetland-poi-walkthrough.mp4。
+              </video>
+              <div class="video-status" aria-live="polite">
+                <span id="active-stage">00</span>
+                <p>
+                  <small id="active-time">00:00</small>
+                  <strong id="active-chapter">刚到湿地</strong>
+                </p>
+              </div>
+            </div>
+            <div class="player-caption">
+              <span>FULL PLAYTHROUGH</span>
+              <p>原速实机 · 无旁白 · 章节时间来自 2026-07-30 录屏</p>
+            </div>
+
+            <div class="water-gauge" aria-label="当前 POI 状态示意">
+              <div class="gauge-head">
+                <span>水位进度</span>
+                <strong id="gauge-state">干涸</strong>
+              </div>
+              <div class="gauge-track" aria-hidden="true">
+                <div class="gauge-water"></div>
+                <div class="gauge-line gauge-line-restored"><span>RESTORED</span></div>
+                <div class="gauge-line gauge-line-high"><span>HIGH</span></div>
+                <div class="gauge-line gauge-line-mid"><span>MID</span></div>
+                <div class="gauge-line gauge-line-dry"><span>DRY</span></div>
+              </div>
+            </div>
+          </div>
+
+          <ol class="chapter-list" aria-label="录像章节">
+            <li>
+              <button type="button" data-time="0" data-stage="00" data-gauge="dry">
+                <span class="chapter-time">00:00</span>
+                <span class="chapter-copy">
+                  <strong>刚到湿地</strong>
+                  <small>先看到干涸盆地、废弃巢穴和山上的旧水路。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="23" data-stage="Q" data-gauge="dry">
+                <span class="chapter-time">00:23</span>
+                <span class="chapter-copy">
+                  <strong>找到岩石奇波</strong>
+                  <small>顺着活动痕迹上山，获得破岩能力。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="31" data-stage="A" data-gauge="dry">
+                <span class="chapter-time">00:31</span>
+                <span class="chapter-copy">
+                  <strong>A · 打开洞口</strong>
+                  <small>第一次只开路，让玩家先学会怎么用岩石奇波。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="37" data-stage="B" data-gauge="mid">
+                <span class="chapter-time">00:37</span>
+                <span class="chapter-copy">
+                  <strong>B · 低池涨水</strong>
+                  <small>水把木板抬高。掉进水里也能继续游，不会卡住。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="86" data-stage="C" data-gauge="high">
+                <span class="chapter-time">01:26</span>
+                <span class="chapter-copy">
+                  <strong>C · 高池涨水</strong>
+                  <small>第二个水池涨起来，玩家改成游向下一处堵点。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="98" data-stage="D" data-gauge="high">
+                <span class="chapter-time">01:38</span>
+                <span class="chapter-copy">
+                  <strong>D · 打通山外出口</strong>
+                  <small>玩家离开山洞，从高处重新看到最开始的盆地。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="114" data-stage="E" data-gauge="restored">
+                <span class="chapter-time">01:54</span>
+                <span class="chapter-copy">
+                  <strong>E · 恢复山下湿地</strong>
+                  <small>瀑布先出现，接着水面上涨、植物变绿、水獭出现。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="124" data-stage="↘" data-gauge="restored">
+                <span class="chapter-time">02:04</span>
+                <span class="chapter-copy">
+                  <strong>借鸟返回</strong>
+                  <small>从高处看完整个恢复结果，再快速回到巢穴附近。</small>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button type="button" data-time="133" data-stage="◎" data-gauge="restored">
+                <span class="chapter-time">02:13</span>
+                <span class="chapter-copy">
+                  <strong>水獭出现</strong>
+                  <small>回到巢穴附近，玩家能直接看到恢复后的动物。</small>
+                </span>
+              </button>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section structure-section" id="structure" aria-labelledby="structure-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">02 / SPATIAL GRAMMAR</p>
+            <h2 id="structure-title">A 到 E，<br />每一步都要有新变化。</h2>
+          </div>
+          <p>
+            玩家只需要使用岩石奇波的破岩能力。同一个行为作用于相似的岩层堵点，
+            会让环境产生不同变化：打开洞口、抬高水位、改变路线，最终重新连通湿地水系。
+          </p>
+        </div>
+
+        <div class="stage-grid" aria-label="A 到 E 五次空间变化">
+          <article>
+            <figure>
+              <img src="./assets/lower-pool-release.webp" alt="玩家通过 A 节点后进入山体内部" />
+              <figcaption>A / OPEN</figcaption>
+            </figure>
+            <div>
+              <span>A · 入口</span>
+              <h3>进入山体</h3>
+              <p>第一次破岩只负责打开洞口，玩家带着刚学会的能力进入内部水路。</p>
+            </div>
+          </article>
+          <article>
+            <figure>
+              <img src="./assets/floating-board-rise.webp" alt="B 节点破岩并放水时的反馈" />
+              <figcaption>B / RELEASE</figcaption>
+            </figure>
+            <div>
+              <span>B · 低池</span>
+              <h3>放水抬板</h3>
+              <p>破岩触发低池进水，木板随后升高，把玩家送到上一层。</p>
+            </div>
+          </article>
+          <article>
+            <figure>
+              <img src="./assets/upper-pool-route.webp" alt="玩家沿上层路线接近 C 节点的高池堵点" />
+              <figcaption>C / ROUTE</figcaption>
+            </figure>
+            <div>
+              <span>C · 高池</span>
+              <h3>追着水路向上</h3>
+              <p>低池打开上层路线；C 完成后，高池把原本够不到的出口变成一段游路。</p>
+            </div>
+          </article>
+          <article>
+            <figure>
+              <img src="./assets/mountain-exit.webp" alt="玩家来到 D 节点前被岩石堵住的山体出口" />
+              <figcaption>D / OUTLET</figcaption>
+            </figure>
+            <div>
+              <span>D · 山外出口</span>
+              <h3>打通山外出口</h3>
+              <p>高池把玩家送到出口前。破岩后离开洞穴，再看一次最开始的干涸盆地。</p>
+            </div>
+          </article>
+          <article>
+            <figure>
+              <img src="./assets/wetland-restoration.webp" alt="E 节点完成后恢复蓄水的外部湿地" />
+              <figcaption>E / RESTORED</figcaption>
+            </figure>
+            <div>
+              <span>E · 外部湿地</span>
+              <h3>湿地恢复</h3>
+              <p>最终堵点解除后，水、植物和动物依次回来，玩家能看到自己做成了什么。</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="design-loop">
+          <div class="loop-intro">
+            <p class="section-kicker">DESIGN LOGIC</p>
+            <h3>让玩家看见、猜到，再亲手确认。</h3>
+            <p>
+              关卡建立一条简单的世界规律：岩石堵住旧水路，岩石奇波可以让水重新流动。
+              A–E 用五次环境变化反复验证这条规律。
+            </p>
+          </div>
+          <div class="loop-track" aria-label="玩家理解规律的四个步骤">
+            <article>
+              <span>01</span>
+              <strong>看见线索</strong>
+              <p>干涸巢穴、旧水路和堵塞岩石先摆在玩家眼前。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>形成预期</strong>
+              <p>岩石奇波为这些堵点提供明确解法。</p>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>路线改变</strong>
+              <p>每次破岩都会改变水路或可达空间，让玩家继续往前。</p>
+            </article>
+            <article>
+              <span>04</span>
+              <strong>世界回应</strong>
+              <p>栖息地恢复，生物自然回归，明确验证玩家的判断。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section intent-section" id="validation" aria-labelledby="validation-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">03 / EXPERIENCE TARGET</p>
+            <h2 id="validation-title">体验目标：<br />“我重建了栖息地，奇波自然回来了。”</h2>
+          </div>
+          <p>
+            玩家先从干涸巢穴、旧水路和堵塞岩层中读出“这里曾经有水”。
+            随着水系重新连通，植物、动物与奇波自然回到适合它们的栖息地；滑翔返程让前后状态在同一地点完成对照。
+          </p>
+        </div>
+
+        <div class="decision-stories">
+          <article class="decision-story">
+            <figure>
+              <img src="./assets/abandoned-nest.webp" alt="玩家初到湿地时看到干涸巢穴、旧水路和山体堵点" />
+              <figcaption>01 / 先看见问题</figcaption>
+            </figure>
+            <div>
+              <span class="story-index">ENVIRONMENT FIRST</span>
+              <h3>先让玩家看见断流留下的结果。</h3>
+              <p>
+                干涸巢穴说明这里曾经有水，山上的旧水路和碎石痕迹指向堵点。
+                玩家先看到一件值得处理的事，再顺着环境去找能处理它的岩石奇波。
+              </p>
+            </div>
+          </article>
+
+          <article class="decision-story decision-story-reverse">
+            <figure>
+              <img src="./assets/glide-return.webp" alt="湿地恢复后，玩家从高处俯看整片盆地与返程路线" />
+              <figcaption>02 / 后果逐步放大</figcaption>
+            </figure>
+            <div>
+              <span class="story-index">ONE VERB, NEW RESULT</span>
+              <h3>同一种能力，环境连续回应。</h3>
+              <p>
+                破岩的输入保持简单，反馈逐步放大：洞口打开、木板升高、游路出现、山外出口打通，
+                最后整片湿地恢复。玩家的注意力可以留给地形和水位。
+              </p>
+            </div>
+          </article>
+
+          <article class="decision-story">
+            <figure>
+              <img src="./assets/rare-ecology-reveal.webp" alt="玩家回到最初的巢穴旁，看到湿地恢复后出现的水獭" />
+              <figcaption>03 / 回到最初的问题</figcaption>
+            </figure>
+            <div>
+              <span class="story-index">CLOSE THE LOOP</span>
+              <h3>栖息地重建后，生物自然回来。</h3>
+              <p>
+                D 把玩家送到山外高处，E 在眼前恢复湿地，滑翔鸟再把玩家带回巢穴附近。
+                同一片盆地前后对照，水面、植物和水獭一起确认栖息地已经恢复。
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <aside class="transfer-note" aria-labelledby="transfer-title">
+          <div>
+            <p class="section-kicker">TRANSFERABLE ECOLOGY</p>
+            <h3 id="transfer-title">让现实知识，在下一片区域继续有用。</h3>
+          </div>
+          <p>
+            水域可能有水生生物，断崖可能有鸟类，岩缝可能藏着蜥蜴。
+            当地形、生物与资源之间保持稳定关系，玩家就能依据经验提出假设，再由世界验证判断。
+            这套规律跨区域反复成立后，探索带来的满足感不再只是“找到了标记”，而是“我读懂了环境，所以猜对了”。
+          </p>
+        </aside>
+
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <strong>断流湿地 POI · Level Design Case Study</strong>
+        <p>Steve Hong · 个人关卡设计作品 · UE 5.5 白盒</p>
+      </div>
+      <div class="footer-links">
+        <a href="../../level-design/">返回关卡作品主页</a>
+        <a href="../level-design-factory34/">下一项：34号制造厂</a>
+        <a href="mailto:hongsteve119@gmail.com">联系 Steve</a>
+      </div>
+      <p class="asset-note">
+        公开说明：这是个人非商业白盒 Demo。页面中的动物与角色为原型占位资源，仅用于说明关卡流程与空间状态，不作为原创资产或商业项目成果展示。
+      </p>
+    </footer>
+  </body>
+</html>

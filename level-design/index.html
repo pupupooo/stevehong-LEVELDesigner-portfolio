@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steve Hong — 关卡 / 玩法设计作品集</title>
+  <meta name="description" content="洪祥健的关卡与玩法设计作品集，包含开放世界 POI、空间白盒、载具玩法与可玩原型。">
+  <link rel="canonical" href="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/level-design/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Steve Hong — 关卡 / 玩法设计作品集">
+  <meta property="og:description" content="开放世界 POI、空间白盒、玩法系统与可玩原型。">
+  <meta property="og:url" content="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/level-design/">
+  <meta property="og:image" content="https://pupupooo.github.io/stevehong-LEVELDesigner-portfolio/level-design/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:,">
+  <style>
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('../assets/fonts/ibm-plex-mono-400.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url('../assets/fonts/ibm-plex-mono-500.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'IBM Plex Mono';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url('../assets/fonts/ibm-plex-mono-600.woff2') format('woff2');
+    }
+    :root {
+      --ink: #111111;
+      --paper: #f4f4f0;
+      --panel: #1a1a18;
+      --panel-soft: #24231f;
+      --line: rgba(244, 244, 240, 0.2);
+      --line-dark: rgba(17, 17, 17, 0.18);
+      --muted: #77736b;
+      --text-soft: #c9c3b9;
+      --accent: #ff4500;
+      --blueprint: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .grid-bg {
+      background:
+        linear-gradient(rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.07) 1px, transparent 1px),
+        var(--ink);
+      background-size: 48px 48px;
+    }
+
+    .crosshair {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: "";
+      position: absolute;
+      background: var(--accent);
+    }
+
+    .crosshair::before {
+      width: 20px;
+      height: 1px;
+      top: 50%;
+      left: 0;
+    }
+
+    .crosshair::after {
+      width: 1px;
+      height: 20px;
+      left: 50%;
+      top: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 17, 17, 0.94);
+      color: var(--paper);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      min-height: 64px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .topbar nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--text-soft);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .topbar nav a {
+      transition: color 160ms ease;
+    }
+
+    .topbar nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero {
+      color: var(--paper);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .hero-inner {
+      max-width: 1440px;
+      min-height: calc(100vh - 64px);
+      margin: 0 auto;
+      padding: 78px 32px 88px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(420px, 480px);
+      gap: 72px;
+      align-items: center;
+    }
+
+    .eyebrow,
+    .section-kicker {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      max-width: 940px;
+      font-size: clamp(44px, 6.2vw, 86px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .hero-line {
+      display: block;
+    }
+
+    .hero-subtitle {
+      margin-top: 24px;
+      color: var(--paper);
+      font-size: clamp(18px, 2vw, 28px);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .hero-copy {
+      max-width: 700px;
+      margin-top: 24px;
+      color: var(--text-soft);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .hero-actions,
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 34px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid currentColor;
+      padding: 10px 18px;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .button:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .button.primary:hover {
+      border-color: #ff6a33;
+      background: #ff6a33;
+      color: white;
+    }
+
+    .status-panel {
+      border: 1px solid var(--line);
+      background: rgba(26, 26, 24, 0.9);
+      padding: 24px;
+      box-shadow: 14px 14px 0 rgba(255, 69, 0, 0.12);
+    }
+
+    .status-panel h2 {
+      font-size: 22px;
+      line-height: 1.35;
+      margin-bottom: 18px;
+    }
+
+    .signal-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+    }
+
+    .signal-label {
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .signal strong {
+      display: block;
+      color: var(--paper);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .signal p {
+      margin-top: 6px;
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .quick-links {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .quick-links a {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      color: var(--text-soft);
+      font-size: 13px;
+      transition: color 160ms ease;
+    }
+
+    .quick-links a:hover {
+      color: var(--accent);
+    }
+
+    .section {
+      border-bottom: 1px solid var(--line-dark);
+      scroll-margin-top: 76px;
+    }
+
+    .section.dark {
+      background: var(--ink);
+      color: var(--paper);
+      border-bottom-color: var(--line);
+    }
+
+    .section-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 88px 32px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
+
+    .section-title {
+      max-width: 900px;
+      margin-top: 10px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .section-note {
+      color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .dark .section-note,
+    .dark .section-lead {
+      color: var(--text-soft);
+    }
+
+    .section-lead {
+      max-width: 880px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .portfolio-rail {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 14px 0 32px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .portfolio-rail::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .portfolio-rail::-webkit-scrollbar-track {
+      background: rgba(17, 17, 17, 0.1);
+    }
+
+    .portfolio-rail::-webkit-scrollbar-thumb {
+      background: var(--accent);
+    }
+
+    .work-card {
+      flex: 0 0 min(430px, 82vw);
+      border: 1px solid var(--line-dark);
+      background: white;
+      color: var(--ink);
+      scroll-snap-align: start;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      overflow: hidden;
+    }
+
+    .dark .work-card {
+      border-color: var(--line);
+      background: var(--panel);
+      color: var(--paper);
+    }
+
+    .work-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 10px 10px 0 rgba(255, 69, 0, 0.14);
+    }
+
+    .work-image {
+      height: 250px;
+      border-bottom: 1px solid var(--line-dark);
+      background: var(--ink);
+      background-size: cover;
+      background-position: top center;
+      position: relative;
+    }
+
+    .dark .work-image {
+      border-bottom-color: var(--line);
+    }
+
+    .work-image.synthetic {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(17, 17, 17, 0.98), rgba(255, 69, 0, 0.42)),
+        linear-gradient(rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        #111;
+      background-size: auto, 32px 32px, 32px 32px;
+    }
+
+    .work-image.synthetic.alt {
+      background:
+        linear-gradient(135deg, rgba(14, 14, 24, 0.98), rgba(233, 69, 96, 0.6)),
+        linear-gradient(rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        #111;
+      background-size: auto, 32px 32px, 32px 32px;
+    }
+
+    .work-image.synthetic.dice {
+      background:
+        radial-gradient(circle at 20% 24%, rgba(246, 183, 60, 0.62), transparent 24%),
+        radial-gradient(circle at 80% 70%, rgba(87, 214, 141, 0.42), transparent 26%),
+        linear-gradient(135deg, rgba(17, 17, 17, 0.98), rgba(255, 69, 0, 0.34)),
+        linear-gradient(rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 244, 240, 0.08) 1px, transparent 1px),
+        #111;
+      background-size: auto, auto, auto, 32px 32px, 32px 32px;
+    }
+
+    .synthetic-label {
+      text-align: center;
+      color: var(--paper);
+      padding: 24px;
+    }
+
+    .synthetic-label strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: 0.03em;
+    }
+
+    .synthetic-label span {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-soft);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+    }
+
+    .work-body {
+      min-height: 250px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .work-title {
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .work-desc {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .dark .work-desc {
+      color: var(--text-soft);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border: 1px solid var(--line-dark);
+      padding: 3px 9px;
+      color: var(--accent);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .dark .tag {
+      border-color: var(--line);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 32px;
+      border-bottom: 1px solid var(--line);
+      padding: 34px 0;
+    }
+
+    .log-meta {
+      color: var(--text-soft);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .log-meta strong {
+      display: block;
+      color: var(--accent);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+
+    .log-content h3 {
+      font-size: 28px;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .log-content p {
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .log-blocks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .log-block {
+      border: 1px solid var(--line);
+      background: rgba(244, 244, 240, 0.06);
+      padding: 16px;
+    }
+
+    .log-block h4 {
+      color: var(--paper);
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 38px;
+    }
+
+    .spec-card {
+      min-height: 210px;
+      border: 1px solid var(--line-dark);
+      background: white;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .spec-card h3 {
+      font-size: 19px;
+      line-height: 1.35;
+    }
+
+    .spec-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .education {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .footer {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 46px 32px;
+    }
+
+    .contact-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 28px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .contact-list span {
+      display: block;
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-inner,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .spec-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .section {
+        scroll-margin-top: 112px;
+      }
+
+      .topbar-inner {
+        height: auto;
+        padding: 14px 20px;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-inner,
+      .section-inner,
+      .footer-inner {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero-inner {
+        min-height: auto;
+        padding-top: 58px;
+      }
+
+      h1 {
+        font-size: clamp(30px, 9.25vw, 52px);
+      }
+
+      .hero-line {
+        white-space: nowrap;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .section-note {
+        white-space: normal;
+      }
+
+      .log-entry,
+      .log-blocks,
+      .spec-grid,
+      .education,
+      .contact-list {
+        grid-template-columns: 1fr;
+      }
+
+      .work-image {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#top">
+        <span class="crosshair"></span>
+        <span class="mono">HONG_XJ / LEVEL DESIGN</span>
+      </a>
+      <nav class="mono" aria-label="页面导航">
+        <a href="#works">作品</a>
+        <a href="#logs">经历</a>
+        <a href="#specs">能力</a>
+        <a href="#education">教育</a>
+        <a href="#contact">联系</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero grid-bg" id="top">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">LEVEL DESIGN PORTFOLIO / 2026</div>
+          <h1><span class="hero-line">大世界关卡/玩法策划</span><span class="hero-line">空间白盒与原型验证</span></h1>
+          <div class="hero-subtitle mono">HONG XIANGJIAN // 洪祥健</div>
+          <p class="hero-copy">城市开放世界关卡/玩法策划。项目覆盖 POI 深度体验、垂直关卡切片、载具玩法体系，以及 UE5 / Blender 白盒制作与可玩原型验证。</p>
+          <div class="hero-actions">
+            <a class="button" href="#works">浏览作品</a>
+          </div>
+        </div>
+
+        <aside class="status-panel">
+          <div class="eyebrow">DESIGN SCOPE</div>
+          <h2>开放世界 POI、空间白盒与玩法系统。</h2>
+          <div class="signal-grid">
+            <div class="signal">
+              <div class="signal-label">01 / OPEN WORLD POI</div>
+              <strong>深度体验与玩家动线</strong>
+              <p>以环境线索、空间状态和事件反馈组织探索流程。</p>
+            </div>
+            <div class="signal">
+              <div class="signal-label">02 / SPATIAL DESIGN</div>
+              <strong>空间节奏与白盒验证</strong>
+              <p>通过尺度、视线、路径和垂直关系验证关卡结构。</p>
+            </div>
+            <div class="signal">
+              <div class="signal-label">03 / GAMEPLAY DESIGN</div>
+              <strong>玩法系统与状态反馈</strong>
+              <p>载具、事件与场景规则共同构成可持续的玩家体验。</p>
+            </div>
+          </div>
+          <div class="quick-links">
+            <a href="../works/wetland-poi-case-study/index.html"><span>断流湿地 POI</span><span>开放世界 POI</span></a>
+            <a href="../works/level-design-factory34/index.html"><span>34号制造厂</span><span>UE5 白盒关卡</span></a>
+            <a href="../works/vehicle-deck-director/index.html"><span>Vehicle Deck Director</span><span>开放世界载具玩法</span></a>
+            <a href="../works/event-frontline-time-system/index.html"><span>Event Frontline</span><span>开放世界事件系统</span></a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="works">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">WORKS</div>
+            <h2 class="section-title">关卡与玩法作品</h2>
+          </div>
+          <div class="section-note">SCROLL_HORIZONTAL -></div>
+        </div>
+
+        <div class="portfolio-rail">
+          <a class="work-card" href="../works/wetland-poi-case-study/index.html">
+            <div class="work-image" style="background-image:url('../works/wetland-poi-case-study/assets/wetland-restoration.webp')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">断流湿地 POI</h3>
+                <p class="work-desc">围绕“恢复湿地”的环境目标组织探索路径。水位、浮木、生态与回程路线随玩家行动逐步改变，并形成完整的空间反馈链。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">开放世界 POI</span>
+                <span class="tag">Blender 白盒</span>
+                <span class="tag">可玩验证</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/level-design-factory34/index.html">
+            <div class="work-image" style="background-image:url('../works/level-design-factory34/images/个人作品页入口展示图.webp')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">34号制造厂</h3>
+                <p class="work-desc">UE5 白盒个人作品。以粗野主义建筑、垂直动线和视线管理构建探索节奏，并通过空间异常形成类怪谈体验。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">UE5</span>
+                <span class="tag">白盒关卡</span>
+                <span class="tag">环境叙事</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/vehicle-deck-director/index.html">
+            <div class="work-image" style="background-image:url('../works/vehicle-deck-director/images/director-lab-preview.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">大世界载具玩法设计与事件导演系统设计</h3>
+                <p class="work-desc">围绕城市驾驶体验，展示 T3/T2/T1 载具玩法体系规划，并用 Echo Director Demo 验证行为回响如何影响下一次事件分发。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">开放世界载具</span>
+                <span class="tag">导演系统</span>
+                <span class="tag">玩家中心事件</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/event-frontline-time-system/index.html">
+            <div class="work-image" style="background-image:url('../works/event-frontline-time-system/images/event-frontline-preview.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">事件前线：开放世界时间系统</h3>
+                <p class="work-desc">连续世界时间推动事件成熟，三拍现场结构承载玩家决策；介入、错过与资源转移都会写回地点并生成后果。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">时间系统</span>
+                <span class="tag">事件设计</span>
+                <span class="tag">世界反馈</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/arc-raiders-analysis/index.html">
+            <div class="work-image" style="background-image:url('../works/arc-raiders-analysis/images/ArcRaiders系统切片分析展示图.webp')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">Arc Raiders 系统切片分析</h3>
+                <p class="work-desc">从局内外循环、PvPvE 压力结构与社区反馈切入，拆解搜打撤品类中的风险、资源和玩家行为关系。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">系统分析</span>
+                <span class="tag">搜打撤</span>
+                <span class="tag">PvPvE</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/llm-director-hitman/index.html">
+            <div class="work-image" style="background-image:url('../works/llm-director-hitman/images/poison_intent.png')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">LLM Director Hitman</h3>
+                <p class="work-desc">自然语言计划进入语义编排层，由确定性规则处理伪装、证据、怀疑与目标路线，构成可持续的沙盒状态。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">玩法原型</span>
+                <span class="tag">确定性沙盒</span>
+                <span class="tag">LLM Director</span>
+              </div>
+            </div>
+          </a>
+
+          <a class="work-card" href="../works/level-design-deck/index.html">
+            <div class="work-image" style="background-image:url('../works/level-design-deck/images/webapp-current-spec.webp')"></div>
+            <div class="work-body">
+              <div>
+                <h3 class="work-title">level-design-deck</h3>
+                <p class="work-desc">将关卡设计记录转化为标准文档、分镜、检查报告与可审查工作台的辅助设计工作流。</p>
+              </div>
+              <div class="tag-row">
+                <span class="tag">设计工具</span>
+                <span class="tag">分镜工作流</span>
+                <span class="tag">文档规范</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark" id="logs">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">EXPERIENCE LOGS</div>
+            <h2 class="section-title">项目经历</h2>
+          </div>
+          <div class="section-note">TTL_RECORDS: 03</div>
+        </div>
+
+        <div class="timeline">
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>01 / 友塔游戏</strong>
+              <span>城市开放世界项目</span><br>
+              <span>2025 // PRESENT</span><br>
+              <span>ROLE: 关卡策划</span>
+            </div>
+            <div class="log-content">
+              <h3>主线关卡、开放世界 POI 与载具玩法体系</h3>
+              <p>负责城市开放世界主线关卡、POI 深度体验与大世界载具玩法体系设计，覆盖情节节点、探索流程、玩家动线、玩法分层和跨职能落地。</p>
+              <div class="log-blocks">
+                <div class="log-block">
+                  <h4>主线关卡设计</h4>
+                  <p>围绕主线情节拆分 POI 节点，让空间、角色行动与交互流程共同承接排查、转场和信息交付。</p>
+                </div>
+                <div class="log-block">
+                  <h4>POI 关卡</h4>
+                  <p>结合心理学与叙事原理构建情境、环境线索与非线性流程，完成 Boss 战引入区域设计。</p>
+                </div>
+                <div class="log-block">
+                  <h4>载具玩法</h4>
+                  <p>规划 T3 / T2 / T1 载具玩法体系，定义玩法层级、事件分发与城市驾驶体验。</p>
+                </div>
+                <div class="log-block">
+                  <h4>方案验证</h4>
+                  <p>通过白盒、交互原型与规则拆解验证空间关系和玩法状态，支持设计评审与跨职能协作。</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>02 / 腾讯光子</strong>
+              <span>UES 开放世界（OG1/LSNJ）</span><br>
+              <span>2022 — 2025</span><br>
+              <span>ROLE: 关卡策划</span>
+            </div>
+            <div class="log-content">
+              <h3>垂直关卡切片、Metrics 标准与模块化白盒</h3>
+              <p>基于“现代通天塔”概念规划垂直关卡切片，构建随海拔变化的玩法主题，并建立 Metrics 标准与模块化白盒规范，统一关卡生产管线。</p>
+            </div>
+          </article>
+
+          <article class="log-entry">
+            <div class="log-meta">
+              <strong>03 / 腾讯光子</strong>
+              <span>金铲铲之战</span><br>
+              <span>2021 — 2022</span><br>
+              <span>ROLE: 商业化策划</span>
+            </div>
+            <div class="log-content">
+              <h3>高价值 SKU 演出设计与局外收集目标</h3>
+              <p>负责多个神话级小小英雄演出设计，协助完成高价值资产分级规范，并设计基于 SKU 关联的套装收集效果，缓解 Best-in-slot 问题。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="specs">
+      <div class="section-inner">
+        <div class="section-kicker">CAPABILITY SPECS</div>
+        <h2 class="section-title">能力规格</h2>
+        <p class="section-lead">覆盖开放世界 POI、空间白盒、玩法系统与原型验证，从设计意图到可评审、可测试的关卡交付。</p>
+
+        <div class="spec-grid">
+          <div class="spec-card">
+            <h3>开放世界 POI</h3>
+            <p>深度体验 / 探索流程 / 环境线索 / 玩家动线</p>
+          </div>
+          <div class="spec-card">
+            <h3>空间白盒</h3>
+            <p>Metrics / 模块化规范 / 视线管理 / 垂直空间</p>
+          </div>
+          <div class="spec-card">
+            <h3>玩法系统与原型</h3>
+            <p>载具玩法 / 事件设计 / 状态反馈 / 可玩验证</p>
+          </div>
+          <div class="spec-card">
+            <h3>工具与引擎</h3>
+            <p>Figma / Claude Code / Blender / UE5 / Unity</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="education">
+      <div class="section-inner">
+        <div class="section-kicker">EDUCATION</div>
+        <h2 class="section-title">教育经历</h2>
+
+        <div class="education">
+          <div class="spec-card">
+            <h3>复旦大学</h3>
+            <p>应用心理学 硕士 | 2019 — 2021</p>
+          </div>
+          <div class="spec-card">
+            <h3>中国地质大学</h3>
+            <p>地质工程 学士 | 2013 — 2017</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <div class="contact-list">
+        <div>
+          <span>EMAIL</span>
+          hongsteve119@gmail.com
+        </div>
+        <div>
+          <span>WECHAT</span>
+          17269630119
+        </div>
+        <div>
+          <span>FOCUS</span>
+          OPEN_WORLD_LEVEL_DESIGN
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
