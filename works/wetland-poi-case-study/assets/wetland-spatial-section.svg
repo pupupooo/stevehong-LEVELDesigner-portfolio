@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">断流湿地 POI 空间、水流与回程纵剖面</title>
+  <desc id="desc">玩家从干涸湿地沿西侧上山，找到岩石奇波后依次完成 A 到 E。破岩打开洞口、抬高两级水位并连通山外，最终释放积水恢复湿地；玩家再从高处滑翔回到旧巢穴，看到生物自然回归。</desc>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --fg: #172033;
+      --muted: #64748b;
+      --line: #94a3b8;
+      --terrain: #d8d2c4;
+      --cave: #ffffff;
+      --platform: #b7ad9d;
+      --water: #2386c8;
+      --water-soft: #9fd7f5;
+      --rock: #ba6a3c;
+      --boki: #8465c7;
+      --rare: #2ca58d;
+      --accent: #d9a326;
+      --panel: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111827;
+        --fg: #edf2f7;
+        --muted: #a8b3c4;
+        --line: #667085;
+        --terrain: #49463f;
+        --cave: #1d2533;
+        --platform: #777063;
+        --water: #53b7ec;
+        --water-soft: #27688a;
+        --rock: #db8653;
+        --boki: #b09bea;
+        --rare: #63d5bc;
+        --accent: #f0c75a;
+        --panel: #1a2230;
+      }
+    }
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--fg); }
+    .title { font-size: 29px; font-weight: 700; }
+    .subtitle { font-size: 15px; fill: var(--muted); }
+    .label { font-size: 16px; font-weight: 650; }
+    .small { font-size: 13px; fill: var(--muted); }
+    .terrain { fill: var(--terrain); stroke: var(--line); stroke-width: 2; }
+    .cave { fill: var(--cave); stroke: var(--line); stroke-width: 2.5; }
+    .platform { fill: var(--platform); stroke: var(--line); stroke-width: 1.5; }
+    .route { fill: none; stroke: var(--fg); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#route-arrow); }
+    .route.optional { stroke-dasharray: 8 7; }
+    .dry-channel { fill: none; stroke: var(--line); stroke-width: 7; stroke-dasharray: 5 9; stroke-linecap: round; }
+    .water-stage-1 { fill: var(--water-soft); fill-opacity: .42; stroke: var(--water); stroke-width: 2; }
+    .water-stage-2 { fill: var(--water-soft); fill-opacity: .22; stroke: var(--water); stroke-width: 2; stroke-dasharray: 8 6; }
+    .water-flow { fill: none; stroke: var(--water); stroke-width: 13; stroke-linecap: round; stroke-linejoin: round; marker-end: url(#water-arrow); }
+    .node-ring { fill: var(--panel); stroke: var(--rock); stroke-width: 4; }
+    .node-letter { font-size: 21px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+    .boki { fill: var(--boki); stroke: var(--panel); stroke-width: 2; }
+    .rare { fill: var(--rare); stroke: var(--panel); stroke-width: 2; }
+    .nest { fill: none; stroke: var(--accent); stroke-width: 4; }
+    .step { fill: var(--panel); stroke: var(--fg); stroke-width: 2; }
+    .step-number { font-size: 14px; font-weight: 800; text-anchor: middle; dominant-baseline: middle; }
+    .callout { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; }
+    .legend-line { stroke-width: 5; }
+  </style>
+
+  <defs>
+    <marker id="route-arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L0 7 L8 3.5 Z" fill="var(--fg)"/>
+    </marker>
+    <marker id="water-arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 L0 7 L8 3.5 Z" fill="var(--water)"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="820" fill="var(--bg)"/>
+
+  <text class="title" x="60" y="55">断流湿地 POI · 空间、水流与回程</text>
+  <text class="subtitle" x="60" y="82">表达高度、可达性与信息揭示顺序；不代表最终地形比例</text>
+
+  <!-- Terrain -->
+  <path class="terrain" d="M55 666 C135 645 183 597 237 521 C301 430 329 322 390 230 C456 130 556 83 675 90 C795 97 859 169 909 269 C953 358 1001 435 1090 506 C1174 572 1256 616 1345 637 L1345 756 L55 756 Z"/>
+  <path class="cave" d="M286 512 C307 463 343 431 391 418 C405 363 444 324 493 310 C504 245 550 204 616 192 C684 181 741 217 759 273 C808 285 837 326 849 373 C876 401 876 449 846 481 C800 510 745 527 654 531 L374 531 C328 531 297 524 286 512 Z"/>
+
+  <!-- Platforms -->
+  <path class="platform" d="M319 500 L478 500 L486 523 L310 523 Z"/>
+  <path class="platform" d="M492 395 L638 395 L648 417 L484 417 Z"/>
+  <path class="platform" d="M616 286 L770 286 L781 308 L609 308 Z"/>
+  <path class="platform" d="M707 230 L841 230 L852 252 L701 252 Z"/>
+
+  <!-- Dry channels and final river -->
+  <path class="dry-channel" d="M401 464 C355 427 344 373 367 326"/>
+  <path class="dry-channel" d="M581 372 C631 344 672 306 674 257"/>
+  <path class="dry-channel" d="M810 478 C878 468 936 457 1001 435"/>
+  <path class="dry-channel" d="M1013 449 C1060 483 1114 539 1157 593 C1058 626 937 653 814 672 C690 692 558 691 450 674"/>
+
+  <!-- Water stage bands -->
+  <path class="water-stage-1" d="M334 449 L769 449 L811 477 L811 499 L318 499 L318 478 Z"/>
+  <text class="label" x="564" y="441" text-anchor="middle">B 后水位 · C 可达</text>
+  <path class="water-stage-2" d="M390 337 L775 337 L849 382 L849 449 L334 449 L334 403 Z"/>
+  <text class="label" x="608" y="328" text-anchor="middle">C 后水位 · D 出口可达</text>
+
+  <!-- Final restored flow -->
+  <path class="water-flow" d="M548 348 C626 398 716 458 810 478 C887 494 942 458 1005 437 C1053 476 1110 537 1158 594 C1056 627 935 654 812 672 C689 690 557 689 455 674"/>
+  <path class="water-stage-1" d="M302 668 C445 645 574 658 695 683 C826 709 972 693 1129 642 C1055 710 884 733 699 726 C513 719 372 700 302 668 Z"/>
+
+  <!-- Player route -->
+  <path class="route" d="M485 678 C386 649 289 587 252 522 C259 493 280 474 315 474"/>
+  <path class="route" d="M315 474 C353 471 381 477 408 493"/>
+  <path class="route" d="M423 484 C461 446 501 416 531 403"/>
+  <path class="route" d="M570 388 C610 350 650 317 676 299"/>
+  <path class="route" d="M728 277 C760 245 802 229 852 218 C910 251 951 322 974 404 C983 426 992 437 1007 442"/>
+  <path class="route optional" d="M1020 469 C984 532 920 591 844 629 C781 660 716 675 661 681"/>
+
+  <!-- Habitat clues -->
+  <g transform="translate(457 658)">
+    <ellipse class="nest" rx="34" ry="11"/>
+    <path class="nest" d="M-29 0 C-18-22 17-22 30 0"/>
+  </g>
+  <text class="label" x="402" y="621">废弃巢穴 · 初始线索</text>
+  <text class="small" x="402" y="642">干涸状态暗示这里曾有稳定水源</text>
+
+  <g transform="translate(256 505)" fill="var(--rock)">
+    <ellipse cx="-18" cy="8" rx="11" ry="6"/>
+    <ellipse cx="7" cy="-6" rx="11" ry="6"/>
+    <ellipse cx="32" cy="-21" rx="11" ry="6"/>
+  </g>
+  <text class="label" x="80" y="468">岩石痕迹 · 引向山体</text>
+
+  <g transform="translate(301 447)">
+    <circle class="boki" r="17"/>
+    <circle class="boki" cx="-11" cy="-13" r="7"/>
+    <circle class="boki" cx="11" cy="-13" r="7"/>
+  </g>
+  <text class="label" x="82" y="425">沿痕迹找到岩石奇波</text>
+
+  <!-- Nodes -->
+  <g transform="translate(410 476)">
+    <circle class="node-ring" r="28"/>
+    <text class="node-letter">A</text>
+  </g>
+  <text class="label" x="410" y="557" text-anchor="middle">A · 打开洞口</text>
+
+  <g transform="translate(582 369)">
+    <circle class="node-ring" r="28"/>
+    <text class="node-letter">B</text>
+  </g>
+  <text class="label" x="648" y="381">B · 低池涨水</text>
+
+  <g transform="translate(715 275)">
+    <circle class="node-ring" r="30"/>
+    <text class="node-letter">C</text>
+  </g>
+  <text class="label" x="650" y="252" text-anchor="end">C · 高池涨水</text>
+
+  <g transform="translate(821 231)">
+    <circle class="node-ring" r="30"/>
+    <text class="node-letter">D</text>
+  </g>
+  <text class="label" x="821" y="178" text-anchor="middle">D · 山外高点</text>
+  <text class="small" x="821" y="198" text-anchor="middle">回看最初的干涸盆地</text>
+
+  <g transform="translate(1007 438)">
+    <circle class="node-ring" r="34"/>
+    <text class="node-letter">E</text>
+  </g>
+  <text class="label" x="1070" y="423">E · 主出水口</text>
+  <text class="small" x="1070" y="444">打通后恢复山下湿地</text>
+
+  <!-- Rare Boki -->
+  <g transform="translate(759 671)">
+    <ellipse class="rare" rx="31" ry="15"/>
+    <circle class="rare" cx="31" cy="-7" r="13"/>
+    <path d="M-29 0 C-53-15 -59 9 -39 14" fill="none" stroke="var(--rare)" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text class="label" x="759" y="625" text-anchor="middle">湿地恢复 · 生物自然回归</text>
+
+  <!-- Key -->
+  <rect class="callout" x="1045" y="100" width="295" height="245" rx="12"/>
+  <text class="label" x="1070" y="132">流程</text>
+  <text class="small" x="1070" y="159">读懂干涸湿地与废弃巢穴</text>
+  <text class="small" x="1070" y="184">沿痕迹找到岩石奇波</text>
+  <text class="small" x="1070" y="209">A · 打开山洞入口</text>
+  <text class="small" x="1070" y="234">B · 低池涨水，木板抬升</text>
+  <text class="small" x="1070" y="259">C · 高池涨水，游路出现</text>
+  <text class="small" x="1070" y="284">D · 到达山外高点</text>
+  <text class="small" x="1070" y="309">E · 释放积水，恢复栖息地</text>
+  <text class="small" x="1070" y="334">滑翔返回巢穴，观察生物回归</text>
+
+  <text class="small" x="62" y="792">实线：玩家路线　虚线：滑翔回程　浅蓝：洞内水位　蓝线：最终水流</text>
+</svg>
